@@ -10,6 +10,14 @@ Bear in mind the following:
 2. It's pretty slow.
 3. It definitely needs a lot of work.
 
+Here are some sample renders:
+
+(example/sample01.jpg)
+(example/sample02.jpg)
+(example/sample03.jpg)
+(example/sample04.jpg)
+(example/sample05.jpg)
+
 I put this online as a starting point to start working on it again. And just maybe, someone out there 
 might be interested in working on it too.
 
