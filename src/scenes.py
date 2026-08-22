@@ -162,7 +162,7 @@ def profileRenderSampleScene_01( size = None,
 
 def readScene_3spheres( world = None,
                         logger = None ):
-    assert( world != None )
+    assert( world is not None )
     pnormal = numpy.array( [0.0, 1.0, 0.0] )
     ill_model1 = PhongIlluminationModel( kAmbient = 0.0, # 0.1,
                                          kDiffuse = numpy.array( [0.4, 0.0, 0.0] ),
@@ -205,7 +205,7 @@ def readScene_3spheres( world = None,
 
 def readScene_3spheres_2( world = None,
                           logger = None ):
-    assert( world != None )
+    assert( world is not None )
     pnormal = numpy.array( [0.0, 1.0, 0.0] )
     ill_model1 = PhongIlluminationModel( kAmbient = 0.0, # 0.1,
                                          kDiffuse = numpy.array( [0.1, 0.0, 0.0] ),
@@ -249,7 +249,7 @@ def readScene_3spheres_2( world = None,
 
 def readScene_plane1( world = None,
                       logger = None ):
-    assert( world != None )
+    assert( world is not None )
     ill_model1 = PhongIlluminationModel( kAmbient = 0.0,
                                          kDiffuse = numpy.array( [0.2, 0.2, 0.2] ),
                                          kSpecular = 0.1,
@@ -300,7 +300,7 @@ def readScene_plane1( world = None,
 
 def readScene_plane2_checkers( world = None,
                                logger = None ):
-    assert( world != None )
+    assert( world is not None )
     # wallnormal = numpy.array( [0.0, 0.0, 1.0] )
     pnormal = numpy.array( [0.0, 0.96592583, 0.25881905] )
     ill_model2a = PhongIlluminationModel( kAmbient = 0.2,
@@ -350,7 +350,7 @@ def readScene_plane2_checkers( world = None,
 
 def readScene_checkers_spheres( world = None,
                                 logger = None ):
-    assert( world != None )
+    assert( world is not None )
     ill_model1 = PhongIlluminationModel( kAmbient = 0.0, # 0.1,
                                          kDiffuse = numpy.array( [0.4, 0.0, 0.0] ),
                                          kSpecular = 0.5,
@@ -412,7 +412,7 @@ def readScene_checkers_spheres( world = None,
 
 def readScene_checkers_spheres_reflect_2( world = None,
                                           logger = None ):
-    assert( world != None )
+    assert( world is not None )
     # ill_model1 = PhongIlluminationModel( kAmbient = 0.0, # 0.1,
     #                                      kDiffuse = numpy.array( [0.4, 0.0, 0.0] ),
     #                                      kSpecular = 0.5,
@@ -476,7 +476,7 @@ def readScene_checkers_spheres_reflect_2( world = None,
 
 def readScene_checkers_sphere_reflect( world = None,
                                        logger = None ):
-    assert( world != None )
+    assert( world is not None )
     ill_model2a = PhongIlluminationModel( kAmbient = 0.2,
                                           kDiffuse = numpy.array( [0.5, 0.2, 0.1] ),
                                           kSpecular = 0.2,
@@ -534,7 +534,7 @@ def readScene_checkers_sphere_reflect( world = None,
 
 def readScene_TestShadow( world = None,
                           logger = None ):
-    assert( world != None )
+    assert( world is not None )
     pnormal = numpy.array( [0.0, 1.0, 0.0] )
     ill_model1 = PhongIlluminationModel( kAmbient = 0.0, # 0.1,
                                          kDiffuse = numpy.array( [0.9, 0.0, 0.0] ),
@@ -587,7 +587,7 @@ def readScene_TestShadow( world = None,
 def readScene_megareflect_01( world = None,
                               pnormal = numpy.array( [0.0, 0.96592583, 0.25881905] ),
                               logger = None ):
-    assert( world != None )
+    assert( world is not None )
     ill_model2a = PhongIlluminationModel( kAmbient = 0.2,
                                           kDiffuse = numpy.array( [0.7, 0.7, 0.0] ),
                                           kSpecular = 1.4,
@@ -623,7 +623,7 @@ def readScene_megareflect_01( world = None,
     x = -2.6
     y = 0.6
     z = 3.0
-    for xindex in xrange(6):
+    for xindex in range(6):
         world.addObject( sphere.Sphere( center = numpy.array( [x, y, z] ),
                                         radius = 0.5,
                                         ill_model = ill_model_ref,

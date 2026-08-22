@@ -3,7 +3,7 @@ import logging
 import numpy
 from numpy import dot
 
-import ray
+from . import ray
 from rvmath.geometry.utils import *
 
 # The sphere's definition is:
@@ -82,9 +82,9 @@ class Sphere():
         (intpoint, viewvec, un, t) = self.findIntersection( dray = dray )
         # self.logger.debug( "t = %f intpoint => %s disc: %f" %
         #               (t, str(intpoint), sq_disc) )
-        if intpoint == None:
+        if intpoint is None:
             return (None, None)
-        assert( viewvec != None and un != None )
+        assert( viewvec is not None and un is not None )
         return ( intpoint, # intersection point
                  self.GetColor( intpoint = intpoint,
                                 lightlist = lightlist,
@@ -133,7 +133,7 @@ class Sphere():
         return self.refractor_flag
 
 if __name__ == "__main__":
-    print "Basic Sphere class test:"
+    print("Basic Sphere class test:")
     # TODO
     # Test code.
     # create sphere

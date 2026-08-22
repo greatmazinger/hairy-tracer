@@ -73,7 +73,7 @@ class PhongIlluminationModel( LocalIlluminationModel ):
             diffuse = [ 0.0, 0.0, 0.0 ]
             specular = [ 0.0, 0.0, 0.0 ]
         retval = [ max( 0, min( 255, (ambient[x] + diffuse[x] + specular[x]) ) )
-                   for x in xrange( len(ambient) ) ]
+                   for x in range( len(ambient) ) ]
         return retval
 
     def GetAmbient( self,
@@ -89,7 +89,7 @@ class PhongIlluminationModel( LocalIlluminationModel ):
                   ):
         ldv = (numpy.dot( lightvec, normalvec ))
         color = []
-        for ind in xrange( len(self.kDiffuse) ):
+        for ind in range( len(self.kDiffuse) ):
             color.append( self.kDiffuse[ind] * ldv * light[ind] )
         return color
 
@@ -159,7 +159,7 @@ class PhongReflectionModel( PhongIlluminationModel ):
             diffuse = [ 0.0, 0.0, 0.0 ]
             specular = [ 0.0, 0.0, 0.0 ]
         retval = [ max( 0, min( 255, (ambient[x] + diffuse[x] + specular[x]) ) )
-                   for x in xrange( len(ambient) ) ]
+                   for x in range( len(ambient) ) ]
         return retval
 
     def GetAmbient( self,
@@ -175,7 +175,7 @@ class PhongReflectionModel( PhongIlluminationModel ):
                   ):
         ldv = (numpy.dot( lightvec, normalvec ))
         color = []
-        for ind in xrange( len(self.kDiffuse) ):
+        for ind in range( len(self.kDiffuse) ):
             color.append( self.kDiffuse[ind] * ldv * light[ind] )
         return color
 
@@ -203,6 +203,6 @@ class PhongReflectionModel( PhongIlluminationModel ):
 
 
 if __name__ == "__main__":
-    print "Basic IlluminationModel class test:"
+    print("Basic IlluminationModel class test:")
     mylight = IlluminationModel()
-    print "Done"
+    print("Done")

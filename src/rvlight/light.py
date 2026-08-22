@@ -8,7 +8,7 @@ class Light():
         # The vectors can be of any numeric type
         # but for this to make sense, floats should be used.
         self.origin = numpy.copy( orig )
-        if color == None:
+        if color is None:
             color = numpy.array( [1.0, 1.0, 1.0] )
         self.color = numpy.copy( color )
 
@@ -38,6 +38,6 @@ class ConeLight( DirectedLight ):
         self.angle = numpy.copy( angle )
 
 if __name__ == "__main__":
-    print "Basic Light class test:"
+    print("Basic Light class test:")
     mylight = Light( orig = numpy.array( [ 0, 1, 2 ] ) )
-    print "Done"
+    print("Done")

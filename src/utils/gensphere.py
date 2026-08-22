@@ -4,10 +4,10 @@ import logging
 
 def generate_sphere( center = None,
                      radius = None,
-                     kAmbient = None, ):
+                     kAmbient = None,
                      kSpecular = None,
-                     nS = None
-    print"""
+                     nS = None ):
+    print("""
     def %(funcname)( self ):
         global logger_name
         pnormal = numpy.array( [0.0, 1.0, 0.0] )
@@ -49,4 +49,4 @@ def generate_sphere( center = None,
         self.world.addLight( Light( orig = numpy.array( [0.0, 40.0, 0.0] ),
                                     color = numpy.array( [255, 10, 15] ) )
                             )
-        """
+        """)

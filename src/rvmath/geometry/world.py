@@ -2,8 +2,8 @@ import numpy
 import logging
 from numpy import dot
 
-import ray
-from utils import *
+from . import ray
+from .utils import *
 from rvlight import *
 
 logger = None
@@ -14,7 +14,7 @@ class World():
                   lights = [],
                   myname = "world",
                   logger_name = None ):
-        if logger_name != None:
+        if logger_name is not None:
             self.setup_logger( logger_name = logger_name )
         self.objects = objects
         self.lights = lights
@@ -43,9 +43,9 @@ class World():
             (hitpoint, hitcolor) = \
                     item.findIntersectionAndColor( dray = myray,
                                                    lightlist = self.lights )
-            if hitpoint != None:
+            if hitpoint is not None:
                 newdistance = numpy.linalg.norm( hitpoint - myray.getOrigin() )
-                if ((currhit == None) or
+                if ((currhit is None) or
                     (newdistance < distance)):
                     currhit = hitpoint.copy()
                     currnorm = numpy.linalg.norm( hitpoint )
@@ -59,9 +59,9 @@ class World():
                        lightray = None,
                        intpoint = None ):
         global logger
-        assert( srcobject != None and
-                lightray != None and
-                intpoint != None )
+        assert( srcobject is not None and
+                lightray is not None and
+                intpoint is not None )
         for item in self.objects:
             if item == srcobject:
                 continue
@@ -70,7 +70,7 @@ class World():
                               dir = lightray )
             (hitpoint, viewvec, un, t) = \
                     item.findIntersection( dray = tmpray )
-            if hitpoint != None and t > 0.0:
+            if hitpoint is not None and t > 0.0:
                 # logger.debug( "%s hits %s" %
                 #               (srcobject.myname, item.myname) )
                 return True
@@ -83,5 +83,5 @@ class World():
 
 
 if __name__ == "__main__":
-    print "Basic World class test:"
-    print "Done."
+    print("Basic World class test:")
+    print("Done.")

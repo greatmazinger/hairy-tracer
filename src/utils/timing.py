@@ -1,5 +1,6 @@
 import atexit
-from time import clock
+from time import perf_counter as clock
+from functools import reduce
 
 # Thanks to Paul McGuire from stackoverflow.com: http://bit.ly/fwp2l4
 #
@@ -10,12 +11,12 @@ def secondsToStr(t):
 
 line = "="*40
 def log(s, elapsed=None):
-    print line
-    print secondsToStr(clock()), '-', s
+    print(line)
+    print(secondsToStr(clock()), '-', s)
     if elapsed:
-        print "Elapsed time:", elapsed
-    print line
-    print
+        print("Elapsed time:", elapsed)
+    print(line)
+    print()
 
 def endlog():
     end = clock()

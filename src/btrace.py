@@ -1,5 +1,5 @@
 import os
-import Image
+from PIL import Image
 import numpy
 import itertools
 from optparse import OptionParser
@@ -59,11 +59,11 @@ class BTracer():
         self.distance = None
 
     def render( self ):
-        print "Rendering image:", self.width, "x", self.height
+        print("Rendering image:", self.width, "x", self.height)
         pixdata = None
         if self.testflag:
             from rvcolor.utils import get_pattern_data
-            print "Rendering testdata."
+            print("Rendering testdata.")
             image = Image.new( "RGB",
                                self.size,
                                (0, 0, 255) )
@@ -75,8 +75,8 @@ class BTracer():
                                self.size,
                                (0, 0, 255) )
             pixdata = self.get_data()
-            assert( pixdata != None and pixdata != [] )
-            print "DBG: imagesize =", image.size, "  length =", len(pixdata)
+            assert( pixdata is not None and pixdata != [] )
+            print("DBG: imagesize =", image.size, "  length =", len(pixdata))
             image.putdata( pixdata )
             image = image.transpose( Image.FLIP_TOP_BOTTOM )
             image.save( self.output )
@@ -112,7 +112,7 @@ class BTracer():
                                   dir = numpy.array( v ) - self.cam_origin )
                 mycolor = self.traceRay( myray = tmpray,
                                          depth = 1 )
-                data.append( tuple(mycolor) )
+                data.append( tuple(int(c) for c in mycolor) )
         return data
 
     def getSimpleVertex( self,
@@ -126,9 +126,9 @@ class BTracer():
         yright = vpdim[1] / 2.0 
         x = -1 * xright
         y = -1 * yright
-        for ytmp in xrange( imgdim[1] ):
+        for ytmp in range( imgdim[1] ):
             x = -1 * xright
-            for xtmp in xrange( imgdim[0] ):
+            for xtmp in range( imgdim[0] ):
                 x = x + xd
                 yield [ (x, y, self.distance) ]
                 # we can use distance here because
@@ -149,11 +149,11 @@ class BTracer():
             (object, hitpoint, tmpcolor) = \
                     self.world.findIntersectionAndColor( myray,
                                                          srcobject = srcobject )
-            if tmpcolor == None:
+            if tmpcolor is None:
                 tmpcolor = Color.BLACK
             color.append( tmpcolor )
             srcname = "None"
-            if object != None and object.IsReflector():
+            if object is not None and object.IsReflector():
                 invec = myray.getDirection()
                 invec = -1 * invec / numpy.linalg.norm( invec )
                 un = object.getUnitNormal( point = hitpoint )
@@ -168,16 +168,16 @@ class BTracer():
                 # logger.debug( "refcolor: %s" % str(color[-1]) )
                 logger.debug( "reflect : %s" % str(rvec) )
                 logger.debug( "invec: %s" % str(invec) )
-                if srcobject != None:
+                if srcobject is not None:
                     srcname = srcobject.myname
             if depth > 1:
-                if object == None:
+                if object is None:
                     tmpobjname = "None"
                 else:
                     tmpobjname = object.myname
                 logger.debug( "depth: %d  intpt: %s obj: %s  src: %s" %
                               (depth, str(hitpoint), tmpobjname, srcname) )
-            if object != None and object.IsRefractor():
+            if object is not None and object.IsRefractor():
                 pass
             retcolor = [0.0, 0.0, 0.0]
             for x in color:
@@ -263,9 +263,9 @@ if __name__ == "__main__":
     try:
         size = processSize( size )
     except:
-        print "Unable to parse size arguments."
+        print("Unable to parse size arguments.")
         parser.usage()
-    print "size : ", size
+    print("size : ", size)
     profileflag = options.profileflag
     sample01_flag = options.sample01_flag
     shadow01_flag = options.shadow01_flag
@@ -296,7 +296,7 @@ if __name__ == "__main__":
                                   outfile = outfile )
     elif shadow01_flag:
         if profileflag:
-            print "TODO! This part is under construction. Try --sample01"
+            print("TODO! This part is under construction. Try --sample01")
             assert(0)
             profileRenderSampleScene_01( size = size,
                                          world = raytracer.world,
@@ -312,7 +312,7 @@ if __name__ == "__main__":
                                   outfile = outfile )
     elif spheres3_flag:
         if profileflag:
-            print "TODO! This part is under construction. Try --sample01"
+            print("TODO! This part is under construction. Try --sample01")
             assert(0)
             profileRenderSampleScene_01( size = size,
                                          world = raytracer.world,
@@ -328,7 +328,7 @@ if __name__ == "__main__":
                                     outfile = outfile )
     elif spheres3_reflect_flag:
         if profileflag:
-            print "TODO! This part is under construction. Try --sample01"
+            print("TODO! This part is under construction. Try --sample01")
             assert(0)
             profileRenderSampleScene_01( size = size,
                                          world = raytracer.world,
@@ -344,7 +344,7 @@ if __name__ == "__main__":
                                     outfile = outfile )
     elif checkers_flag:
         if profileflag:
-            print "TODO! This part is under construction. No profiling in checkers."
+            print("TODO! This part is under construction. No profiling in checkers.")
             assert(0)
             profileRenderSampleScene_01( size = size,
                                          world = raytracer.world,
@@ -360,7 +360,7 @@ if __name__ == "__main__":
                                    outfile = outfile )
     elif checkers_spheres_flag:
         if profileflag:
-            print "TODO! This part is under construction. No profiling in checkers."
+            print("TODO! This part is under construction. No profiling in checkers.")
             assert(0)
             profileRenderSampleScene_01( size = size,
                                          world = raytracer.world,
@@ -377,7 +377,7 @@ if __name__ == "__main__":
                                      outfile = outfile )
     elif checkers_spheres_reflect_flag:
         if profileflag:
-            print "TODO! This part is under construction. No profiling in checkers."
+            print("TODO! This part is under construction. No profiling in checkers.")
             assert(0)
             profileRenderSampleScene_01( size = size,
                                          world = raytracer.world,
@@ -394,7 +394,7 @@ if __name__ == "__main__":
                                             outfile = outfile )
     elif megareflect_flag:
         if profileflag:
-            print "TODO! This part is under construction. No profiling in checkers."
+            print("TODO! This part is under construction. No profiling in checkers.")
             assert(0)
             profileRenderSampleScene_01( size = size,
                                          world = raytracer.world,
@@ -411,7 +411,7 @@ if __name__ == "__main__":
                                   outfile = outfile )
     elif megareflect2_flag:
         if profileflag:
-            print "TODO! This part is under construction. No profiling in checkers."
+            print("TODO! This part is under construction. No profiling in checkers.")
             assert(0)
             profileRenderSampleScene_01( size = size,
                                          world = raytracer.world,
@@ -428,7 +428,7 @@ if __name__ == "__main__":
                                   outfile = outfile )
     elif spheres_reflect_flag:
         if profileflag:
-            print "TODO! This part is under construction. No profiling in checkers."
+            print("TODO! This part is under construction. No profiling in checkers.")
             assert(0)
             profileRenderSampleScene_01( size = size,
                                          world = raytracer.world,
@@ -444,4 +444,4 @@ if __name__ == "__main__":
                                            raytracer = raytracer,
                                            outfile = outfile )
     else:
-        print "TODO! This part is under construction. Try --sample01"
+        print("TODO! This part is under construction. Try --sample01")

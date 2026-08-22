@@ -1,7 +1,7 @@
 import numpy
 from numpy import dot
 
-import ray
+from . import ray
 from rvmath.geometry.utils import *
 from rvlight.illuminationmodel import *
 
@@ -73,7 +73,7 @@ class Plane():
                                   dray = None,
                                   lightlist = None ):
         (intpoint, viewvec, pn, t) = self.findIntersection( dray = dray )
-        if intpoint == None:
+        if intpoint is None:
             return (None, None)
         flag = numpy.isnan( intpoint )
         if ( flag[0] or
@@ -181,10 +181,10 @@ class CheckeredPlane( Plane ):
         return [ max(0, min( 255, x )) for x in color ]
 
 if __name__ == "__main__":
-    print "Basic Plane class test:"
+    print("Basic Plane class test:")
     myplane = Plane( numpy.array( [ 1., 5., 0. ] ),
                      -3. )
     rOrig = numpy.array([ 1., 1., 0. ])
     rDir = numpy.array([ 0., 1., 0. ])
     xtn = myplane.findIntersection( ray.Ray( rOrig, rDir ) )
-    print "Intersection: ", xtn
+    print("Intersection: ", xtn)

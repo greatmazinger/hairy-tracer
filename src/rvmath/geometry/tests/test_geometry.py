@@ -18,7 +18,7 @@ class TestPlaneFunctions( unittest.TestCase ):
 class TestSphereFunctions( unittest.TestCase ):
     def setUp(self):
         # create unit radius sphere
-        self.usphere = range(10)
+        self.usphere = list(range(10))
 
     def test_line_sphere_intersections( self ):
         # case 1 - no intersection, far from surface

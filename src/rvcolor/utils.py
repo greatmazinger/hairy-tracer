@@ -16,8 +16,8 @@ def get_pattern_data( width = 0, height = 0 ):
     num_horizontal_stripes = 5
     jline = 0.8 * height
     iwide = (1.0/num_horizontal_stripes) * width
-    for j in xrange( height ):
-        for i in xrange( width ):
+    for j in range( height ):
+        for i in range( width ):
             if j > jline:
                 # output red
                 data.append( (255, 0, 0 ) ) # Red
