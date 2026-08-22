@@ -1,7 +1,7 @@
 hairy-tracer
 ============
 
-A raytracer in Python that's really slow
+A raytracer in Python that used to be really slow. It's not so slow anymore.
 
 I wrote this in 2010 for a class in Computer Graphics. Quick and dirty are the words that come to mind.
 
