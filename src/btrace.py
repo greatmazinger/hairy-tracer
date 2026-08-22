@@ -2,6 +2,7 @@ import os
 from PIL import Image
 import numpy
 import itertools
+import multiprocessing
 from optparse import OptionParser
 import logging
 
@@ -37,6 +38,67 @@ def setup_logger( targetdir = ".",
         logger.addHandler( chandler )
 
 setup_logger()
+
+def render_scanline(args):
+    vlist, cam_origin, world, maxdepth = args
+    scanline_data = []
+    for v in vlist:
+        tmpray = ray.Ray( orig = cam_origin,
+                          dir = numpy.array( v ) - cam_origin )
+        mycolor = traceRay_worker( tmpray, 1, world, maxdepth )
+        scanline_data.append( tuple(int(c) for c in mycolor) )
+    return scanline_data
+
+def traceRay_worker(myray, depth, world, maxdepth, srcobject=None):
+    if depth > maxdepth:
+        return Color.BLACK
+    else:
+        color = []
+        tmpcolor = None
+        (object, hitpoint, tmpcolor) = \
+                world.findIntersectionAndColor( myray,
+                                                srcobject = srcobject )
+        if tmpcolor is None:
+            tmpcolor = Color.BLACK
+        color.append( tmpcolor )
+        srcname = "None"
+        if object is not None and object.IsReflector():
+            invec = myray.getDirection()
+            invec = -1 * invec / numpy.linalg.norm( invec )
+            un = object.getUnitNormal( point = hitpoint )
+            rvec = CalcReflectionVector( invec = invec,
+                                         normalvec = un )
+            rvec = (rvec / numpy.linalg.norm( rvec ))
+            refray = ray.Ray( hitpoint,
+                              dir = rvec )
+            color.append( traceRay_worker( refray,
+                                           depth + 1,
+                                           world,
+                                           maxdepth,
+                                           srcobject = object ) )
+        if object is not None and object.IsRefractor():
+            invec = myray.getDirection()
+            invec = invec / numpy.linalg.norm( invec )
+            un = object.getUnitNormal( point = hitpoint )
+            refract_vec = CalcRefractionVector( invec = invec,
+                                                normalvec = un,
+                                                ior = 1.5 )
+            if refract_vec is not None:
+                refract_vec = refract_vec / numpy.linalg.norm( refract_vec )
+                offset_point = hitpoint + refract_vec * 0.001
+                refract_ray = ray.Ray( offset_point, dir = refract_vec )
+                color.append( traceRay_worker( refract_ray,
+                                               depth + 1,
+                                               world,
+                                               maxdepth,
+                                               srcobject = object ) )
+
+        retcolor = [0.0, 0.0, 0.0]
+        for x in color:
+            retcolor[0] = retcolor[0] + x[0]
+            retcolor[1] = retcolor[1] + x[1]
+            retcolor[2] = retcolor[2] + x[2]
+        return [ max( 0, min( 255, x ) ) for x in retcolor ]
 
 class BTracer():
     def __init__( self,
@@ -103,16 +165,15 @@ class BTracer():
         self.cam_origin = cam_origin
 
     def get_data( self ):
-        origin = numpy.array( [0, 0, 0] )
-        data = []
-        for vlist in self.getSimpleVertex( (self.vpwidth, self.vpheight),
-                                           (self.width, self.height) ):
-            for v in vlist:
-                tmpray = ray.Ray( orig = self.cam_origin,
-                                  dir = numpy.array( v ) - self.cam_origin )
-                mycolor = self.traceRay( myray = tmpray,
-                                         depth = 1 )
-                data.append( tuple(int(c) for c in mycolor) )
+        vlists = list(self.getSimpleVertex((self.vpwidth, self.vpheight),
+                                           (self.width, self.height)))
+        args = [(vlist, self.cam_origin, self.world, self.maxdepth) for vlist in vlists]
+        pool = multiprocessing.Pool()
+        results = pool.map(render_scanline, args)
+        pool.close()
+        pool.join()
+        
+        data = [pixel for scanline in results for pixel in scanline]
         return data
 
     def getSimpleVertex( self,
@@ -136,55 +197,7 @@ class BTracer():
                 # on the positive Z axis.
             y = y + yd
 
-    def traceRay( self,
-                  myray = None,
-                  depth = None,
-                  srcobject = None ):
-        global logger
-        if depth > self.maxdepth:
-            return Color.BLACK
-        else:
-            color = []
-            tmpcolor = None
-            (object, hitpoint, tmpcolor) = \
-                    self.world.findIntersectionAndColor( myray,
-                                                         srcobject = srcobject )
-            if tmpcolor is None:
-                tmpcolor = Color.BLACK
-            color.append( tmpcolor )
-            srcname = "None"
-            if object is not None and object.IsReflector():
-                invec = myray.getDirection()
-                invec = -1 * invec / numpy.linalg.norm( invec )
-                un = object.getUnitNormal( point = hitpoint )
-                rvec = CalcReflectionVector( invec = invec,
-                                             normalvec = un )
-                rvec = (rvec / numpy.linalg.norm( rvec ))
-                refray = ray.Ray( hitpoint, # numpy.array([0.,0.,0.]),
-                                  dir = rvec )
-                color.append( self.traceRay( myray = refray,
-                                             depth = depth + 1,
-                                             srcobject = object ) )
-                # logger.debug( "refcolor: %s" % str(color[-1]) )
-                logger.debug( "reflect : %s" % str(rvec) )
-                logger.debug( "invec: %s" % str(invec) )
-                if srcobject is not None:
-                    srcname = srcobject.myname
-            if depth > 1:
-                if object is None:
-                    tmpobjname = "None"
-                else:
-                    tmpobjname = object.myname
-                logger.debug( "depth: %d  intpt: %s obj: %s  src: %s" %
-                              (depth, str(hitpoint), tmpobjname, srcname) )
-            if object is not None and object.IsRefractor():
-                pass
-            retcolor = [0.0, 0.0, 0.0]
-            for x in color:
-                retcolor[0] = retcolor[0] + x[0]
-                retcolor[1] = retcolor[1] + x[1]
-                retcolor[2] = retcolor[2] + x[2]
-            return [ max( 0, min( 255, x ) ) for x in retcolor ]
+
 
 def processSize( size = None ):
     (width, height) = size.lower().split( 'x' )
@@ -265,7 +278,7 @@ if __name__ == "__main__":
     except:
         print("Unable to parse size arguments.")
         parser.usage()
-    print("size : ", size)
+    print(("size : ", size))
     profileflag = options.profileflag
     sample01_flag = options.sample01_flag
     shadow01_flag = options.shadow01_flag

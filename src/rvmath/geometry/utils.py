@@ -6,7 +6,7 @@ import numpy
 from numpy import dot
 
 __all__ = [ "fequal", "getMatrixForRotateToZaxis", "CalcReflectionVector",
-            "CalcHalfVector" ]
+            "CalcHalfVector", "CalcRefractionVector" ]
 
 # Floating point equality check
 def fequal(a, b):
@@ -20,6 +20,31 @@ def CalcReflectionVector( invec = None, # unit in vector
     L = invec
     return ((numpy.dot(N, 2*L)) * N) - L
     # return L - ((numpy.dot(N, 2*L)) * N)
+
+def CalcRefractionVector(invec, normalvec, ior=1.5):
+    """
+    Calculate the refraction vector using Snell's law.
+    ior is the index of refraction (n2/n1).
+    """
+    cosi = numpy.dot(invec, normalvec)
+    etai, etat = 1.0, ior # Air to material
+    n = normalvec
+    
+    if cosi < 0: 
+        # Outside the surface
+        cosi = -cosi
+    else: 
+        # Inside the surface, swap indices and invert normal
+        etai, etat = etat, etai
+        n = -normalvec
+
+    eta = etai / etat
+    k = 1 - eta * eta * (1 - cosi * cosi)
+    
+    if k < 0:
+        return None # Total internal reflection
+    else:
+        return eta * invec + (eta * cosi - math.sqrt(k)) * n
 
 def CalcHalfVector( lightvec = None, # unit light vector
                     viewvec = None, # view vector

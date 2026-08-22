@@ -194,6 +194,7 @@ def readScene_3spheres( world = None,
                                     radius = 2.0,
                                     ill_model = ill_model4,
                                     world_intfn = world.doesIntersect,
+                                    is_refractor = True,
                                     logger = None )
                    )
     world.addLight( Light( orig = numpy.array( [5.0, 5.0, 5.0] ),

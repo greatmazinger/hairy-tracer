@@ -10,14 +10,14 @@ logger = None
 
 class World():
     def __init__( self,
-                  objects = [],
-                  lights = [],
+                  objects = None,
+                  lights = None,
                   myname = "world",
                   logger_name = None ):
         if logger_name is not None:
             self.setup_logger( logger_name = logger_name )
-        self.objects = objects
-        self.lights = lights
+        self.objects = objects if objects is not None else []
+        self.lights = lights if lights is not None else []
         self.myname = myname
 
     def addObject( self, obj ):
