@@ -1,0 +1,8 @@
+[package]
+name = "hairy-tracer-core"
+version = "0.1.0"
+edition = "2021"
+description = "Intersection and BVH traversal core for the Hairy Tracer raytracer"
+
+[dependencies]
+glam = { version = "0.29", features = ["std"] }
