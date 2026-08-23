@@ -87,7 +87,7 @@ class PhongIlluminationModel( LocalIlluminationModel ):
                     lightvec = None, # unit normal pointing to light
                     normalvec = None, # unit surface normal
                   ):
-        ldv = (numpy.dot( lightvec, normalvec ))
+        ldv = max(0.0, numpy.dot( lightvec, normalvec ))
         color = []
         for ind in range( len(self.kDiffuse) ):
             color.append( self.kDiffuse[ind] * ldv * light[ind] )
@@ -173,7 +173,7 @@ class PhongReflectionModel( PhongIlluminationModel ):
                     lightvec = None, # unit normal pointing to light
                     normalvec = None, # unit surface normal
                   ):
-        ldv = (numpy.dot( lightvec, normalvec ))
+        ldv = max(0.0, numpy.dot( lightvec, normalvec ))
         color = []
         for ind in range( len(self.kDiffuse) ):
             color.append( self.kDiffuse[ind] * ldv * light[ind] )

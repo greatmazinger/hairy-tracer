@@ -147,22 +147,43 @@ class BTracer():
                      cam_origin = [0.0, 0.0, 60.0],
                      distance = 30.0,
                      vpwidth = 64.0,
-                     vpheight = 48.0):
-        # TODO: check the parameters
-        # TODO: Assume the viewport is parallel to XY plane
-        #       and perpendicular to the XZ plane.
-        # TODO: Need to convert camera and objects to this
-        #       space
-        # Given A = upleft, B = upright, C = lowright,
-        # the camera is on the side of the plane where
-        # BA x BC.
-        # Therefore the viewing direction is in the opposite
-        # direction
+                     vpheight = 48.0,
+                     look_at = None,
+                     up = [0.0, 1.0, 0.0]):
         assert( vpwidth > 0 and vpheight > 0 )
         self.vpwidth = vpwidth
         self.vpheight = vpheight
         self.distance = distance
-        self.cam_origin = cam_origin
+        self.cam_origin = numpy.array(cam_origin)
+        
+        if look_at is None:
+            # Backward compatibility: old system placed the viewport center at (0, 0, distance)
+            self.look_at = numpy.array([0.0, 0.0, float(distance)])
+        else:
+            self.look_at = numpy.array(look_at)
+            
+        self.up = numpy.array(up)
+        
+        # Calculate camera basis vectors
+        # w points from look_at TO cam_origin (backwards)
+        w = self.cam_origin - self.look_at
+        w_norm = numpy.linalg.norm(w)
+        if w_norm == 0:
+            # Fallback if camera is exactly at look_at
+            self.w = numpy.array([0.0, 0.0, 1.0])
+        else:
+            self.w = w / w_norm
+            
+        # u points to the right
+        u = numpy.cross(self.up, self.w)
+        u_norm = numpy.linalg.norm(u)
+        if u_norm == 0:
+            self.u = numpy.array([1.0, 0.0, 0.0])
+        else:
+            self.u = u / u_norm
+            
+        # v points up (orthogonal to w and u)
+        self.v = numpy.cross(self.w, self.u)
 
     def get_data( self ):
         vlists = list(self.getSimpleVertex((self.vpwidth, self.vpheight),
@@ -179,23 +200,24 @@ class BTracer():
     def getSimpleVertex( self,
                          vpdim = None,
                          imgdim = None ):
-        # returns lists of vertices
-        # Get the corresponding deltas in object space
+        # The viewport center is exactly at look_at.
+        # We trace from -vpwidth/2 to +vpwidth/2, and -vpheight/2 to +vpheight/2.
         xd = vpdim[0] / float( imgdim[0] )
         yd = vpdim[1] / float( imgdim[1] )
         xright = vpdim[0] / 2.0 
         yright = vpdim[1] / 2.0 
-        x = -1 * xright
-        y = -1 * yright
+        
+        y_scalar = -1 * yright
         for ytmp in range( imgdim[1] ):
-            x = -1 * xright
+            x_scalar = -1 * xright
             for xtmp in range( imgdim[0] ):
-                x = x + xd
-                yield [ (x, y, self.distance) ]
-                # we can use distance here because
-                # the viewport is parallel to the XY plane and
-                # on the positive Z axis.
-            y = y + yd
+                x_scalar = x_scalar + xd
+                
+                # Compute exact point on the viewport plane in world coordinates
+                target_point = self.look_at + (x_scalar * self.u) + (y_scalar * self.v)
+                yield [ target_point ]
+                
+            y_scalar = y_scalar + yd
 
 
 

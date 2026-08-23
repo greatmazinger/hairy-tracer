@@ -21,7 +21,9 @@ def load_scene(filepath, world, raytracer):
         raytracer.setViewport(cam_origin=cam.get("origin", [0.0, 0.0, 20.0]),
                               distance=cam.get("distance", 10.0),
                               vpwidth=vpwidth,
-                              vpheight=vpheight)
+                              vpheight=vpheight,
+                              look_at=cam.get("look_at", None),
+                              up=cam.get("up", [0.0, 1.0, 0.0]))
 
     # Set up materials
     materials = {}
