@@ -11,7 +11,7 @@ from rvlight.light import *
 from rvlight.illuminationmodel import *
 from rvcolor.utils import Color
 from rvmath.geometry.utils import *
-from scenes import *
+import scene_parser
 import utils.timing 
 
 
@@ -207,18 +207,9 @@ if __name__ == "__main__":
     usage = "Usage: %prog [options]"
     parser = OptionParser( usage = usage )
     parser.set_defaults( size = "640x480",
-                         outfile = "simple1.bmp",
-                         profileflag = False,
-                         checkers_flag = False,
-                         checkers_spheres_flag = False,
-                         checkers_spheres_reflect_flag = False,
-                         megareflect_flag = False,
-                         megareflect2_flag = False,
-                         sample01_flag = False,
-                         shadow01_flag = False,
-                         spheres3_flag = False,
-                         spheres3_reflect_flag = False,
-                         spheres_reflect_flag = False, )
+                         outfile = "output.bmp",
+                         scene = None,
+                         profileflag = False )
     parser.add_option( "--size",
                        action="store",
                        dest="size",
@@ -227,234 +218,41 @@ if __name__ == "__main__":
                        action="store",
                        dest="outfile",
                        help="Specify output filename." )
+    parser.add_option( "--scene",
+                       action="store",
+                       dest="scene",
+                       help="Specify path to a JSON scene configuration file." )
     parser.add_option( "--profile",
                        action = "store_true",
                        dest = "profileflag",
                        help = "help for profile" )
-    parser.add_option( "--sample01",
-                       action = "store_true",
-                       dest = "sample01_flag",
-                       help = "Render sample scene 01." )
-    parser.add_option( "--shadow01",
-                       action = "store_true",
-                       dest = "shadow01_flag",
-                       help = "Render shadow test scene 01." )
-    parser.add_option( "--spheres3",
-                       action = "store_true",
-                       dest = "spheres3_flag",
-                       help = "Render 3 spheres scene." )
-    parser.add_option( "--spheres3-reflect",
-                       action = "store_true",
-                       dest = "spheres3_reflect_flag",
-                       help = "Render 3 spheres scene with reflective large sphere." )
-    parser.add_option( "--checkers",
-                       action = "store_true",
-                       dest = "checkers_flag",
-                       help = "Render checkerboard scene." )
-    parser.add_option( "--checkers-spheres",
-                       action = "store_true",
-                       dest = "checkers_spheres_flag",
-                       help = "Render checkerboard scene with spheres." )
-    parser.add_option( "--checkers-spheres-reflect",
-                       action = "store_true",
-                       dest = "checkers_spheres_reflect_flag",
-                       help = "Render checkerboard scene with spheres (one is reflective)." )
-    parser.add_option( "--megareflect",
-                       action = "store_true",
-                       dest = "megareflect_flag",
-                       help = "Render lots of reflective spheres on checkerboard." )
-    parser.add_option( "--megareflect2",
-                       action = "store_true",
-                       dest = "megareflect2_flag",
-                       help = "Render lots of reflective spheres on checkerboard." )
-    parser.add_option( "--spheres-reflect",
-                       action = "store_true",
-                       dest = "spheres_reflect_flag",
-                       help = "Render large reflective sphere on checkerboard pattern." )
+    
     (options, args) = parser.parse_args()
+    
+    if not options.scene:
+        print("Error: You must specify a scene file using --scene")
+        parser.usage()
+        sys.exit(1)
+        
     size = options.size
     try:
         size = processSize( size )
     except:
         print("Unable to parse size arguments.")
         parser.usage()
+        sys.exit(1)
+        
     print(("size : ", size))
-    profileflag = options.profileflag
-    sample01_flag = options.sample01_flag
-    shadow01_flag = options.shadow01_flag
-    spheres3_flag = options.spheres3_flag
-    spheres3_reflect_flag = options.spheres3_reflect_flag
-    checkers_flag = options.checkers_flag
-    checkers_spheres_flag = options.checkers_spheres_flag
-    checkers_spheres_reflect_flag = options.checkers_spheres_reflect_flag
-    megareflect_flag = options.megareflect_flag
-    megareflect2_flag = options.megareflect2_flag
-    spheres_reflect_flag = options.spheres_reflect_flag
     outfile = options.outfile
-    # TODO
-    # Check to see if its a valid filename
-    if sample01_flag:
-        if profileflag:
-            profileRenderSampleScene_01( size = size,
-                                         world = raytracer.world,
-                                         raytracer = raytracer,
-                                         outfile = outfile )
-        else:
-            raytracer = BTracer( output = outfile,
-                                 size = size, 
-                                 testflag = False )
-            renderSampleScene_01( size = size,
-                                  world = raytracer.world,
-                                  raytracer = raytracer,
-                                  outfile = outfile )
-    elif shadow01_flag:
-        if profileflag:
-            print("TODO! This part is under construction. Try --sample01")
-            assert(0)
-            profileRenderSampleScene_01( size = size,
-                                         world = raytracer.world,
-                                         raytracer = raytracer,
-                                         outfile = outfile )
-        else:
-            raytracer = BTracer( output = outfile,
-                                 size = size, 
-                                 testflag = False )
-            renderShadowScene_01( size = size,
-                                  world = raytracer.world,
-                                  raytracer = raytracer,
-                                  outfile = outfile )
-    elif spheres3_flag:
-        if profileflag:
-            print("TODO! This part is under construction. Try --sample01")
-            assert(0)
-            profileRenderSampleScene_01( size = size,
-                                         world = raytracer.world,
-                                         raytracer = raytracer,
-                                         outfile = outfile )
-        else:
-            raytracer = BTracer( output = outfile,
-                                 size = size, 
-                                 testflag = False )
-            renderSpheres3Scene_01( size = size,
-                                    world = raytracer.world,
-                                    raytracer = raytracer,
-                                    outfile = outfile )
-    elif spheres3_reflect_flag:
-        if profileflag:
-            print("TODO! This part is under construction. Try --sample01")
-            assert(0)
-            profileRenderSampleScene_01( size = size,
-                                         world = raytracer.world,
-                                         raytracer = raytracer,
-                                         outfile = outfile )
-        else:
-            raytracer = BTracer( output = outfile,
-                                 size = size, 
-                                 testflag = False )
-            renderSpheres3Scene_02( size = size,
-                                    world = raytracer.world,
-                                    raytracer = raytracer,
-                                    outfile = outfile )
-    elif checkers_flag:
-        if profileflag:
-            print("TODO! This part is under construction. No profiling in checkers.")
-            assert(0)
-            profileRenderSampleScene_01( size = size,
-                                         world = raytracer.world,
-                                         raytracer = raytracer,
-                                         outfile = outfile )
-        else:
-            raytracer = BTracer( output = outfile,
-                                 size = size, 
-                                 testflag = False )
-            renderCheckerBoard_01( size = size,
-                                   world = raytracer.world,
-                                   raytracer = raytracer,
-                                   outfile = outfile )
-    elif checkers_spheres_flag:
-        if profileflag:
-            print("TODO! This part is under construction. No profiling in checkers.")
-            assert(0)
-            profileRenderSampleScene_01( size = size,
-                                         world = raytracer.world,
-                                         raytracer = raytracer,
-                                         outfile = outfile )
-        else:
-            raytracer = BTracer( output = outfile,
-                                 size = size, 
-                                 testflag = False,
-                                 maxdepth = 2 )
-            renderCheckerSpheres_01( size = size,
-                                     world = raytracer.world,
-                                     raytracer = raytracer,
-                                     outfile = outfile )
-    elif checkers_spheres_reflect_flag:
-        if profileflag:
-            print("TODO! This part is under construction. No profiling in checkers.")
-            assert(0)
-            profileRenderSampleScene_01( size = size,
-                                         world = raytracer.world,
-                                         raytracer = raytracer,
-                                         outfile = outfile )
-        else:
-            raytracer = BTracer( output = outfile,
-                                 size = size, 
-                                 testflag = False,
-                                 maxdepth = 2 )
-            renderCheckerSpheresReflect_02( size = size,
-                                            world = raytracer.world,
-                                            raytracer = raytracer,
-                                            outfile = outfile )
-    elif megareflect_flag:
-        if profileflag:
-            print("TODO! This part is under construction. No profiling in checkers.")
-            assert(0)
-            profileRenderSampleScene_01( size = size,
-                                         world = raytracer.world,
-                                         raytracer = raytracer,
-                                         outfile = outfile )
-        else:
-            raytracer = BTracer( output = outfile,
-                                 size = size, 
-                                 testflag = False,
-                                 maxdepth = 6 )
-            renderMegaReflect_01( size = size,
-                                  world = raytracer.world,
-                                  raytracer = raytracer,
-                                  outfile = outfile )
-    elif megareflect2_flag:
-        if profileflag:
-            print("TODO! This part is under construction. No profiling in checkers.")
-            assert(0)
-            profileRenderSampleScene_01( size = size,
-                                         world = raytracer.world,
-                                         raytracer = raytracer,
-                                         outfile = outfile )
-        else:
-            raytracer = BTracer( output = outfile,
-                                 size = size, 
-                                 testflag = False,
-                                 maxdepth = 6 )
-            renderMegaReflect_02( size = size,
-                                  world = raytracer.world,
-                                  raytracer = raytracer,
-                                  outfile = outfile )
-    elif spheres_reflect_flag:
-        if profileflag:
-            print("TODO! This part is under construction. No profiling in checkers.")
-            assert(0)
-            profileRenderSampleScene_01( size = size,
-                                         world = raytracer.world,
-                                         raytracer = raytracer,
-                                         outfile = outfile )
-        else:
-            raytracer = BTracer( output = outfile,
-                                 size = size, 
-                                 testflag = False,
-                                 maxdepth = 2 )
-            renderCheckerSphereReflect_02( size = size,
-                                           world = raytracer.world,
-                                           raytracer = raytracer,
-                                           outfile = outfile )
-    else:
-        print("TODO! This part is under construction. Try --sample01")
+    
+    # Initialize the raytracer
+    raytracer = BTracer( output = outfile,
+                         size = size, 
+                         testflag = False )
+                         
+    # Load the scene from the JSON file
+    scene_parser.load_scene(options.scene, raytracer.world, raytracer)
+    
+    # Render the scene
+    raytracer.render()
+

@@ -4,17 +4,14 @@ import json
 import pytest
 
 from btrace import BTracer
-from scenes import readScene_3spheres
+import scene_parser
 
 SNAPSHOT_FILE = os.path.join(os.path.dirname(__file__), 'snapshots', 'spheres3_10x10.json')
+SCENE_FILE = os.path.join(os.path.dirname(__file__), '..', 'scenes', 'spheres3.json')
 
 def test_render_spheres3_e2e():
     tracer = BTracer(size=(10, 10), testflag=False)
-    tracer.setViewport( cam_origin = [0.0, 0.0, 20.0],
-                        distance = 10.0,
-                        vpwidth = 6.40 * 0.9,
-                        vpheight = 4.80 * 0.9 )
-    readScene_3spheres(world=tracer.world)
+    scene_parser.load_scene(SCENE_FILE, tracer.world, tracer)
     data = tracer.get_data()
     
     # If snapshot doesn't exist, generate it
