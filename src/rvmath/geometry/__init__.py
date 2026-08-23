@@ -1,1 +1,1 @@
-__all__ = [ "plane", "ray", "sphere", "world", "triangle" ]
+__all__ = [ "plane", "ray", "sphere", "world", "triangle", "mesh" ]
