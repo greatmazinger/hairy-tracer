@@ -70,6 +70,42 @@ def load_scene(filepath, world, raytracer):
             )
             world.addObject(new_obj)
             
+        elif obj_type == "triangle":
+            mat = materials.get(obj_props.get("material"))
+            # Triangle requires the module to be imported
+            from rvmath.geometry import triangle
+            new_obj = triangle.Triangle(
+                v0=numpy.array(obj_props["v0"]),
+                v1=numpy.array(obj_props["v1"]),
+                v2=numpy.array(obj_props["v2"]),
+                ill_model=mat,
+                world_intfn=world.doesIntersect,
+                is_reflector=is_reflector,
+                is_refractor=is_refractor
+            )
+            world.addObject(new_obj)
+            
+        elif obj_type == "mesh":
+            mat = materials.get(obj_props.get("material"))
+            filepath = obj_props.get("file")
+            
+            import obj_parser
+            from rvmath.geometry import triangle
+            
+            # Load triangles from OBJ
+            tris = obj_parser.load_obj(filepath)
+            for (v0, v1, v2) in tris:
+                new_obj = triangle.Triangle(
+                    v0=v0,
+                    v1=v1,
+                    v2=v2,
+                    ill_model=mat,
+                    world_intfn=world.doesIntersect,
+                    is_reflector=is_reflector,
+                    is_refractor=is_refractor
+                )
+                world.addObject(new_obj)
+            
         elif obj_type == "checkered_plane":
             mat1 = materials.get(obj_props.get("material1"))
             mat2 = materials.get(obj_props.get("material2"))

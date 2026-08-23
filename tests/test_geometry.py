@@ -64,3 +64,27 @@ class TestGeometryUtils:
         # Should continue straight down but slower
         assert refract_vec is not None
         assert numpy.allclose(refract_vec / numpy.linalg.norm(refract_vec), [0.0, -1.0, 0.0])
+
+class TestTriangleFunctions:
+    def setup_method(self):
+        # Create a basic triangle on the XY plane
+        self.v0 = numpy.array([-1.0, -1.0, 0.0])
+        self.v1 = numpy.array([ 1.0, -1.0, 0.0])
+        self.v2 = numpy.array([ 0.0,  1.0, 0.0])
+        from rvmath.geometry.triangle import Triangle
+        self.triangle = Triangle(v0=self.v0, v1=self.v1, v2=self.v2)
+
+    def test_line_triangle_intersection_hit(self):
+        # Ray pointing straight at the center of the triangle
+        r = ray.Ray(orig=numpy.array([0.0, 0.0, 5.0]), dir=numpy.array([0.0, 0.0, -1.0]))
+        (intpoint, viewvec, un, t) = self.triangle.findIntersection(r)
+        assert intpoint is not None
+        assert t == 5.0
+        assert numpy.allclose(intpoint, [0.0, 0.0, 0.0])
+        assert numpy.allclose(un, [0.0, 0.0, 1.0])
+
+    def test_line_triangle_intersection_miss(self):
+        # Ray pointing outside the triangle
+        r = ray.Ray(orig=numpy.array([2.0, 2.0, 5.0]), dir=numpy.array([0.0, 0.0, -1.0]))
+        (intpoint, viewvec, un, t) = self.triangle.findIntersection(r)
+        assert intpoint is None
