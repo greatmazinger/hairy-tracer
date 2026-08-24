@@ -3,8 +3,8 @@ use crate::material::TextureRef;
 use crate::ray::Ray;
 use crate::scene::Scene;
 use glam::DVec3;
-use rayon::prelude::*;
 use rand::Rng;
+use rayon::prelude::*;
 
 /// Reflect vector `invec` around `normal`.
 /// Expects `invec` pointing AWAY from the surface (i.e. -ray.direction).
@@ -51,7 +51,11 @@ fn fresnel_schlick(cos_theta: f64, ior: f64) -> f64 {
 fn sample_diffuse(material: &crate::material::Material, hit: &Hit, scene: &Scene) -> DVec3 {
     match &material.texture {
         TextureRef::None => material.k_diffuse,
-        TextureRef::Checker { color_a, color_b, scale } => {
+        TextureRef::Checker {
+            color_a,
+            color_b,
+            scale,
+        } => {
             let u_cell = (hit.u * scale).floor() as i32;
             let v_cell = (hit.v * scale).floor() as i32;
             if (u_cell + v_cell) % 2 == 0 {
@@ -198,13 +202,16 @@ pub fn trace_ray_worker(
             let invec = -ray.direction;
             let rvec = calc_reflection_vector(invec, hit.normal).normalize();
             let refray = Ray::new(hit.point, rvec);
-            let refl_color = trace_ray_worker(&refray, depth + 1, scene, max_depth, Some(obj_index));
+            let refl_color =
+                trace_ray_worker(&refray, depth + 1, scene, max_depth, Some(obj_index));
             total_color += refl_color * reflectance;
         }
 
         // Refraction component
         if material.is_refractor {
-            if let Some(refract_vec) = calc_refraction_vector(ray.direction, hit.normal, material.ior) {
+            if let Some(refract_vec) =
+                calc_refraction_vector(ray.direction, hit.normal, material.ior)
+            {
                 let refract_vec = refract_vec.normalize();
                 let offset_point = hit.point + refract_vec * 0.001;
                 let refract_ray = Ray::new(offset_point, refract_vec);
@@ -214,7 +221,10 @@ pub fn trace_ray_worker(
                 // Beer-Lambert absorption
                 if material.absorption != DVec3::ZERO {
                     // Find exit point to compute distance through medium
-                    let exit_hit = scene.objects.iter().enumerate()
+                    let exit_hit = scene
+                        .objects
+                        .iter()
+                        .enumerate()
                         .filter(|(idx, _)| *idx == obj_index)
                         .filter_map(|(idx, obj)| obj.intersect(&refract_ray, idx))
                         .next();
@@ -236,7 +246,8 @@ pub fn trace_ray_worker(
             let invec = -ray.direction;
             let rvec = calc_reflection_vector(invec, hit.normal).normalize();
             let refray = Ray::new(hit.point, rvec);
-            let refl_color = trace_ray_worker(&refray, depth + 1, scene, max_depth, Some(obj_index));
+            let refl_color =
+                trace_ray_worker(&refray, depth + 1, scene, max_depth, Some(obj_index));
             total_color += refl_color;
         }
 
@@ -317,11 +328,7 @@ pub fn render_image_serial(
                     let mut rng = rand::thread_rng();
                     let mut pt;
                     loop {
-                        pt = DVec3::new(
-                            rng.gen_range(-1.0..=1.0),
-                            rng.gen_range(-1.0..=1.0),
-                            0.0,
-                        );
+                        pt = DVec3::new(rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0), 0.0);
                         if pt.length_squared() <= 1.0 {
                             break;
                         }

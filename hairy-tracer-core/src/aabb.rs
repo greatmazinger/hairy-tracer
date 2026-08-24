@@ -36,16 +36,23 @@ impl Aabb {
             max = max.max(p);
         }
 
+        // Pad the bounding box slightly to avoid flat-box floating point issues
+        let pad = DVec3::splat(1e-6);
+        min -= pad;
+        max += pad;
+
         Self { min, max }
     }
 
-    /// Test whether `ray` intersects this AABB using the slab method.
-    ///
-    /// Returns `true` if the ray passes through the box (at any `t`,
-    /// including behind the origin when `tfar >= 0`).
-    pub fn intersects(&self, ray: &Ray) -> bool {
-        // Replace zero components with a tiny epsilon, matching the Python code:
-        // `dir = numpy.where(dir == 0, 1e-8, dir)`
+    /// Test whether `ray` intersects this AABB, and closer than max_t.
+    pub fn intersects_with_max(&self, ray: &Ray, max_t: f64) -> bool {
+        let (t, hit) = self.hit_distance(ray, max_t);
+        hit
+    }
+
+    /// Returns the distance to the AABB intersection and a boolean indicating a hit.
+    /// It only returns hit=true if the intersection is closer than `max_t`.
+    pub fn hit_distance(&self, ray: &Ray, max_t: f64) -> (f64, bool) {
         let dir = DVec3::new(
             if ray.direction.x == 0.0 {
                 DIR_EPSILON
@@ -76,8 +83,15 @@ impl Aabb {
         let tnear = t1.x.max(t1.y).max(t1.z);
         let tfar = t2.x.min(t2.y).min(t2.z);
 
-        // Python: `if tnear > tfar or tfar < 0: return False`
-        !(tnear > tfar || tfar < 0.0)
+        if tnear > tfar + 1e-6 || tfar < 0.0 || tnear > max_t {
+            (0.0, false)
+        } else {
+            (tnear.max(0.0), true)
+        }
+    }
+
+    pub fn intersects(&self, ray: &Ray) -> bool {
+        self.intersects_with_max(ray, f64::MAX)
     }
 }
 

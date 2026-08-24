@@ -19,11 +19,13 @@ const T_EPSILON: f64 = 0.01;
 /// - Parallel check: `-epsilon < a < epsilon` with `epsilon = 1e-6`
 /// - Valid hit: `t > 0.01`
 /// - Back-face normal flip: if `dot(Rd, normal) > 0`, the normal is negated.
+#[derive(Clone, PartialEq, Debug)]
 pub struct Triangle {
     pub v0: DVec3,
     pub v1: DVec3,
     pub v2: DVec3,
     pub material_id: MaterialId,
+    pub original_index: usize,
     /// Pre-computed edge v1 - v0.
     edge1: DVec3,
     /// Pre-computed edge v2 - v0.
@@ -35,7 +37,13 @@ pub struct Triangle {
 }
 
 impl Triangle {
-    pub fn new(v0: DVec3, v1: DVec3, v2: DVec3, material_id: MaterialId) -> Self {
+    pub fn new(
+        v0: DVec3,
+        v1: DVec3,
+        v2: DVec3,
+        material_id: MaterialId,
+        original_index: usize,
+    ) -> Self {
         let edge1 = v1 - v0;
         let edge2 = v2 - v0;
         let normal_raw = edge1.cross(edge2);
@@ -52,6 +60,7 @@ impl Triangle {
             v1,
             v2,
             material_id,
+            original_index,
             edge1,
             edge2,
             normal,
@@ -149,7 +158,7 @@ mod tests {
             DVec3::new(-1.0, -1.0, 0.0),
             DVec3::new(1.0, -1.0, 0.0),
             DVec3::new(0.0, 1.0, 0.0),
-            MAT,
+            MAT, 0,
         )
     }
 

@@ -15,10 +15,10 @@ pub struct Material {
     pub has_explicit_ambient: bool,
 
     // Phase 3: Material quality
-    pub ior: f64,              // Index of refraction (default 1.5, matching current hardcoded value)
-    pub use_fresnel: bool,     // Fresnel-Schlick weighting (default false — preserves legacy additive blend)
-    pub absorption: DVec3,     // Beer-Lambert absorption coefficient per channel (default ZERO — clear glass)
-    pub texture: TextureRef,   // Texture reference (default None — solid color)
+    pub ior: f64, // Index of refraction (default 1.5, matching current hardcoded value)
+    pub use_fresnel: bool, // Fresnel-Schlick weighting (default false — preserves legacy additive blend)
+    pub absorption: DVec3, // Beer-Lambert absorption coefficient per channel (default ZERO — clear glass)
+    pub texture: TextureRef, // Texture reference (default None — solid color)
 }
 
 /// A reference to a texture, either procedural or image-based.
@@ -135,9 +135,9 @@ mod tests {
             width: 2,
             height: 2,
             data: vec![
-                DVec3::new(255.0, 0.0, 0.0),   // (0,0)
-                DVec3::new(0.0, 255.0, 0.0),   // (1,0)
-                DVec3::new(0.0, 0.0, 255.0),   // (0,1)
+                DVec3::new(255.0, 0.0, 0.0),     // (0,0)
+                DVec3::new(0.0, 255.0, 0.0),     // (1,0)
+                DVec3::new(0.0, 0.0, 255.0),     // (0,1)
                 DVec3::new(255.0, 255.0, 255.0), // (1,1)
             ],
         };
@@ -148,7 +148,12 @@ mod tests {
             + DVec3::new(0.0, 0.0, 255.0)
             + DVec3::new(255.0, 255.0, 255.0))
             / 4.0;
-        assert!((c - expected).length() < 1.0, "Bilinear center should average all 4 pixels, got {:?} expected {:?}", c, expected);
+        assert!(
+            (c - expected).length() < 1.0,
+            "Bilinear center should average all 4 pixels, got {:?} expected {:?}",
+            c,
+            expected
+        );
     }
 
     #[test]

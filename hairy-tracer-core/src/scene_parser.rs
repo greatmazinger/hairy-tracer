@@ -1,15 +1,15 @@
-use std::collections::HashMap;
-use std::fs;
 use glam::DVec3;
 use serde::Deserialize;
+use std::collections::HashMap;
+use std::fs;
 
+use crate::checkered_plane::CheckeredPlane;
 use crate::material::{EnvironmentMap, Light, Material, MaterialId, TextureImage, TextureRef};
+use crate::mesh::Mesh;
+use crate::plane::Plane;
 use crate::scene::Scene;
 use crate::sphere::Sphere;
-use crate::plane::Plane;
-use crate::checkered_plane::CheckeredPlane;
 use crate::triangle::Triangle;
-use crate::mesh::Mesh;
 
 #[derive(Deserialize, Debug)]
 pub struct SceneJson {
@@ -66,12 +66,12 @@ pub enum TextureJson {
         scale: f64,
     },
     #[serde(rename = "image")]
-    Image {
-        path: String,
-    },
+    Image { path: String },
 }
 
-fn default_checker_scale() -> f64 { 1.0 }
+fn default_checker_scale() -> f64 {
+    1.0
+}
 
 #[derive(Deserialize, Debug)]
 pub struct LightJson {
@@ -110,10 +110,15 @@ fn load_texture_image(path: &str) -> Result<TextureImage, String> {
     let img = image::open(path).map_err(|e| format!("Failed to load image {}: {}", path, e))?;
     let rgb = img.to_rgb8();
     let (w, h) = rgb.dimensions();
-    let data: Vec<DVec3> = rgb.pixels()
+    let data: Vec<DVec3> = rgb
+        .pixels()
         .map(|p| DVec3::new(p[0] as f64, p[1] as f64, p[2] as f64))
         .collect();
-    Ok(TextureImage { width: w, height: h, data })
+    Ok(TextureImage {
+        width: w,
+        height: h,
+        data,
+    })
 }
 
 pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
@@ -128,13 +133,15 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
         let explicit_ambient = mat.ambientColor.map(DVec3::from_array);
 
         let texture = match &mat.texture {
-            Some(TextureJson::Checker { color_a, color_b, scale }) => {
-                TextureRef::Checker {
-                    color_a: DVec3::from_array(*color_a),
-                    color_b: DVec3::from_array(*color_b),
-                    scale: *scale,
-                }
-            }
+            Some(TextureJson::Checker {
+                color_a,
+                color_b,
+                scale,
+            }) => TextureRef::Checker {
+                color_a: DVec3::from_array(*color_a),
+                color_b: DVec3::from_array(*color_b),
+                scale: *scale,
+            },
             Some(TextureJson::Image { path }) => {
                 let tex = load_texture_image(path)?;
                 let idx = scene.textures.len();
@@ -206,12 +213,16 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
                 }
                 let new_mat_id = MaterialId(scene.materials.len());
                 scene.materials.push(mat);
-                scene.objects.push(Box::new(Sphere::new(center, radius, new_mat_id)));
+                scene
+                    .objects
+                    .push(Box::new(Sphere::new(center, radius, new_mat_id)));
             }
             "plane" => {
                 let normal = DVec3::from_array(obj.normal.unwrap());
                 let distance = obj.distance.unwrap();
-                scene.objects.push(Box::new(Plane::new(normal, distance, mat_id)));
+                scene
+                    .objects
+                    .push(Box::new(Plane::new(normal, distance, mat_id)));
             }
             "checkered_plane" => {
                 let normal = DVec3::from_array(obj.normal.unwrap());
@@ -233,7 +244,12 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
                 let new_mat2_id = MaterialId(scene.materials.len());
                 scene.materials.push(mat2);
 
-                scene.objects.push(Box::new(CheckeredPlane::new(normal, distance, new_mat1_id, new_mat2_id)));
+                scene.objects.push(Box::new(CheckeredPlane::new(
+                    normal,
+                    distance,
+                    new_mat1_id,
+                    new_mat2_id,
+                )));
             }
             "triangle" => {
                 let v0 = DVec3::from_array(obj.v0.unwrap());
@@ -245,11 +261,14 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
                 }
                 let new_mat_id = MaterialId(scene.materials.len());
                 scene.materials.push(mat);
-                scene.objects.push(Box::new(Triangle::new(v0, v1, v2, new_mat_id)));
+                scene
+                    .objects
+                    .push(Box::new(Triangle::new(v0, v1, v2, new_mat_id, 0)));
             }
             "mesh" => {
                 let filepath = obj.file.as_ref().unwrap();
-                let (tris, tex_coords) = load_obj(filepath).map_err(|e| format!("Failed to load {}: {}", filepath, e))?;
+                let (tris, tex_coords) = load_obj(filepath)
+                    .map_err(|e| format!("Failed to load {}: {}", filepath, e))?;
 
                 let mut mat = scene.materials[mat_id.0].clone();
                 if !mat.has_explicit_ambient {
@@ -260,14 +279,16 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
 
                 let mut tri_objects = Vec::new();
                 for (i, (v0, v1, v2)) in tris.iter().enumerate() {
-                    let mut tri = Triangle::new(*v0, *v1, *v2, new_mat_id);
+                    let mut tri = Triangle::new(*v0, *v1, *v2, new_mat_id, i);
                     if let Some(ref uvs) = tex_coords {
                         let (uv0, uv1, uv2) = uvs[i];
                         tri.set_uvs(uv0, uv1, uv2);
                     }
                     tri_objects.push(tri);
                 }
-                scene.objects.push(Box::new(Mesh::from_triangles(tri_objects, new_mat_id)));
+                scene
+                    .objects
+                    .push(Box::new(Mesh::from_triangles(tri_objects, new_mat_id)));
             }
             _ => return Err(format!("Unknown object type: {}", t)),
         }
@@ -277,7 +298,15 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
 }
 
 /// Load an OBJ file, returning triangles and optional per-triangle UV coordinates.
-fn load_obj(filepath: &str) -> Result<(Vec<(DVec3, DVec3, DVec3)>, Option<Vec<([f64; 2], [f64; 2], [f64; 2])>>), String> {
+fn load_obj(
+    filepath: &str,
+) -> Result<
+    (
+        Vec<(DVec3, DVec3, DVec3)>,
+        Option<Vec<([f64; 2], [f64; 2], [f64; 2])>>,
+    ),
+    String,
+> {
     let content = fs::read_to_string(filepath).map_err(|e| e.to_string())?;
 
     let mut vertices = Vec::new();
@@ -288,7 +317,9 @@ fn load_obj(filepath: &str) -> Result<(Vec<(DVec3, DVec3, DVec3)>, Option<Vec<([
 
     for line in content.lines() {
         let line = line.trim();
-        if line.is_empty() || line.starts_with('#') { continue; }
+        if line.is_empty() || line.starts_with('#') {
+            continue;
+        }
         let mut parts = line.split_whitespace();
         let tag = parts.next().unwrap();
         if tag == "v" {
@@ -319,13 +350,13 @@ fn load_obj(filepath: &str) -> Result<(Vec<(DVec3, DVec3, DVec3)>, Option<Vec<([
                 triangles.push((
                     vertices[face_v_indices[0]],
                     vertices[face_v_indices[i]],
-                    vertices[face_v_indices[i+1]]
+                    vertices[face_v_indices[i + 1]],
                 ));
                 if face_vt_indices.len() == face_v_indices.len() {
                     tri_uvs.push((
                         tex_coords[face_vt_indices[0]],
                         tex_coords[face_vt_indices[i]],
-                        tex_coords[face_vt_indices[i+1]],
+                        tex_coords[face_vt_indices[i + 1]],
                     ));
                 }
             }

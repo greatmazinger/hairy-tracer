@@ -1,7 +1,7 @@
 use glam::DVec3;
-use hairy_tracer_core::scene_parser::parse_scene_json;
 use hairy_tracer_core::ray::Ray;
 use hairy_tracer_core::render::trace_ray_worker;
+use hairy_tracer_core::scene_parser::parse_scene_json;
 
 #[test]
 fn trace_single() {
@@ -21,9 +21,9 @@ fn trace_single() {
     let ray = Ray::new(DVec3::new(0.0, 0.0, 5.0), DVec3::new(0.33, 0.0, -5.0));
     let color = trace_ray_worker(&ray, 1, &scene, 2, None);
     println!("COLOR: {:?}", color);
-    
+
     let hit = scene.objects[0].intersect(&ray, 0);
     println!("HIT: {:?}", hit);
-    
+
     println!("MATERIAL: {:?}", scene.materials[0]);
 }

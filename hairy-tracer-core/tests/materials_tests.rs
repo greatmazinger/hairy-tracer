@@ -1,11 +1,13 @@
 use glam::DVec3;
-use hairy_tracer_core::material::{EnvironmentMap, Light, Material, MaterialId, TextureImage, TextureRef};
-use hairy_tracer_core::render::{render_image_parallel, trace_ray_worker};
+use hairy_tracer_core::material::{
+    EnvironmentMap, Light, Material, MaterialId, TextureImage, TextureRef,
+};
+use hairy_tracer_core::plane::Plane;
 use hairy_tracer_core::ray::Ray;
+use hairy_tracer_core::render::{render_image_parallel, trace_ray_worker};
 use hairy_tracer_core::scene::Scene;
 use hairy_tracer_core::scene_parser::parse_scene_json;
 use hairy_tracer_core::sphere::Sphere;
-use hairy_tracer_core::plane::Plane;
 
 // ====================================================================
 // 1. Fresnel-Schlick tests
@@ -16,7 +18,11 @@ fn test_fresnel_grazing_is_near_total() {
     let r0: f64 = ((1.0_f64 - 1.5) / (1.0_f64 + 1.5)).powi(2);
     let cos_theta: f64 = 0.01;
     let reflectance = r0 + (1.0 - r0) * (1.0 - cos_theta).powi(5);
-    assert!(reflectance > 0.95, "Grazing reflectance should be near 1.0, got {}", reflectance);
+    assert!(
+        reflectance > 0.95,
+        "Grazing reflectance should be near 1.0, got {}",
+        reflectance
+    );
 }
 
 #[test]
@@ -25,7 +31,12 @@ fn test_fresnel_normal_incidence_matches_r0() {
     let r0: f64 = ((1.0 - ior) / (1.0 + ior)).powi(2);
     let cos_theta: f64 = 1.0;
     let reflectance = r0 + (1.0 - r0) * (1.0 - cos_theta).powi(5);
-    assert!((reflectance - r0).abs() < 1e-10, "Normal incidence reflectance should equal R0 = {}, got {}", r0, reflectance);
+    assert!(
+        (reflectance - r0).abs() < 1e-10,
+        "Normal incidence reflectance should equal R0 = {}, got {}",
+        r0,
+        reflectance
+    );
 }
 
 #[test]
@@ -46,7 +57,7 @@ fn test_fresnel_gated_behind_flag() {
     }"#;
 
     let (scene, _) = parse_scene_json(json).unwrap();
-    
+
     // Verify use_fresnel is false by default
     for mat in &scene.materials {
         assert!(!mat.use_fresnel, "use_fresnel should default to false");
@@ -54,8 +65,18 @@ fn test_fresnel_gated_behind_flag() {
 
     // Just verify it renders without crashing
     let img = render_image_parallel(
-        &scene, DVec3::new(0.0, 0.0, 5.0), DVec3::new(0.0, 0.0, 0.0),
-        DVec3::new(0.0, 1.0, 0.0), 2.0, 2.0, 4, 4, 3, 1, 0.0, 5.0
+        &scene,
+        DVec3::new(0.0, 0.0, 5.0),
+        DVec3::new(0.0, 0.0, 0.0),
+        DVec3::new(0.0, 1.0, 0.0),
+        2.0,
+        2.0,
+        4,
+        4,
+        3,
+        1,
+        0.0,
+        5.0,
     );
     assert_eq!(img.len(), 4 * 4 * 3);
 }
@@ -98,15 +119,38 @@ fn test_fresnel_changes_output_when_enabled() {
     let (scene_on, _) = parse_scene_json(json_on).unwrap();
 
     let img_off = render_image_parallel(
-        &scene_off, DVec3::new(0.0, 0.0, 10.0), DVec3::new(0.0, 0.0, 0.0),
-        DVec3::new(0.0, 1.0, 0.0), 2.0, 2.0, 8, 8, 5, 1, 0.0, 10.0
+        &scene_off,
+        DVec3::new(0.0, 0.0, 10.0),
+        DVec3::new(0.0, 0.0, 0.0),
+        DVec3::new(0.0, 1.0, 0.0),
+        2.0,
+        2.0,
+        8,
+        8,
+        5,
+        1,
+        0.0,
+        10.0,
     );
     let img_on = render_image_parallel(
-        &scene_on, DVec3::new(0.0, 0.0, 10.0), DVec3::new(0.0, 0.0, 0.0),
-        DVec3::new(0.0, 1.0, 0.0), 2.0, 2.0, 8, 8, 5, 1, 0.0, 10.0
+        &scene_on,
+        DVec3::new(0.0, 0.0, 10.0),
+        DVec3::new(0.0, 0.0, 0.0),
+        DVec3::new(0.0, 1.0, 0.0),
+        2.0,
+        2.0,
+        8,
+        8,
+        5,
+        1,
+        0.0,
+        10.0,
     );
 
-    assert_ne!(img_off, img_on, "Fresnel on vs off should produce different pixel output");
+    assert_ne!(
+        img_off, img_on,
+        "Fresnel on vs off should produce different pixel output"
+    );
 }
 
 // ====================================================================
@@ -124,7 +168,8 @@ fn test_absorption_matches_beer_lambert() {
         let path = 2.0 * radius;
         let expected_t = fresnel_penalty * (-coeff * path).exp();
 
-        let json = format!(r#"{{
+        let json = format!(
+            r#"{{
             "camera": {{ "origin": [0,0,10], "distance": 10, "vpwidth": 1, "vpheight": 1 }},
             "materials": {{
                 "absorb": {{ "kAmbient": 0.0, "kDiffuse": [0.0,0.0,0.0], "kSpecular": 0.0,
@@ -140,7 +185,11 @@ fn test_absorption_matches_beer_lambert() {
             "lights": [
                 {{ "origin": [0, 10, 0], "color": [0, 0, 0] }}
             ]
-        }}"#, ior=ior, coeff=coeff, radius=radius);
+        }}"#,
+            ior = ior,
+            coeff = coeff,
+            radius = radius
+        );
 
         let (scene, _) = parse_scene_json(&json).unwrap();
         // Fire single ray dead-center through the sphere
@@ -154,7 +203,11 @@ fn test_absorption_matches_beer_lambert() {
         assert!(
             (measured_t - expected_t).abs() < tolerance,
             "radius={}: measured transmittance {:.4} vs expected {:.4} (diff {:.4} > tol {})",
-            radius, measured_t, expected_t, (measured_t - expected_t).abs(), tolerance
+            radius,
+            measured_t,
+            expected_t,
+            (measured_t - expected_t).abs(),
+            tolerance
         );
     }
 }
@@ -186,21 +239,41 @@ fn test_checker_texture_samples() {
     let (scene, _) = parse_scene_json(json).unwrap();
 
     // Verify the texture was parsed as a checker
-    let checker_found = scene.materials.iter().any(|m| matches!(&m.texture, TextureRef::Checker { .. }));
-    assert!(checker_found, "Should have at least one checker-textured material");
+    let checker_found = scene
+        .materials
+        .iter()
+        .any(|m| matches!(&m.texture, TextureRef::Checker { .. }));
+    assert!(
+        checker_found,
+        "Should have at least one checker-textured material"
+    );
 
     // Render and verify it produces non-uniform output (checker pattern)
     let img = render_image_parallel(
-        &scene, DVec3::new(0.0, 5.0, 5.0), DVec3::new(0.0, 0.0, 0.0),
-        DVec3::new(0.0, 1.0, 0.0), 4.0, 4.0, 8, 8, 2, 1, 0.0, 5.0
+        &scene,
+        DVec3::new(0.0, 5.0, 5.0),
+        DVec3::new(0.0, 0.0, 0.0),
+        DVec3::new(0.0, 1.0, 0.0),
+        4.0,
+        4.0,
+        8,
+        8,
+        2,
+        1,
+        0.0,
+        5.0,
     );
 
     // At least 2 distinct pixel colors should exist in the render (checker alternation)
     let mut colors = std::collections::HashSet::new();
-    for i in 0..(8*8) {
-        colors.insert((img[i*3], img[i*3+1], img[i*3+2]));
+    for i in 0..(8 * 8) {
+        colors.insert((img[i * 3], img[i * 3 + 1], img[i * 3 + 2]));
     }
-    assert!(colors.len() >= 2, "Checker texture should produce at least 2 distinct colors, got {}", colors.len());
+    assert!(
+        colors.len() >= 2,
+        "Checker texture should produce at least 2 distinct colors, got {}",
+        colors.len()
+    );
 }
 
 // ====================================================================
@@ -236,7 +309,11 @@ fn test_image_texture_bilinear_known_pixels() {
 
     // UV (0.75, 0.75) should be near the bottom-right (white)
     let c = tex.sample_bilinear(0.75, 0.75);
-    assert!(c.x > 200.0 && c.y > 200.0 && c.z > 200.0, "Bottom-right should be whitish, got {:?}", c);
+    assert!(
+        c.x > 200.0 && c.y > 200.0 && c.z > 200.0,
+        "Bottom-right should be whitish, got {:?}",
+        c
+    );
 
     // Sampling between texel centers: uv(0.5, 0.25) is exactly halfway between red and green.
     // x = 0.5*2 - 0.5 = 0.5 → fx=0.5 → equal blend of both texels
@@ -244,13 +321,19 @@ fn test_image_texture_bilinear_known_pixels() {
     let c_mid = tex.sample_bilinear(0.5, 0.25);
     assert!(
         c_mid.x > 100.0 && c_mid.y > 100.0,
-        "uv(0.5, 0.25) should blend red+green to ~(127,127,0), got {:?}", c_mid
+        "uv(0.5, 0.25) should blend red+green to ~(127,127,0), got {:?}",
+        c_mid
     );
     assert!(
         c_mid.x < 200.0 && c_mid.y < 200.0,
-        "uv(0.5, 0.25) blend should not be a pure color, got {:?}", c_mid
+        "uv(0.5, 0.25) blend should not be a pure color, got {:?}",
+        c_mid
     );
-    assert!(c_mid.z < 20.0, "Blue channel should be near zero in red+green blend, got {:?}", c_mid);
+    assert!(
+        c_mid.z < 20.0,
+        "Blue channel should be near zero in red+green blend, got {:?}",
+        c_mid
+    );
 }
 
 // ====================================================================
@@ -261,21 +344,37 @@ fn test_image_texture_bilinear_known_pixels() {
 fn test_environment_map_samples_by_direction() {
     // Create a 4x8 environment map: top 4 rows blue, bottom 4 rows red
     let mut data = vec![DVec3::ZERO; 32];
-    for i in 0..16 { data[i] = DVec3::new(0.0, 0.0, 255.0); }
-    for i in 16..32 { data[i] = DVec3::new(255.0, 0.0, 0.0); }
+    for i in 0..16 {
+        data[i] = DVec3::new(0.0, 0.0, 255.0);
+    }
+    for i in 16..32 {
+        data[i] = DVec3::new(255.0, 0.0, 0.0);
+    }
 
     let env = EnvironmentMap {
-        image: TextureImage { width: 4, height: 8, data },
+        image: TextureImage {
+            width: 4,
+            height: 8,
+            data,
+        },
     };
 
     // Horizontal ray (y=0) should be at the equator (v=0.5) => boundary
     // Ray at 45° up (y = 0.707, z = 0.707) => asin(0.707)/PI ≈ 0.25 => v ≈ 0.25 => clearly in blue
     let c_up = env.sample(DVec3::new(0.0, 0.707, 0.707));
-    assert!(c_up.z > 200.0, "45° up direction should be blue, got {:?}", c_up);
+    assert!(
+        c_up.z > 200.0,
+        "45° up direction should be blue, got {:?}",
+        c_up
+    );
 
     // Ray at 45° down => v ≈ 0.75 => clearly in red
     let c_down = env.sample(DVec3::new(0.0, -0.707, 0.707));
-    assert!(c_down.x > 200.0, "45° down direction should be red, got {:?}", c_down);
+    assert!(
+        c_down.x > 200.0,
+        "45° down direction should be red, got {:?}",
+        c_down
+    );
 }
 
 #[test]
@@ -297,7 +396,11 @@ fn test_environment_map_miss_returns_env_color() {
 
     let ray = Ray::new(DVec3::new(0.0, 0.0, 0.0), DVec3::new(0.0, 0.0, -1.0));
     let color = trace_ray_worker(&ray, 1, &scene, 2, None);
-    assert!((color.x - 100.0).abs() < 5.0, "Env map miss should return env color, got {:?}", color);
+    assert!(
+        (color.x - 100.0).abs() < 5.0,
+        "Env map miss should return env color, got {:?}",
+        color
+    );
     assert!((color.y - 50.0).abs() < 5.0);
     assert!((color.z - 200.0).abs() < 5.0);
 }

@@ -2,9 +2,9 @@ use glam::DVec3;
 use hairy_tracer_core::hit::Hit;
 use hairy_tracer_core::intersect::Intersectable;
 use hairy_tracer_core::material::MaterialId;
+use hairy_tracer_core::plane::Plane;
 use hairy_tracer_core::ray::Ray;
 use hairy_tracer_core::sphere::Sphere;
-use hairy_tracer_core::plane::Plane;
 use hairy_tracer_core::triangle::Triangle;
 
 const MAT: MaterialId = MaterialId(0);
@@ -49,12 +49,15 @@ fn test_triangle_uv() {
         DVec3::new(-1.0, -1.0, 0.0),
         DVec3::new(1.0, -1.0, 0.0),
         DVec3::new(0.0, 1.0, 0.0),
-        MAT,
+        MAT, 0,
     );
     // Hit center
-    let r = Ray::new(DVec3::new(0.0, -0.333333333, 5.0), DVec3::new(0.0, 0.0, -1.0));
+    let r = Ray::new(
+        DVec3::new(0.0, -0.333333333, 5.0),
+        DVec3::new(0.0, 0.0, -1.0),
+    );
     let hit = t.intersect(&r, 0).unwrap();
-    
+
     // barycentric center should have roughly equal u,v (~0.33)
     assert!((hit.u - 0.333333).abs() < 1e-3);
     assert!((hit.v - 0.333333).abs() < 1e-3);

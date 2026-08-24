@@ -121,7 +121,7 @@ mod tests {
             DVec3::new(-1.0, 1.0, -1.0),
             DVec3::new(1.0, 1.0, -1.0),
             DVec3::new(0.0, 1.0, 1.0),
-            MaterialId(20),
+            MaterialId(20), 0,
         ));
 
         // Ray from above pointing down
