@@ -1,0 +1,63 @@
+{
+    "camera": {
+        "origin": [0.0, 3.0, 25.0],
+        "distance": 20.0,
+        "vpwidth": 12.0,
+        "vpheight": 9.0,
+        "look_at": [0.0, 0.0, 0.0],
+        "up": [0.0, 1.0, 0.0]
+    },
+    "materials": {
+        "absorb_red": {
+            "kAmbient": 0.0,
+            "kDiffuse": [0.0, 0.0, 0.0],
+            "kSpecular": 1.0,
+            "nS": 100.0,
+            "use_fresnel": true,
+            "ior": 1.5,
+            "absorption": [0.0, 0.5, 0.5]
+        },
+        "bg_white": {
+            "kAmbient": 1.0,
+            "kDiffuse": [0.0, 0.0, 0.0],
+            "kSpecular": 0.0,
+            "nS": 0.0,
+            "ambientColor": [255, 255, 255]
+        }
+    },
+    "lights": [
+        {
+            "origin": [0.0, 20.0, 10.0],
+            "color": [255, 255, 255]
+        }
+    ],
+    "objects": [
+        {
+            "type": "sphere",
+            "center": [-4.0, 0.0, 0.0],
+            "radius": 1.0,
+            "material": "absorb_red",
+            "is_refractor": true
+        },
+        {
+            "type": "sphere",
+            "center": [0.0, 0.0, 0.0],
+            "radius": 2.0,
+            "material": "absorb_red",
+            "is_refractor": true
+        },
+        {
+            "type": "sphere",
+            "center": [5.0, 0.0, 0.0],
+            "radius": 3.0,
+            "material": "absorb_red",
+            "is_refractor": true
+        },
+        {
+            "type": "plane",
+            "normal": [0.0, 0.0, 1.0],
+            "distance": 10.0,
+            "material": "bg_white"
+        }
+    ]
+}

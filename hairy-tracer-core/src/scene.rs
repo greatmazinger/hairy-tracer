@@ -11,14 +11,24 @@ use crate::ray::Ray;
 /// over all objects and picks the nearest hit by comparing distances,
 /// except that here we compare `t` values directly (equivalent, since
 /// direction is unit-length).
+use crate::material::{EnvironmentMap, Light, Material, TextureImage};
+
 pub struct Scene {
-    objects: Vec<Box<dyn Intersectable>>,
+    pub objects: Vec<Box<dyn Intersectable>>,
+    pub materials: Vec<Material>,
+    pub lights: Vec<Light>,
+    pub textures: Vec<TextureImage>,
+    pub environment_map: Option<EnvironmentMap>,
 }
 
 impl Scene {
     pub fn new() -> Self {
         Self {
             objects: Vec::new(),
+            materials: Vec::new(),
+            lights: Vec::new(),
+            textures: Vec::new(),
+            environment_map: None,
         }
     }
 
@@ -82,17 +92,9 @@ mod tests {
         let mut scene = Scene::new();
 
         // Sphere at z=0, radius 1 — near
-        scene.add(Sphere::new(
-            DVec3::new(0.0, 0.0, 0.0),
-            1.0,
-            MaterialId(0),
-        ));
+        scene.add(Sphere::new(DVec3::new(0.0, 0.0, 0.0), 1.0, MaterialId(0)));
         // Sphere at z=-5, radius 1 — far
-        scene.add(Sphere::new(
-            DVec3::new(0.0, 0.0, -5.0),
-            1.0,
-            MaterialId(1),
-        ));
+        scene.add(Sphere::new(DVec3::new(0.0, 0.0, -5.0), 1.0, MaterialId(1)));
 
         let r = Ray::new(DVec3::new(0.0, 0.0, 5.0), DVec3::new(0.0, 0.0, -1.0));
         let hit = scene.trace_ray(&r).expect("expected hit");

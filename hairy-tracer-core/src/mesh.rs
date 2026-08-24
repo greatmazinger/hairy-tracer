@@ -42,9 +42,7 @@ impl Mesh {
     /// with the pivot vertex at `face_indices[0]` and winding order
     /// `(0, i, i+1)` for `i in 1..n-1`, matching the Python `load_obj`.
     pub fn from_triangles(triangles: Vec<Triangle>, material_id: MaterialId) -> Self {
-        let points = triangles
-            .iter()
-            .flat_map(|t| [t.v0, t.v1, t.v2]);
+        let points = triangles.iter().flat_map(|t| [t.v0, t.v1, t.v2]);
         let aabb = Aabb::from_points(points);
 
         Self {
@@ -90,11 +88,13 @@ impl Intersectable for Mesh {
     fn intersect(&self, ray: &Ray, object_index: usize) -> Option<Hit> {
         // 1. Fast AABB check
         #[cfg(test)]
-        self.aabb_was_tested.store(true, std::sync::atomic::Ordering::Relaxed);
+        self.aabb_was_tested
+            .store(true, std::sync::atomic::Ordering::Relaxed);
 
         if !self.aabb.intersects(ray) {
             #[cfg(test)]
-            self.aabb_rejected.store(true, std::sync::atomic::Ordering::Relaxed);
+            self.aabb_rejected
+                .store(true, std::sync::atomic::Ordering::Relaxed);
             return None;
         }
 
@@ -168,8 +168,16 @@ mod tests {
         let r = Ray::new(DVec3::new(0.0, 10.0, 5.0), DVec3::new(0.0, 0.0, -1.0));
         assert!(mesh.intersect(&r, 0).is_none());
         // Verify the AABB was actually tested and rejected the ray
-        assert!(mesh.aabb_was_tested.load(std::sync::atomic::Ordering::Relaxed), "AABB should have been tested");
-        assert!(mesh.aabb_rejected.load(std::sync::atomic::Ordering::Relaxed), "AABB should have rejected the ray");
+        assert!(
+            mesh.aabb_was_tested
+                .load(std::sync::atomic::Ordering::Relaxed),
+            "AABB should have been tested"
+        );
+        assert!(
+            mesh.aabb_rejected
+                .load(std::sync::atomic::Ordering::Relaxed),
+            "AABB should have rejected the ray"
+        );
     }
 
     #[test]
@@ -188,8 +196,15 @@ mod tests {
         // but outside the triangle (u + v > 1).
         let r = Ray::new(DVec3::new(0.9, 0.9, 5.0), DVec3::new(0.0, 0.0, -1.0));
         assert!(mesh.intersect(&r, 0).is_none());
-        assert!(mesh.aabb_was_tested.load(std::sync::atomic::Ordering::Relaxed));
-        assert!(!mesh.aabb_rejected.load(std::sync::atomic::Ordering::Relaxed), "AABB should NOT have rejected — ray was inside box");
+        assert!(mesh
+            .aabb_was_tested
+            .load(std::sync::atomic::Ordering::Relaxed));
+        assert!(
+            !mesh
+                .aabb_rejected
+                .load(std::sync::atomic::Ordering::Relaxed),
+            "AABB should NOT have rejected — ray was inside box"
+        );
     }
 
     #[test]

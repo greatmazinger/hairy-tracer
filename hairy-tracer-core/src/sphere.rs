@@ -69,12 +69,17 @@ impl Intersectable for Sphere {
         let point = ray.at(t);
         let normal = self.unit_normal(point);
 
+        let u = 0.5 + (normal.z.atan2(normal.x)) / (2.0 * std::f64::consts::PI);
+        let v = 0.5 + normal.y.asin() / std::f64::consts::PI;
+
         Some(Hit {
             t,
             point,
             normal,
             object_index,
             material_id: self.material_id,
+            u,
+            v,
         })
     }
 }

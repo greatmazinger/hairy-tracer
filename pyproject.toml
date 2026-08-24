@@ -1,0 +1,17 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "hairy_tracer_core"
+version = "0.1.0"
+description = "Rust core for Hairy Tracer"
+requires-python = ">=3.8"
+dependencies = [
+    "Pillow",
+    "numpy",
+]
+
+[tool.maturin]
+manifest-path = "hairy-tracer-core/Cargo.toml"
+module-name = "hairy_tracer_core"

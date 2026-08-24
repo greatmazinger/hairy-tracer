@@ -1,0 +1,9 @@
+    test: migrate to pytest and add deterministic E2E snapshot testing
+
+    - Migrated test framework from standard `unittest` to modern `pytest`
+    - Created a top-level `tests/` directory with `conftest.py` for standard Python test discovery
+    - Fully implemented geometry unit tests (`Plane`, `Sphere`, and math utilities) which previously consisted of empty templates
+    - Fixed a critical state-leak bug in `World.__init__` caused by mutable default arguments (`objects=[]`, `lights=[]`) that in
+  subsequent renders
+    - Implemented an End-to-End snapshot test (`tests/test_btrace.py`) that executes a 10x10 pipeline render and strictly validat
+  checked-in JSON snapshot to prevent regressions

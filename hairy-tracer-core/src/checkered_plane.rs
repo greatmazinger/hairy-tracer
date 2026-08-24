@@ -49,12 +49,6 @@ impl CheckeredPlane {
         let ix = point.x.round() as i64;
         let iz = point.z.round() as i64;
 
-        // Python: `(ix % 2 == 1 and iz % 2 == 0) or (ix % 2 == 0 and iz % 2 == 1)`
-        // which is the XOR of the odd-ness of ix and iz.
-        //
-        // NOTE: Rust's `%` can return negative values for negative operands,
-        // so we use `.rem_euclid(2)` to match Python's `int(round(...)) % 2`
-        // behavior (Python `%` on ints is always non-negative for positive divisor).
         let x_odd = ix.rem_euclid(2) == 1;
         let z_odd = iz.rem_euclid(2) == 1;
 

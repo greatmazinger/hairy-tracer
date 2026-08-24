@@ -1,0 +1,66 @@
+{
+    "camera": {
+        "origin": [0.0, 5.0, 20.0],
+        "distance": 15.0,
+        "vpwidth": 10.0,
+        "vpheight": 7.5,
+        "look_at": [0.0, 0.0, 0.0],
+        "up": [0.0, 1.0, 0.0]
+    },
+    "materials": {
+        "glass": {
+            "kAmbient": 0.0,
+            "kDiffuse": [0.0, 0.0, 0.0],
+            "kSpecular": 1.0,
+            "nS": 100.0,
+            "use_fresnel": false,
+            "ior": 1.5
+        },
+        "floor": {
+            "kAmbient": 0.2,
+            "kDiffuse": [0.8, 0.1, 0.1],
+            "kSpecular": 0.1,
+            "nS": 5.0,
+            "ambientColor": [255, 255, 255]
+        },
+        "bg": {
+            "kAmbient": 1.0,
+            "kDiffuse": [0.0, 0.0, 0.0],
+            "kSpecular": 0.0,
+            "nS": 0.0,
+            "ambientColor": [100, 150, 255]
+        }
+    },
+    "lights": [
+        {
+            "origin": [10.0, 20.0, 10.0],
+            "color": [255, 255, 255]
+        },
+        {
+            "origin": [-10.0, 20.0, 10.0],
+            "color": [255, 255, 255]
+        }
+    ],
+    "objects": [
+        {
+            "type": "sphere",
+            "center": [0.0, 2.0, 0.0],
+            "radius": 3.0,
+            "material": "glass",
+            "is_reflector": true,
+            "is_refractor": true
+        },
+        {
+            "type": "plane",
+            "normal": [0.0, 1.0, 0.0],
+            "distance": -1.0,
+            "material": "floor"
+        },
+        {
+            "type": "sphere",
+            "center": [0.0, 0.0, -50.0],
+            "radius": 20.0,
+            "material": "bg"
+        }
+    ]
+}

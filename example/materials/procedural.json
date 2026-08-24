@@ -1,0 +1,52 @@
+{
+    "camera": {
+        "origin": [0.0, 5.0, 15.0],
+        "distance": 10.0,
+        "vpwidth": 10.0,
+        "vpheight": 7.5,
+        "look_at": [0.0, 0.0, 0.0],
+        "up": [0.0, 1.0, 0.0]
+    },
+    "materials": {
+        "checker_mat": {
+            "kAmbient": 0.2,
+            "kDiffuse": [1.0, 1.0, 1.0],
+            "kSpecular": 0.5,
+            "nS": 20.0,
+            "ambientColor": [255, 255, 255],
+            "texture": {
+                "type": "checker",
+                "color_a": [1.0, 1.0, 1.0],
+                "color_b": [0.1, 0.1, 0.1],
+                "scale": 5.0
+            }
+        },
+        "solid_mat": {
+            "kAmbient": 0.2,
+            "kDiffuse": [0.2, 0.5, 0.8],
+            "kSpecular": 0.5,
+            "nS": 20.0,
+            "ambientColor": [255, 255, 255]
+        }
+    },
+    "lights": [
+        {
+            "origin": [10.0, 15.0, 10.0],
+            "color": [200, 200, 200]
+        }
+    ],
+    "objects": [
+        {
+            "type": "sphere",
+            "center": [0.0, 2.0, 0.0],
+            "radius": 3.0,
+            "material": "checker_mat"
+        },
+        {
+            "type": "plane",
+            "normal": [0.0, 1.0, 0.0],
+            "distance": 1.0,
+            "material": "checker_mat"
+        }
+    ]
+}

@@ -1,0 +1,37 @@
+{
+    "camera": {
+        "origin": [0.0, 5.0, 15.0],
+        "distance": 10.0,
+        "vpwidth": 10.0,
+        "vpheight": 7.5,
+        "look_at": [0.0, 0.0, 0.0],
+        "up": [0.0, 1.0, 0.0]
+    },
+    "materials": {
+        "image_mat": {
+            "kAmbient": 0.5,
+            "kDiffuse": [1.0, 1.0, 1.0],
+            "kSpecular": 0.5,
+            "nS": 50.0,
+            "ambientColor": [255, 255, 255],
+            "texture": {
+                "type": "image",
+                "path": "example/materials/test_image.bmp"
+            }
+        }
+    },
+    "lights": [
+        {
+            "origin": [10.0, 20.0, 10.0],
+            "color": [255, 255, 255]
+        }
+    ],
+    "objects": [
+        {
+            "type": "sphere",
+            "center": [0.0, 2.0, 0.0],
+            "radius": 4.0,
+            "material": "image_mat"
+        }
+    ]
+}

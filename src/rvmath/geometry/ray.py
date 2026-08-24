@@ -10,13 +10,7 @@ class Ray():
         self.origin = numpy.copy( orig )
         self.direction = numpy.copy( dir )
         self.direction = self.direction / numpy.linalg.norm( dir )
-        try:
-            uv = dir - orig
-        except:
-            print(dir, type(dir))
-            print(orig, type(orig))
-            assert(0)
-        self.unitvector = uv / numpy.linalg.norm( uv )
+        self.unitvector = self.direction
 
     def getOrigin( self ):
         return self.origin

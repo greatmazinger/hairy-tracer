@@ -30,6 +30,8 @@ pub struct Triangle {
     edge2: DVec3,
     /// Pre-computed geometric normal (unit length).
     normal: DVec3,
+    /// Optional per-vertex UVs from OBJ vt data: (uv0, uv1, uv2).
+    vertex_uvs: Option<([f64; 2], [f64; 2], [f64; 2])>,
 }
 
 impl Triangle {
@@ -53,7 +55,13 @@ impl Triangle {
             edge1,
             edge2,
             normal,
+            vertex_uvs: None,
         }
+    }
+
+    /// Set per-vertex UV coordinates (from OBJ vt data).
+    pub fn set_uvs(&mut self, uv0: [f64; 2], uv1: [f64; 2], uv2: [f64; 2]) {
+        self.vertex_uvs = Some((uv0, uv1, uv2));
     }
 
     /// The geometric (face) normal, before any back-face flipping.
@@ -106,12 +114,25 @@ impl Intersectable for Triangle {
             normal = -normal;
         }
 
+        // UV mapping: use vertex UVs if available (from OBJ vt), else barycentric coordinates.
+        let (u_coord, v_coord) = if let Some((uv0, uv1, uv2)) = self.vertex_uvs {
+            // Barycentric interpolation: P = (1-u-v)*uv0 + u*uv1 + v*uv2
+            let w = 1.0 - u - v;
+            let interp_u = w * uv0[0] + u * uv1[0] + v * uv2[0];
+            let interp_v = w * uv0[1] + u * uv1[1] + v * uv2[1];
+            (interp_u, interp_v)
+        } else {
+            (u, v)
+        };
+
         Some(Hit {
             t,
             point,
             normal,
             object_index,
             material_id: self.material_id,
+            u: u_coord,
+            v: v_coord,
         })
     }
 }

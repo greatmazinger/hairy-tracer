@@ -248,6 +248,16 @@ if __name__ == "__main__":
                        action = "store_true",
                        dest = "profileflag",
                        help = "help for profile" )
+    parser.add_option( "--depth",
+                       action="store",
+                       type="int",
+                       dest="maxdepth",
+                       default=5,
+                       help="Maximum ray bounce depth (default: 5)" )
+    parser.add_option( "--pure-python",
+                       action = "store_true",
+                       dest = "purepythonflag",
+                       help = "Use the legacy pure-Python engine instead of the fast Rust core." )
     
     (options, args) = parser.parse_args()
     
@@ -267,9 +277,37 @@ if __name__ == "__main__":
     print(("size : ", size))
     outfile = options.outfile
     
+    if not options.purepythonflag:
+        import hairy_tracer_core
+        import time
+        import sys
+        print("Rendering image:", size[0], "x", size[1], "using Rust engine")
+        
+        with open(options.scene, 'r') as f:
+            scene_json = f.read()
+            
+        start = time.time()
+        maxdepth = options.maxdepth
+        pixels_bytes = hairy_tracer_core.render_image(
+            scene_json, 
+            size[0], 
+            size[1], 
+            maxdepth
+        )
+        end = time.time()
+        print(f"Rust render time: {end - start:.4f} seconds")
+        
+        image = Image.new("RGB", size)
+        image.frombytes(pixels_bytes)
+        image = image.transpose(Image.FLIP_TOP_BOTTOM)
+        image.save(outfile)
+        sys.exit(0)
+    
+    print("Rendering image:", size[0], "x", size[1], "using pure Python engine")
     # Initialize the raytracer
     raytracer = BTracer( output = outfile,
                          size = size, 
+                         maxdepth = options.maxdepth,
                          testflag = False )
                          
     # Load the scene from the JSON file

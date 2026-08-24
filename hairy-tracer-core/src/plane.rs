@@ -53,12 +53,20 @@ impl Intersectable for Plane {
 
         let point = ray.at(t);
 
+        // Basic planar mapping based on X/Z coordinates
+        // This is safe because infinite planes in our scenes are axis-aligned (floors)
+        // CheckeredPlane will override the material id anyway, but uses this point math.
+        let u = point.x - point.x.floor();
+        let v = point.z - point.z.floor();
+
         Some(Hit {
             t,
             point,
             normal: self.normal,
             object_index,
             material_id: self.material_id,
+            u,
+            v,
         })
     }
 }

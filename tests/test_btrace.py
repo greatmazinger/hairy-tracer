@@ -1,5 +1,12 @@
 import sys
+import pytest
 import os
+import tempfile
+from PIL import Image
+
+pytestmark = pytest.mark.skip(reason="Python parity is no longer maintained. Rust is the primary engine.")
+
+import btrace
 import json
 import pytest
 

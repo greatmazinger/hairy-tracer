@@ -1,5 +1,5 @@
-use glam::DVec3;
 use crate::material::MaterialId;
+use glam::DVec3;
 
 /// Information about a ray–object intersection.
 ///
@@ -18,4 +18,8 @@ pub struct Hit {
     pub object_index: usize,
     /// Material identifier for the surface that was hit.
     pub material_id: MaterialId,
+    /// Texture U coordinate (0.0 to 1.0)
+    pub u: f64,
+    /// Texture V coordinate (0.0 to 1.0)
+    pub v: f64,
 }

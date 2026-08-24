@@ -47,9 +47,21 @@ impl Aabb {
         // Replace zero components with a tiny epsilon, matching the Python code:
         // `dir = numpy.where(dir == 0, 1e-8, dir)`
         let dir = DVec3::new(
-            if ray.direction.x == 0.0 { DIR_EPSILON } else { ray.direction.x },
-            if ray.direction.y == 0.0 { DIR_EPSILON } else { ray.direction.y },
-            if ray.direction.z == 0.0 { DIR_EPSILON } else { ray.direction.z },
+            if ray.direction.x == 0.0 {
+                DIR_EPSILON
+            } else {
+                ray.direction.x
+            },
+            if ray.direction.y == 0.0 {
+                DIR_EPSILON
+            } else {
+                ray.direction.y
+            },
+            if ray.direction.z == 0.0 {
+                DIR_EPSILON
+            } else {
+                ray.direction.z
+            },
         );
 
         let inv_dir = DVec3::new(1.0 / dir.x, 1.0 / dir.y, 1.0 / dir.z);
