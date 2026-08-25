@@ -120,6 +120,8 @@ mod tests {
             has_explicit_ambient: false,
             ior: 1.5,
             use_fresnel: false,
+            roughness: None,
+            metallic: None,
             absorption: DVec3::ZERO,
             texture: TextureRef::None,
         };

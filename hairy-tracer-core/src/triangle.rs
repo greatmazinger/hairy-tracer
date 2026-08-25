@@ -172,6 +172,27 @@ impl Intersectable for Triangle {
 #[cfg(test)]
 mod tests {
     use super::*;
+    
+    #[test]
+    fn test_interpolated_normal_unit_length() {
+        let v0 = DVec3::new(0.0, 0.0, 0.0);
+        let v1 = DVec3::new(1.0, 0.0, 0.0);
+        let v2 = DVec3::new(0.0, 1.0, 0.0);
+        let mut tri = Triangle::new(v0, v1, v2, MaterialId(0), 0);
+        
+        let n0 = DVec3::new(0.0, 0.0, 1.0).normalize();
+        let n1 = DVec3::new(0.5, 0.0, 0.866).normalize();
+        let n2 = DVec3::new(0.0, 0.5, 0.866).normalize();
+        tri.set_normals(n0, n1, n2);
+        
+        let ray = Ray::new(DVec3::new(0.2, 0.2, 1.0), DVec3::new(0.0, 0.0, -1.0));
+        let hit = tri.intersect(&ray, 0).unwrap();
+        
+        let length = hit.normal.length();
+        assert!((length - 1.0).abs() < 1e-5, "Interpolated normal length is {}, not 1.0", length);
+    }
+
+    use super::*;
 
     const MAT: MaterialId = MaterialId(0);
 
@@ -249,3 +270,5 @@ mod tests {
         let _ = tri.intersect(&r, 0);
     }
 }
+
+
