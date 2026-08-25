@@ -104,6 +104,5 @@
         255.0
       ]
     }
-  ],
-  "integrator": "pathtracer"
+  ]
 }

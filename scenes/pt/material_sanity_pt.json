@@ -1,0 +1,39 @@
+{
+  "camera": {
+    "origin": [0, 0, 5],
+    "look_at": [0, 0, 0],
+    "distance": 3.0,
+    "vpwidth": 4.0,
+    "vpheight": 1.0,
+    "samples_per_pixel": 100
+  },
+  "integrator": "pathtracer",
+  "materials": {
+    "dielectric_smooth": {
+      "kAmbient": 0.0, "kDiffuse": [0.8, 0.2, 0.2], "kSpecular": 0.0, "nS": 0.0,
+      "roughness": 0.05, "metallic": 0.0
+    },
+    "dielectric_rough": {
+      "kAmbient": 0.0, "kDiffuse": [0.8, 0.2, 0.2], "kSpecular": 0.0, "nS": 0.0,
+      "roughness": 0.8, "metallic": 0.0
+    },
+    "metallic_smooth": {
+      "kAmbient": 0.0, "kDiffuse": [1.0, 0.8, 0.2], "kSpecular": 0.0, "nS": 0.0,
+      "roughness": 0.05, "metallic": 1.0
+    },
+    "metallic_rough": {
+      "kAmbient": 0.0, "kDiffuse": [1.0, 0.8, 0.2], "kSpecular": 0.0, "nS": 0.0,
+      "roughness": 0.8, "metallic": 1.0
+    }
+  },
+  "lights": [
+    { "origin": [0, 5, 0], "color": [255, 255, 255], "radius": 0.5 }
+  ],
+  "objects": [
+    { "type": "sphere", "center": [-3.0, 0.0, 0.0], "radius": 0.8, "material": "dielectric_smooth" },
+    { "type": "sphere", "center": [-1.0, 0.0, 0.0], "radius": 0.8, "material": "dielectric_rough" },
+    { "type": "sphere", "center": [1.0, 0.0, 0.0], "radius": 0.8, "material": "metallic_smooth" },
+    { "type": "sphere", "center": [3.0, 0.0, 0.0], "radius": 0.8, "material": "metallic_rough" },
+    { "type": "plane", "normal": [0, 1, 0], "distance": 1.0, "material": "dielectric_rough" }
+  ]
+}
