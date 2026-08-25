@@ -34,6 +34,7 @@ pub struct Triangle {
     normal: DVec3,
     /// Optional per-vertex UVs from OBJ vt data: (uv0, uv1, uv2).
     vertex_uvs: Option<([f64; 2], [f64; 2], [f64; 2])>,
+    pub vertex_normals: Option<(DVec3, DVec3, DVec3)>,
 }
 
 impl Triangle {
@@ -65,12 +66,17 @@ impl Triangle {
             edge2,
             normal,
             vertex_uvs: None,
+            vertex_normals: None,
         }
     }
 
     /// Set per-vertex UV coordinates (from OBJ vt data).
     pub fn set_uvs(&mut self, uv0: [f64; 2], uv1: [f64; 2], uv2: [f64; 2]) {
         self.vertex_uvs = Some((uv0, uv1, uv2));
+    }
+    
+    pub fn set_normals(&mut self, n0: DVec3, n1: DVec3, n2: DVec3) {
+        self.vertex_normals = Some((n0, n1, n2));
     }
 
     /// The geometric (face) normal, before any back-face flipping.
@@ -114,7 +120,13 @@ impl Intersectable for Triangle {
         }
 
         let point = ray.at(t);
-        let mut normal = self.normal;
+        
+        let mut normal = if let Some((n0, n1, n2)) = self.vertex_normals {
+            let w = 1.0 - u - v;
+            (n0 * w + n1 * u + n2 * v).normalize()
+        } else {
+            self.normal
+        };
 
         // Back-face flip: if the ray direction and the normal point in the
         // same hemisphere, we're hitting the back of the triangle — flip.

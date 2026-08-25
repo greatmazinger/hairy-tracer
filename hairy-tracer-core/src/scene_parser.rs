@@ -282,7 +282,7 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
             }
             "mesh" => {
                 let filepath = obj.file.as_ref().unwrap();
-                let (tris, tex_coords) = load_obj(filepath)
+                let (tris, tex_coords, norms) = load_obj(filepath)
                     .map_err(|e| format!("Failed to load {}: {}", filepath, e))?;
 
                 let mut mat = scene.materials[mat_id.0].clone();
@@ -298,6 +298,10 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
                     if let Some(ref uvs) = tex_coords {
                         let (uv0, uv1, uv2) = uvs[i];
                         tri.set_uvs(uv0, uv1, uv2);
+                    }
+                    if let Some(ref ns) = norms {
+                        let (n0, n1, n2) = ns[i];
+                        tri.set_normals(n0, n1, n2);
                     }
                     tri_objects.push(tri);
                 }
@@ -319,6 +323,7 @@ fn load_obj(
     (
         Vec<(DVec3, DVec3, DVec3)>,
         Option<Vec<([f64; 2], [f64; 2], [f64; 2])>>,
+        Option<Vec<(DVec3, DVec3, DVec3)>>,
     ),
     String,
 > {
@@ -326,9 +331,12 @@ fn load_obj(
 
     let mut vertices = Vec::new();
     let mut tex_coords: Vec<[f64; 2]> = Vec::new();
+    let mut normals: Vec<DVec3> = Vec::new();
     let mut triangles = Vec::new();
     let mut tri_uvs: Vec<([f64; 2], [f64; 2], [f64; 2])> = Vec::new();
+    let mut tri_normals: Vec<(DVec3, DVec3, DVec3)> = Vec::new();
     let mut has_uvs = false;
+    let mut has_normals = false;
 
     for line in content.lines() {
         let line = line.trim();
@@ -347,16 +355,32 @@ fn load_obj(
             let v: f64 = parts.next().unwrap().parse().unwrap();
             tex_coords.push([u, v]);
             has_uvs = true;
+        } else if tag == "vn" {
+            let nx: f64 = parts.next().unwrap().parse().unwrap();
+            let ny: f64 = parts.next().unwrap().parse().unwrap();
+            let nz: f64 = parts.next().unwrap().parse().unwrap();
+            normals.push(DVec3::new(nx, ny, nz));
+            has_normals = true;
         } else if tag == "f" {
             let mut face_v_indices = Vec::new();
             let mut face_vt_indices = Vec::new();
+            let mut face_vn_indices = Vec::new();
             for p in parts {
                 let mut splits = p.split('/');
                 let vi: usize = splits.next().unwrap().parse().unwrap();
                 face_v_indices.push(vi - 1);
                 if let Some(vt_str) = splits.next() {
-                    if let Ok(vti) = vt_str.parse::<usize>() {
-                        face_vt_indices.push(vti - 1);
+                    if !vt_str.is_empty() {
+                        if let Ok(vti) = vt_str.parse::<usize>() {
+                            face_vt_indices.push(vti - 1);
+                        }
+                    }
+                    if let Some(vn_str) = splits.next() {
+                        if !vn_str.is_empty() {
+                            if let Ok(vni) = vn_str.parse::<usize>() {
+                                face_vn_indices.push(vni - 1);
+                            }
+                        }
                     }
                 }
             }
@@ -374,6 +398,13 @@ fn load_obj(
                         tex_coords[face_vt_indices[i + 1]],
                     ));
                 }
+                if face_vn_indices.len() == face_v_indices.len() {
+                    tri_normals.push((
+                        normals[face_vn_indices[0]],
+                        normals[face_vn_indices[i]],
+                        normals[face_vn_indices[i + 1]],
+                    ));
+                }
             }
         }
     }
@@ -383,6 +414,12 @@ fn load_obj(
     } else {
         None
     };
+    
+    let norms = if has_normals && tri_normals.len() == triangles.len() {
+        Some(tri_normals)
+    } else {
+        None
+    };
 
-    Ok((triangles, uvs))
+    Ok((triangles, uvs, norms))
 }
