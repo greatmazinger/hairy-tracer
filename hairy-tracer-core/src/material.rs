@@ -17,7 +17,9 @@ pub struct Material {
     // Phase 3: Material quality
     pub ior: f64, // Index of refraction (default 1.5, matching current hardcoded value)
     pub use_fresnel: bool, // Fresnel-Schlick weighting (default false — preserves legacy additive blend)
-    pub absorption: DVec3, // Beer-Lambert absorption coefficient per channel (default ZERO — clear glass)
+    pub absorption: DVec3,
+    pub roughness: Option<f64>,
+    pub metallic: Option<f64>, // Beer-Lambert absorption coefficient per channel (default ZERO — clear glass)
     pub texture: TextureRef, // Texture reference (default None — solid color)
 }
 

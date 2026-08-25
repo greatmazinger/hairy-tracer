@@ -1,3 +1,4 @@
+use crate::integrator::Integrator;
 use crate::hit::Hit;
 use crate::material::TextureRef;
 use crate::ray::Ray;
@@ -95,13 +96,17 @@ pub fn does_intersect(
     false
 }
 
-pub fn trace_ray_worker(
-    ray: &Ray,
-    depth: u32,
-    scene: &Scene,
-    max_depth: u32,
-    skip_object: Option<usize>,
-) -> DVec3 {
+pub struct WhittedIntegrator;
+
+impl Integrator for WhittedIntegrator {
+    fn trace_ray(
+        &self,
+        ray: &Ray,
+        depth: u32,
+        scene: &Scene,
+        max_depth: u32,
+        skip_object: Option<usize>,
+    ) -> DVec3 {
     if depth > max_depth {
         return DVec3::ZERO;
     }
@@ -203,7 +208,7 @@ pub fn trace_ray_worker(
             let rvec = calc_reflection_vector(invec, hit.normal).normalize();
             let refray = Ray::new(hit.point, rvec);
             let refl_color =
-                trace_ray_worker(&refray, depth + 1, scene, max_depth, Some(obj_index));
+                self.trace_ray(&refray, depth + 1, scene, max_depth, Some(obj_index));
             total_color += refl_color * reflectance;
         }
 
@@ -216,7 +221,7 @@ pub fn trace_ray_worker(
                 let offset_point = hit.point + refract_vec * 0.001;
                 let refract_ray = Ray::new(offset_point, refract_vec);
                 let mut refr_color =
-                    trace_ray_worker(&refract_ray, depth + 1, scene, max_depth, Some(obj_index));
+                    self.trace_ray(&refract_ray, depth + 1, scene, max_depth, Some(obj_index));
 
                 // Beer-Lambert absorption
                 if material.absorption != DVec3::ZERO {
@@ -247,7 +252,7 @@ pub fn trace_ray_worker(
             let rvec = calc_reflection_vector(invec, hit.normal).normalize();
             let refray = Ray::new(hit.point, rvec);
             let refl_color =
-                trace_ray_worker(&refray, depth + 1, scene, max_depth, Some(obj_index));
+                self.trace_ray(&refray, depth + 1, scene, max_depth, Some(obj_index));
             total_color += refl_color;
         }
 
@@ -257,7 +262,7 @@ pub fn trace_ray_worker(
                 let offset_point = hit.point + refract_vec * 0.001;
                 let refract_ray = Ray::new(offset_point, refract_vec);
                 let refr_color =
-                    trace_ray_worker(&refract_ray, depth + 1, scene, max_depth, Some(obj_index));
+                    self.trace_ray(&refract_ray, depth + 1, scene, max_depth, Some(obj_index));
                 total_color += refr_color;
             }
         }
@@ -266,8 +271,9 @@ pub fn trace_ray_worker(
     // Final clamp
     total_color.clamp(DVec3::ZERO, DVec3::splat(255.0))
 }
+}
 
-pub fn render_image_serial(
+pub fn render_image_serial(integrator: &dyn Integrator,
     scene: &Scene,
     cam_origin: DVec3,
     look_at: DVec3,
@@ -343,7 +349,7 @@ pub fn render_image_serial(
                 };
 
                 let ray = Ray::new(ray_origin, final_dir);
-                color_sum += trace_ray_worker(&ray, 1, scene, max_depth, None);
+                color_sum += integrator.trace_ray(&ray, 1, scene, max_depth, None);
             }
 
             let color = color_sum / (samples_per_pixel as f64);
@@ -358,7 +364,7 @@ pub fn render_image_serial(
     pixels
 }
 
-pub fn render_image_parallel(
+pub fn render_image_parallel(integrator: &dyn Integrator,
     scene: &Scene,
     cam_origin: DVec3,
     look_at: DVec3,
@@ -442,7 +448,7 @@ pub fn render_image_parallel(
                     };
 
                     let ray = Ray::new(ray_origin, final_dir);
-                    color_sum += trace_ray_worker(&ray, 1, scene, max_depth, None);
+                    color_sum += integrator.trace_ray(&ray, 1, scene, max_depth, None);
                 }
 
                 let color = color_sum / (samples_per_pixel as f64);

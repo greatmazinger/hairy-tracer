@@ -20,7 +20,8 @@ pub struct SceneJson {
     pub lights: Vec<LightJson>,
     #[serde(default)]
     pub objects: Vec<ObjectJson>,
-    pub environment_map: Option<String>, // Path to equirectangular HDR/LDR image
+    pub environment_map: Option<String>,
+    pub integrator: Option<String>, // Path to equirectangular HDR/LDR image
 }
 
 #[derive(Deserialize, Debug)]
@@ -52,6 +53,8 @@ pub struct MaterialJson {
     #[serde(default)]
     pub use_fresnel: bool,
     pub absorption: Option<[f64; 3]>,
+    pub roughness: Option<f64>,
+    pub metallic: Option<f64>,
     pub texture: Option<TextureJson>,
 }
 
@@ -125,6 +128,9 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
     let data: SceneJson = serde_json::from_str(json_str).map_err(|e| e.to_string())?;
 
     let mut scene = Scene::new();
+    if let Some(i) = &data.integrator {
+        scene.integrator = i.clone();
+    }
     let mut mat_map: HashMap<String, MaterialId> = HashMap::new();
 
     // 1. Materials
@@ -163,6 +169,8 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
             ior: mat.ior.unwrap_or(1.5),
             use_fresnel: mat.use_fresnel,
             absorption: mat.absorption.map(DVec3::from_array).unwrap_or(DVec3::ZERO),
+            roughness: mat.roughness,
+            metallic: mat.metallic,
             texture,
         });
         mat_map.insert(name.clone(), id);

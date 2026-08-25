@@ -19,6 +19,7 @@ pub struct Scene {
     pub lights: Vec<Light>,
     pub textures: Vec<TextureImage>,
     pub environment_map: Option<EnvironmentMap>,
+    pub integrator: String,
 }
 
 impl Scene {
@@ -29,6 +30,7 @@ impl Scene {
             lights: Vec::new(),
             textures: Vec::new(),
             environment_map: None,
+            integrator: "whitted".to_string(),
         }
     }
 

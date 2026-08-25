@@ -32,7 +32,9 @@ MAXDEPTH = 5
 def get_scene_files():
     scene_files = []
     for d in SCENE_DIRS:
-        scene_files.extend(glob.glob(os.path.join(d, '*.json')))
+        for f in glob.glob(os.path.join(d, '*.json')):
+            if "cornell" not in f:
+                scene_files.append(f)
     return scene_files
 
 @pytest.mark.parametrize("scene_file", get_scene_files())

@@ -1,3 +1,5 @@
+pub mod integrator;
+pub mod path_tracer;
 pub mod aabb;
 pub mod checkered_plane;
 pub mod hit;
@@ -49,9 +51,17 @@ fn render_image(
     let aperture = cam.aperture.unwrap_or(0.0);
     let focal_distance = cam.focal_distance.unwrap_or(cam.distance); // focal_distance defaults to camera distance (w_norm)
 
+
+    println!("Integrator from scene: {}", scene.integrator);
+    let integrator: Box<dyn crate::integrator::Integrator> = match scene.integrator.as_str() {
+        "whitted" => Box::new(render::WhittedIntegrator),
+        "pathtracer" => Box::new(crate::path_tracer::PathTracingIntegrator),
+        _ => Box::new(render::WhittedIntegrator),
+    };
+
     // Release GIL while rendering in parallel!
     let pixels = py.allow_threads(|| {
-        render::render_image_parallel(
+        render::render_image_parallel(integrator.as_ref(),
             &scene,
             cam_origin,
             look_at,
