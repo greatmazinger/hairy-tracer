@@ -19,7 +19,7 @@ fn trace_single() {
     }"#;
     let (scene, _) = parse_scene_json(json).unwrap();
     let ray = Ray::new(DVec3::new(0.0, 0.0, 5.0), DVec3::new(0.33, 0.0, -5.0));
-    let color = hairy_tracer_core::render::WhittedIntegrator.trace_ray(&ray, 1, &scene, 2, None);
+    let color = hairy_tracer_core::render::WhittedIntegrator.trace_ray(&ray, 1, &scene, 2);
     println!("COLOR: {:?}", color);
 
     let hit = scene.objects[0].intersect(&ray, 0);

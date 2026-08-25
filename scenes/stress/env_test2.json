@@ -1,0 +1,13 @@
+{
+  "camera": {
+    "origin": [0.0, 0.0, 0.0],
+    "look_at": [0.0, 1.0, 1.0],
+    "up": [0.0, 1.0, 0.0],
+    "distance": 1.0,
+    "vpwidth": 2.0,
+    "vpheight": 2.0
+  },
+  "environment_map": "example/materials/test_image.bmp",
+  "objects": [],
+  "integrator": "pathtracer"
+}

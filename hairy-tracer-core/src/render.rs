@@ -80,11 +80,9 @@ pub fn does_intersect(
     scene: &Scene,
     origin: DVec3,
     direction: DVec3,
-    skip_object: Option<usize>,
 ) -> bool {
     let ray = Ray::new(origin, direction);
     for (idx, obj) in scene.objects.iter().enumerate() {
-        
         if let Some(hit) = obj.intersect(&ray, idx) {
             if hit.t > 0.0 {
                 return true;
@@ -103,7 +101,6 @@ impl Integrator for WhittedIntegrator {
         depth: u32,
         scene: &Scene,
         max_depth: u32,
-        skip_object: Option<usize>,
     ) -> DVec3 {
     if depth > max_depth {
         return DVec3::ZERO;
@@ -112,9 +109,8 @@ impl Integrator for WhittedIntegrator {
     // Manual closest hit to mimic world.findIntersectionAndColor skipping srcobject
     let mut best: Option<Hit> = None;
     for (idx, obj) in scene.objects.iter().enumerate() {
-        
         if let Some(hit) = obj.intersect(ray, idx) {
-            if best.as_ref().map_or(true, |b| hit.t < b.t) {
+            if hit.t > 0.0 && best.as_ref().map_or(true, |b| hit.t < b.t) {
                 best = Some(hit);
             }
         }
@@ -163,7 +159,9 @@ impl Integrator for WhittedIntegrator {
 
         let lightvec = (jittered_light_origin - hit.point).normalize();
 
-        let is_shadowed = does_intersect(scene, hit.point, lightvec, None);
+        // Offset origin slightly along the normal to avoid self-intersection
+        let shadow_origin = hit.point + hit.normal * 1e-4;
+        let is_shadowed = does_intersect(scene, shadow_origin, lightvec);
 
         let mut color_for_light = material.ambient_color * material.k_ambient;
 
@@ -202,9 +200,9 @@ impl Integrator for WhittedIntegrator {
         if material.is_reflector {
             let invec = -ray.direction;
             let rvec = calc_reflection_vector(invec, hit.normal).normalize();
-            let refray = Ray::new(hit.point, rvec);
+            let refray = Ray::new(hit.point + hit.normal * 1e-4, rvec);
             let refl_color =
-                self.trace_ray(&refray, depth + 1, scene, max_depth, None);
+                self.trace_ray(&refray, depth + 1, scene, max_depth);
             total_color += refl_color * reflectance;
         }
 
@@ -214,10 +212,11 @@ impl Integrator for WhittedIntegrator {
                 calc_refraction_vector(ray.direction, hit.normal, material.ior)
             {
                 let refract_vec = refract_vec.normalize();
-                let offset_point = hit.point + refract_vec * 0.001;
+                // Refraction ray offset slightly INTO the surface (negative normal direction)
+                let offset_point = hit.point - hit.normal * 1e-4;
                 let refract_ray = Ray::new(offset_point, refract_vec);
                 let mut refr_color =
-                    self.trace_ray(&refract_ray, depth + 1, scene, max_depth, None);
+                    self.trace_ray(&refract_ray, depth + 1, scene, max_depth);
 
                 // Beer-Lambert absorption
                 if material.absorption != DVec3::ZERO {
@@ -246,19 +245,19 @@ impl Integrator for WhittedIntegrator {
         if material.is_reflector {
             let invec = -ray.direction;
             let rvec = calc_reflection_vector(invec, hit.normal).normalize();
-            let refray = Ray::new(hit.point, rvec);
+            let refray = Ray::new(hit.point + hit.normal * 1e-4, rvec);
             let refl_color =
-                self.trace_ray(&refray, depth + 1, scene, max_depth, None);
+                self.trace_ray(&refray, depth + 1, scene, max_depth);
             total_color += refl_color;
         }
 
         if material.is_refractor {
             if let Some(refract_vec) = calc_refraction_vector(ray.direction, hit.normal, 1.5) {
                 let refract_vec = refract_vec.normalize();
-                let offset_point = hit.point + refract_vec * 0.001;
+                let offset_point = hit.point - hit.normal * 1e-4;
                 let refract_ray = Ray::new(offset_point, refract_vec);
                 let refr_color =
-                    self.trace_ray(&refract_ray, depth + 1, scene, max_depth, None);
+                    self.trace_ray(&refract_ray, depth + 1, scene, max_depth);
                 total_color += refr_color;
             }
         }
@@ -345,7 +344,7 @@ pub fn render_image_serial(integrator: &dyn Integrator,
                 };
 
                 let ray = Ray::new(ray_origin, final_dir);
-                let mut sample = integrator.trace_ray(&ray, 1, scene, max_depth, None);
+                let mut sample = integrator.trace_ray(&ray, 1, scene, max_depth);
                     sample = sample.clamp(DVec3::ZERO, DVec3::splat(5000.0));
                     color_sum += sample;
             }
@@ -446,7 +445,7 @@ pub fn render_image_parallel(integrator: &dyn Integrator,
                     };
 
                     let ray = Ray::new(ray_origin, final_dir);
-                    let mut sample = integrator.trace_ray(&ray, 1, scene, max_depth, None);
+                    let mut sample = integrator.trace_ray(&ray, 1, scene, max_depth);
                     sample = sample.clamp(DVec3::ZERO, DVec3::splat(5000.0));
                     color_sum += sample;
                 }

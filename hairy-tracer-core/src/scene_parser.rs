@@ -103,6 +103,7 @@ pub struct ObjectJson {
     pub v2: Option<[f64; 3]>,
 
     pub file: Option<String>,
+    pub smooth_shading: Option<bool>,
 
     pub material: Option<String>,
     pub material1: Option<String>,
@@ -282,7 +283,8 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
             }
             "mesh" => {
                 let filepath = obj.file.as_ref().unwrap();
-                let (tris, tex_coords, norms) = load_obj(filepath)
+                let smooth_shading = obj.smooth_shading.unwrap_or(false);
+                let (tris, tex_coords, norms) = load_obj(filepath, smooth_shading)
                     .map_err(|e| format!("Failed to load {}: {}", filepath, e))?;
 
                 let mut mat = scene.materials[mat_id.0].clone();
@@ -318,7 +320,7 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
 
 /// Load an OBJ file, returning triangles and optional per-triangle UV coordinates.
 fn load_obj(
-    filepath: &str,
+    filepath: &str, smooth_shading: bool
 ) -> Result<
     (
         Vec<(DVec3, DVec3, DVec3)>,
@@ -423,7 +425,7 @@ fn load_obj(
     
     let norms = if has_normals && tri_normals.len() == triangles.len() {
         Some(tri_normals)
-    } else {
+    } else if smooth_shading {
         // Generate angle-weighted vertex normals!
         let mut vertex_normals_accum = vec![glam::DVec3::ZERO; vertices.len()];
         
@@ -467,6 +469,8 @@ fn load_obj(
         }
         
         Some(gen_tri_normals)
+    } else {
+        None
     };
 
     Ok((triangles, uvs, norms))
@@ -490,7 +494,7 @@ f 1 3 4
         let filepath = "test_dynamic.obj";
         fs::write(filepath, obj_data).unwrap();
 
-        let (triangles, _uvs, norms) = load_obj(filepath).unwrap();
+        let (triangles, _uvs, norms) = load_obj(filepath, true).unwrap();
         fs::remove_file(filepath).unwrap();
 
         let normals = norms.expect("Normals should be generated");

@@ -11,25 +11,25 @@ echo "========================================="
 echo " rendering scenes at size: $SIZE"
 echo "========================================="
 
-# --- Classic scenes (scenes/) ---
+# --- Classic scenes (scenes/whitted/legacy/) ---
 
-echo "Rendering scenes/spheres3.json -> output_spheres3.bmp"
-$PYTHON_BIN src/btrace.py --scene scenes/spheres3.json --size $SIZE --outfile output_spheres3.bmp
+echo "Rendering scenes/whitted/legacy/spheres3.json -> output_spheres3.bmp"
+$PYTHON_BIN src/btrace.py --scene scenes/whitted/legacy/spheres3.json --size $SIZE --outfile output_spheres3.bmp
 
-echo "Rendering scenes/checkers.json -> output_checkers.bmp"
-$PYTHON_BIN src/btrace.py --scene scenes/checkers.json --size $SIZE --outfile output_checkers.bmp
+echo "Rendering scenes/whitted/legacy/checkers.json -> output_checkers.bmp"
+$PYTHON_BIN src/btrace.py --scene scenes/whitted/legacy/checkers.json --size $SIZE --outfile output_checkers.bmp
 
-echo "Rendering scenes/camera_test.json -> output_camera.bmp"
-$PYTHON_BIN src/btrace.py --scene scenes/camera_test.json --size $SIZE --outfile output_camera.bmp
+echo "Rendering scenes/whitted/legacy/camera_test.json -> output_camera.bmp"
+$PYTHON_BIN src/btrace.py --scene scenes/whitted/legacy/camera_test.json --size $SIZE --outfile output_camera.bmp
 
-echo "Rendering scenes/triangle.json -> output_triangle.bmp"
-$PYTHON_BIN src/btrace.py --scene scenes/triangle.json --size $SIZE --outfile output_triangle.bmp
+echo "Rendering scenes/whitted/legacy/triangle.json -> output_triangle.bmp"
+$PYTHON_BIN src/btrace.py --scene scenes/whitted/legacy/triangle.json --size $SIZE --outfile output_triangle.bmp
 
-echo "Rendering scenes/mesh_test.json -> output_mesh.bmp"
-$PYTHON_BIN src/btrace.py --scene scenes/mesh_test.json --size $SIZE --outfile output_mesh.bmp
+echo "Rendering scenes/whitted/legacy/mesh_test.json -> output_mesh.bmp"
+$PYTHON_BIN src/btrace.py --scene scenes/whitted/legacy/mesh_test.json --size $SIZE --outfile output_mesh.bmp
 
-echo "Rendering scenes/torus_test.json -> output_torus.bmp"
-$PYTHON_BIN src/btrace.py --scene scenes/torus_test.json --size $SIZE --outfile output_torus.bmp
+echo "Rendering scenes/whitted/legacy/torus_test.json -> output_torus.bmp"
+$PYTHON_BIN src/btrace.py --scene scenes/whitted/legacy/torus_test.json --size $SIZE --outfile output_torus.bmp
 
 # --- Material quality examples (example/materials/) ---
 

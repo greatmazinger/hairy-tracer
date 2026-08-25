@@ -1,0 +1,27 @@
+{
+  "camera": {
+    "origin": [0.0, 0.5, 3.0],
+    "look_at": [0.0, 0.0, -1.0],
+    "distance": 1.0,
+    "vpwidth": 1.5,
+    "vpheight": 1.5,
+    "samples_per_pixel": 100,
+    "aperture": 0.1,
+    "focal_distance": 3.0
+  },
+  "integrator": "whitted",
+  "materials": {
+    "mirror": { "kAmbient": 0.0, "kDiffuse": [0.0, 0.0, 0.0], "kSpecular": 1.0, "nS": 50.0 },
+    "diffuse": { "kAmbient": 0.1, "kDiffuse": [0.8, 0.2, 0.2], "kSpecular": 0.0, "nS": 0.0 },
+    "floor": { "kAmbient": 0.1, "kDiffuse": [0.8, 0.8, 0.8], "kSpecular": 0.0, "nS": 0.0 }
+  },
+  "lights": [
+    { "origin": [2.0, 2.0, 2.0], "color": [255, 255, 255], "radius": 0.5 }
+  ],
+  "objects": [
+    { "type": "sphere", "center": [0, 0, -1], "radius": 0.5, "material": "mirror" },
+    { "type": "sphere", "center": [-1.2, 0, -2], "radius": 0.5, "material": "diffuse" },
+    { "type": "sphere", "center": [1.2, 0, 0], "radius": 0.5, "material": "diffuse" },
+    { "type": "plane", "normal": [0, 1, 0], "distance": -0.5, "material": "floor" }
+  ]
+}

@@ -192,7 +192,7 @@ fn test_absorption_matches_beer_lambert() {
         let (scene, _) = parse_scene_json(&json).unwrap();
         // Fire single ray dead-center through the sphere
         let ray = Ray::new(DVec3::new(0.0, 0.0, 10.0), DVec3::new(0.0, 0.0, -1.0));
-        let color = hairy_tracer_core::render::WhittedIntegrator.trace_ray(&ray, 1, &scene, 5, None);
+        let color = hairy_tracer_core::render::WhittedIntegrator.trace_ray(&ray, 1, &scene, 5);
 
         // Normalize: background white = 255.0 (through ambient channel)
         let measured_t = color.x / 255.0;
@@ -392,7 +392,7 @@ fn test_environment_map_miss_returns_env_color() {
     });
 
     let ray = Ray::new(DVec3::new(0.0, 0.0, 0.0), DVec3::new(0.0, 0.0, -1.0));
-    let color = hairy_tracer_core::render::WhittedIntegrator.trace_ray(&ray, 1, &scene, 2, None);
+    let color = hairy_tracer_core::render::WhittedIntegrator.trace_ray(&ray, 1, &scene, 2);
     assert!(
         (color.x - 100.0).abs() < 5.0,
         "Env map miss should return env color, got {:?}",
@@ -407,6 +407,6 @@ fn test_no_environment_map_miss_returns_black() {
     // Scene with no objects and no environment map — miss should return black
     let scene = Scene::new();
     let ray = Ray::new(DVec3::new(0.0, 0.0, 0.0), DVec3::new(0.0, 0.0, -1.0));
-    let color = hairy_tracer_core::render::WhittedIntegrator.trace_ray(&ray, 1, &scene, 2, None);
+    let color = hairy_tracer_core::render::WhittedIntegrator.trace_ray(&ray, 1, &scene, 2);
     assert_eq!(color, DVec3::ZERO, "No env map miss should return black");
 }

@@ -26,3 +26,28 @@ might be interested in working on it too.
 
 - 9 October 2014
 - Updated 22 August 2026
+
+## Capabilities & Scene Taxonomy
+
+The repository's scenes are organized by the specific set of capabilities they test and demonstrate. 
+
+* **`scenes/whitted/legacy/`**: Classic recursive ray tracing (the original Whitted integrator) without any modern opt-in features.
+* **`scenes/whitted/featured/`**: Whitted integrator with sampling features enabled (Anti-Aliasing, Soft Shadows, Depth of Field, etc.).
+* **`scenes/path_trace/diffuse/`**: Path tracing for global illumination, focusing on diffuse surfaces and color bleeding.
+* **`scenes/path_trace/pbr/`**: Advanced path tracing featuring Physically Based Rendering (PBR), GGX Microfacet specular, and Next Event Estimation.
+* **`scenes/stress/`**: Scenes meant for profiling Bounding Volume Hierarchy (BVH) and engine performance.
+
+## How to Render
+
+To render a specific scene from any capability tier, use the `btrace.py` CLI script. It defaults to the fast Rust core engine:
+
+```bash
+python src/btrace.py --scene scenes/path_trace/pbr/bunny_cornell.json --size 800x800 --outfile output.bmp
+```
+
+### Batch Rendering Scripts
+
+You can render entire categories of scenes using the provided helper scripts:
+
+* **Classic / Whitted Scenes**: `bash render_all.sh [resolution]` (e.g. `bash render_all.sh 400x400`)
+* **Path Traced Scenes**: `bash run_pt_scenes.sh` (renders at 400x400)

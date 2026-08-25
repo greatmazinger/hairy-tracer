@@ -8,15 +8,15 @@ echo "Building Rust core..."
 maturin develop --release
 
 SCENES=(
-    "scenes/triangle_pt.json"
-    "scenes/camera_test_pt.json"
-    "scenes/torus_test_pt.json"
-    "scenes/checkers_pt.json"
-    "scenes/spheres3_pt.json"
-    "scenes/mesh_test_pt.json"
+    "scenes/path_trace/diffuse/triangle_pt.json"
+    "scenes/path_trace/diffuse/camera_test_pt.json"
+    "scenes/path_trace/diffuse/torus_test_pt.json"
+    "scenes/path_trace/diffuse/checkers_pt.json"
+    "scenes/path_trace/diffuse/spheres3_pt.json"
+    "scenes/path_trace/diffuse/mesh_test_pt.json"
     "scenes/stress/mirrors_pt.json"
     "scenes/stress/bvh_stress_pt.json"
-    "scenes/cornell_pbr.json"
+    "scenes/path_trace/pbr/cornell_pbr.json"
 )
 
 mkdir -p output_pt

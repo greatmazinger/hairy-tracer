@@ -75,6 +75,6 @@ scene = {
     ]
 }
 
-with open("scenes/bvh_stress.json", "w") as f:
+with open("scenes/stress/bvh_stress.json", "w") as f:
     json.dump(scene, f)
 

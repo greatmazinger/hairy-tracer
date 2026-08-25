@@ -9,6 +9,5 @@ pub trait Integrator: Send + Sync {
         depth: u32,
         scene: &Scene,
         max_depth: u32,
-        skip_object: Option<usize>,
     ) -> DVec3;
 }

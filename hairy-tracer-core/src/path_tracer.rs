@@ -17,14 +17,10 @@ impl Integrator for PathTracingIntegrator {
         depth: u32,
         scene: &Scene,
         max_depth: u32,
-        skip_object: Option<usize>,
     ) -> DVec3 {
         // Find closest hit
 let mut best_hit = None;
         for (i, obj) in scene.objects.iter().enumerate() {
-            if Some(i) == skip_object {
-                continue;
-            }
             if let Some(hit) = obj.intersect(ray, i) {
                 if best_hit.as_ref().map_or(true, |b: &Hit| hit.t < b.t) {
                     best_hit = Some(hit);
@@ -138,7 +134,7 @@ let hit = match best_hit {
                 let invec = -ray.direction;
                 let rvec = ((n * (n.dot(invec) * 2.0)) - invec).normalize();
                 let refray = Ray::new(hit.point + rvec * 1e-4, rvec);
-                let refl_color = self.trace_ray(&refray, depth + 1, scene, max_depth, None);
+                let refl_color = self.trace_ray(&refray, depth + 1, scene, max_depth);
 
                 L_out += refl_color * reflectance;
 
@@ -146,7 +142,7 @@ let hit = match best_hit {
                 if k >= 0.0 {
                     let refract_vec = (ray.direction * eta + n * (eta * cosi - k.sqrt())).normalize();
                     let refract_ray = Ray::new(hit.point + refract_vec * 1e-4, refract_vec);
-                    let mut refr_color = self.trace_ray(&refract_ray, depth + 1, scene, max_depth, None);
+                    let mut refr_color = self.trace_ray(&refract_ray, depth + 1, scene, max_depth);
 
                     // Beer-Lambert absorption
                     if material.absorption != DVec3::ZERO {
@@ -174,7 +170,7 @@ let hit = match best_hit {
                 let n = hit.normal;
                 let rvec = ((n * (n.dot(invec) * 2.0)) - invec).normalize();
                 let refray = Ray::new(hit.point + rvec * 1e-4, rvec);
-                let refl_color = self.trace_ray(&refray, depth + 1, scene, max_depth, None);
+                let refl_color = self.trace_ray(&refray, depth + 1, scene, max_depth);
                 L_out += refl_color;
             }
         } else {
@@ -338,7 +334,7 @@ let hit = match best_hit {
             
             let indirect_light = if brdf_weight.length_squared() > 1e-6 {
                 let bounce_ray = Ray::new(hit.point + hit.normal * 1e-4, bounce_dir);
-                let indirect_radiance = self.trace_ray(&bounce_ray, depth + 1, scene, max_depth, None);
+                let indirect_radiance = self.trace_ray(&bounce_ray, depth + 1, scene, max_depth);
                 indirect_radiance * brdf_weight
             } else {
                 DVec3::ZERO

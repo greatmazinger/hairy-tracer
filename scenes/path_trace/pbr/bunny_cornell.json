@@ -5,7 +5,7 @@
     "distance": 1.0,
     "vpwidth": 0.35,
     "vpheight": 0.35,
-    "samples_per_pixel": 500
+    "samples_per_pixel": 2000
   },
   "integrator": "pathtracer",
   "materials": {
@@ -27,7 +27,7 @@
     { "origin": [0.0, 0.29, 0.05], "color": [255, 255, 255], "radius": 0.05 }
   ],
   "objects": [
-    { "type": "mesh", "file": "models/external/bunny.obj", "material": "bunny_gold" },
+    { "type": "mesh", "file": "models/bunny.obj", "smooth_shading": true, "material": "bunny_gold" },
     { "type": "plane", "normal": [0, 1, 0], "distance": -0.0333, "material": "white" },
     { "type": "plane", "normal": [0, -1, 0], "distance": 0.3, "material": "white" },
     { "type": "plane", "normal": [0, 0, 1], "distance": 0.15, "material": "white" },

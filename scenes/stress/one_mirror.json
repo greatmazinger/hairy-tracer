@@ -1,0 +1,31 @@
+{
+  "camera": {
+    "origin": [0.0, 0.0, 5.0],
+    "look_at": [0.0, 0.0, 0.0],
+    "up": [0.0, 1.0, 0.0],
+    "distance": 1.0,
+    "vpwidth": 2.0,
+    "vpheight": 2.0,
+    "samples_per_pixel": 50
+  },
+  "materials": {
+    "mirror": {
+      "kAmbient": 0.0,
+      "kDiffuse": [0.0, 0.0, 0.0],
+      "kSpecular": 1.0,
+      "nS": 50.0,
+      "is_reflector": true
+    }
+  },
+  "environment_map": "example/materials/test_image.bmp",
+  "objects": [
+    {
+      "type": "sphere",
+      "center": [0.0, 0.0, 0.0],
+      "radius": 2.0,
+      "material": "mirror"
+    }
+  ],
+  "lights": [],
+  "integrator": "pathtracer"
+}

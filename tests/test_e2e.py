@@ -20,7 +20,7 @@ import pytest
 import hairy_tracer_core
 
 SCENE_DIRS = [
-    os.path.join(os.path.dirname(__file__), '..', 'scenes'),
+    os.path.join(os.path.dirname(__file__), '..', 'scenes', 'whitted', 'legacy'),
     os.path.join(os.path.dirname(__file__), '..', 'example', 'materials')
 ]
 SNAPSHOT_DIR = os.path.join(os.path.dirname(__file__), 'snapshots')
@@ -32,7 +32,7 @@ MAXDEPTH = 5
 def get_scene_files():
     scene_files = []
     for d in SCENE_DIRS:
-        for f in glob.glob(os.path.join(d, '*.json')):
+        for f in glob.glob(os.path.join(d, '**', '*.json'), recursive=True):
             if "cornell" not in f:
                 scene_files.append(f)
     return scene_files

@@ -1,0 +1,108 @@
+{
+  "camera": {
+    "origin": [
+      0.0,
+      3.0,
+      10.0
+    ],
+    "look_at": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "up": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "distance": 2.0,
+    "vpwidth": 2.0,
+    "vpheight": 1.5,
+    "samples_per_pixel": 50
+  },
+  "materials": {
+    "mirror": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "kSpecular": 1.0,
+      "nS": 50.0,
+      "is_reflector": true
+    },
+    "mat_glass": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 0.0,
+      "is_refractor": true,
+      "use_fresnel": true,
+      "ior": 1.5
+    }
+  },
+  "environment_map": "example/materials/test_image.bmp",
+  "objects": [
+    {
+      "type": "sphere",
+      "center": [
+        -2.0,
+        0.0,
+        0.0
+      ],
+      "radius": 2.0,
+      "material": "mirror"
+    },
+    {
+      "type": "sphere",
+      "center": [
+        2.0,
+        0.0,
+        0.0
+      ],
+      "radius": 2.0,
+      "material": "mirror"
+    },
+    {
+      "type": "sphere",
+      "center": [
+        0.0,
+        0.0,
+        -3.5
+      ],
+      "radius": 2.0,
+      "material": "mirror"
+    },
+    {
+      "type": "sphere",
+      "center": [
+        0.0,
+        0.0,
+        3.5
+      ],
+      "radius": 2.0,
+      "material": "mirror"
+    }
+  ],
+  "lights": [
+    {
+      "origin": [
+        0.0,
+        10.0,
+        10.0
+      ],
+      "color": [
+        255.0,
+        255.0,
+        255.0
+      ],
+      "radius": 5.0
+    }
+  ],
+  "integrator": "pathtracer"
+}

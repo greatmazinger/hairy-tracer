@@ -1,0 +1,26 @@
+{
+  "camera": {
+    "origin": [0.0, 0.2, 0.4],
+    "look_at": [-0.015, 0.11, 0.0],
+    "distance": 1.0,
+    "vpwidth": 0.5,
+    "vpheight": 0.5,
+    "samples_per_pixel": 1
+  },
+  "integrator": "whitted",
+  "materials": {
+    "gold": {
+      "kAmbient": 0.0, "kDiffuse": [1.0, 0.71, 0.29], "kSpecular": 1.0, "nS": 50.0
+    },
+    "floor": {
+      "kAmbient": 0.0, "kDiffuse": [0.8, 0.8, 0.8], "kSpecular": 0.0, "nS": 0.0
+    }
+  },
+  "lights": [
+    { "origin": [0.5, 0.8, 0.5], "color": [255, 255, 255], "radius": 0.0 }
+  ],
+  "objects": [
+    { "type": "mesh", "file": "models/bunny.obj", "material": "gold" },
+    { "type": "plane", "normal": [0, 1, 0], "distance": -0.0333, "material": "floor" }
+  ]
+}
