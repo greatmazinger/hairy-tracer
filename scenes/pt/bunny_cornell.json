@@ -1,0 +1,37 @@
+{
+  "camera": {
+    "origin": [0.0, 0.18, 0.4],
+    "look_at": [-0.015, 0.11, 0.0],
+    "distance": 1.0,
+    "vpwidth": 0.35,
+    "vpheight": 0.35,
+    "samples_per_pixel": 500
+  },
+  "integrator": "pathtracer",
+  "materials": {
+    "bunny_gold": {
+      "kAmbient": 0.0, "kDiffuse": [1.0, 0.71, 0.29], "kSpecular": 0.0, "nS": 0.0,
+      "roughness": 0.15, "metallic": 1.0
+    },
+    "white": {
+      "kAmbient": 0.0, "kDiffuse": [0.8, 0.8, 0.8], "kSpecular": 0.0, "nS": 0.0
+    },
+    "red": {
+      "kAmbient": 0.0, "kDiffuse": [0.8, 0.1, 0.1], "kSpecular": 0.0, "nS": 0.0
+    },
+    "green": {
+      "kAmbient": 0.0, "kDiffuse": [0.1, 0.8, 0.1], "kSpecular": 0.0, "nS": 0.0
+    }
+  },
+  "lights": [
+    { "origin": [0.0, 0.29, 0.05], "color": [255, 255, 255], "radius": 0.05 }
+  ],
+  "objects": [
+    { "type": "mesh", "file": "models/external/bunny.obj", "material": "bunny_gold" },
+    { "type": "plane", "normal": [0, 1, 0], "distance": -0.0333, "material": "white" },
+    { "type": "plane", "normal": [0, -1, 0], "distance": 0.3, "material": "white" },
+    { "type": "plane", "normal": [0, 0, 1], "distance": 0.15, "material": "white" },
+    { "type": "plane", "normal": [-1, 0, 0], "distance": 0.2, "material": "green" },
+    { "type": "plane", "normal": [1, 0, 0], "distance": 0.2, "material": "red" }
+  ]
+}
