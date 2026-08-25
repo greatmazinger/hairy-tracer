@@ -307,7 +307,7 @@ pub fn render_image_serial(integrator: &dyn Integrator,
                 };
 
                 let x_scalar = -xright + (xtmp as f64 + dx) * xd;
-                let y_scalar = -yright + (ytmp as f64 + dy) * yd;
+                let y_scalar = yright - (ytmp as f64 + dy) * yd;
 
                 let target_point = cam_origin - w * distance + x_scalar * u + y_scalar * v;
                 let ray_dir = target_point - cam_origin;
@@ -391,7 +391,7 @@ pub fn render_image_parallel(integrator: &dyn Integrator,
                     };
 
                     let x_scalar = -xright + (xtmp as f64 + dx) * xd;
-                    let y_scalar = -yright + (ytmp as f64 + dy) * yd;
+                    let y_scalar = yright - (ytmp as f64 + dy) * yd;
 
                     let target_point = cam_origin - w * distance + x_scalar * u + y_scalar * v;
                     let ray_dir = target_point - cam_origin;
@@ -434,4 +434,90 @@ pub fn render_image_parallel(integrator: &dyn Integrator,
         });
 
     pixels
+}
+
+#[cfg(test)]
+mod fov_tests {
+    use super::*;
+    use glam::DVec3;
+
+    #[test]
+    fn test_vertical_orientation_flip() {
+        // Simple camera looking down -Z axis
+        let cam_origin = DVec3::new(0.0, 0.0, 0.0);
+        let look_at = DVec3::new(0.0, 0.0, -1.0);
+        let up = DVec3::new(0.0, 1.0, 0.0);
+        
+        let orient = crate::camera::CameraOrientation::from_look_at(cam_origin, look_at, up);
+        let (u, v, w) = orient.basis_vectors();
+        
+        // w should point towards +Z (backwards)
+        assert!((w.z - 1.0).abs() < 1e-6, "w vector should point backwards");
+        
+        let distance = 1.0;
+        let vpwidth = 2.0;
+        let vpheight = 2.0;
+        let width = 100;
+        let height = 100;
+        
+        let xd = vpwidth / width as f64;
+        let yd = vpheight / height as f64;
+        let xright = vpwidth / 2.0;
+        let yright = vpheight / 2.0;
+        
+        let xtmp = 50; // Center column
+        
+        // Top pixel (ytmp = 0)
+        let ytmp_top = 0;
+        let x_scalar = -xright + (xtmp as f64 + 0.5) * xd;
+        let y_scalar_top = yright - (ytmp_top as f64 + 0.5) * yd;
+        
+        let target_point_top = cam_origin - w * distance + x_scalar * u + y_scalar_top * v;
+        let ray_dir_top = (target_point_top - cam_origin).normalize();
+        
+        // Bottom pixel (ytmp = height - 1)
+        let ytmp_bot = 99;
+        let y_scalar_bot = yright - (ytmp_bot as f64 + 0.5) * yd;
+        
+        let target_point_bot = cam_origin - w * distance + x_scalar * u + y_scalar_bot * v;
+        let ray_dir_bot = (target_point_bot - cam_origin).normalize();
+        
+        // ray_dir_top should point UP (positive Y)
+        assert!(ray_dir_top.y > 0.0, "Top pixel ray should point UP, got y={}", ray_dir_top.y);
+        
+        // ray_dir_bot should point DOWN (negative Y)
+        assert!(ray_dir_bot.y < 0.0, "Bottom pixel ray should point DOWN, got y={}", ray_dir_bot.y);
+    }
+    
+    #[test]
+    fn test_fov_magnitude() {
+        // Test that a distance=1, vpwidth=1 setup gives exactly 53.13 degrees FOV
+        // which means the horizontal ray angle from the center is exactly atan(0.5) = ~26.565 deg
+        let cam_origin = DVec3::new(0.0, 0.0, 0.0);
+        let look_at = DVec3::new(0.0, 0.0, -1.0);
+        let up = DVec3::new(0.0, 1.0, 0.0);
+        
+        let orient = crate::camera::CameraOrientation::from_look_at(cam_origin, look_at, up);
+        let (u, v, w) = orient.basis_vectors();
+        
+        let distance = 1.0;
+        let vpwidth = 1.0;
+        let vpheight = 1.0;
+        
+        let xright = vpwidth / 2.0;
+        
+        // Evaluate the rightmost edge of the viewport
+        let target_point = cam_origin - w * distance + xright * u;
+        let ray_dir = (target_point - cam_origin).normalize();
+        
+        // The angle should be atan(0.5 / 1.0)
+        let expected_angle = f64::atan(0.5);
+        
+        // The ray is pointing towards -Z, and to the right (+X)
+        // angle = atan(x / -z)
+        let actual_angle = f64::atan2(ray_dir.x, -ray_dir.z);
+        
+        assert!((actual_angle - expected_angle).abs() < 1e-6, 
+            "FOV mismatch. Expected half-angle {}, got {}", expected_angle, actual_angle);
+    }
 }
