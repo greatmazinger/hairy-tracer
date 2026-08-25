@@ -17,7 +17,8 @@
     ],
     "distance": 1.0,
     "vpwidth": 1.0,
-    "vpheight": 1.0
+    "vpheight": 1.0,
+    "samples_per_pixel": 50
   },
   "materials": {
     "stress_mat": {

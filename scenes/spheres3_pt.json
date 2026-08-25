@@ -7,7 +7,8 @@
     ],
     "distance": 10.0,
     "vpwidth": 5.76,
-    "vpheight": 4.32
+    "vpheight": 4.32,
+    "samples_per_pixel": 50
   },
   "materials": {
     "mat1": {

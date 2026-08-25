@@ -17,7 +17,8 @@
     ],
     "distance": 2.0,
     "vpwidth": 2.0,
-    "vpheight": 1.5
+    "vpheight": 1.5,
+    "samples_per_pixel": 50
   },
   "materials": {
     "mirror": {

@@ -7,7 +7,8 @@
     ],
     "distance": 8.0,
     "vpwidth": 10.0,
-    "vpheight": 7.5
+    "vpheight": 7.5,
+    "samples_per_pixel": 50
   },
   "materials": {
     "mat_checkers_a": {
