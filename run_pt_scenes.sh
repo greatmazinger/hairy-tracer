@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+echo "Setting up environment..."
+export VIRTUAL_ENV=$(python -c 'import sys; print(sys.prefix)')
+
 echo "Building Rust core..."
 maturin develop --release
 
