@@ -121,6 +121,7 @@ impl Intersectable for Triangle {
 
         let point = ray.at(t);
         
+        let geom_normal = self.normal;
         let mut normal = if let Some((n0, n1, n2)) = self.vertex_normals {
             let w = 1.0 - u - v;
             (n0 * w + n1 * u + n2 * v).normalize()
@@ -128,11 +129,21 @@ impl Intersectable for Triangle {
             self.normal
         };
 
-        // Back-face flip: if the ray direction and the normal point in the
-        // same hemisphere, we're hitting the back of the triangle — flip.
-        // Python: `if dot(Rd, un) > 0: un = -1 * un`
-        if rd.dot(normal) > 0.0 {
+        // Back-face flip MUST be based on the geometric normal, not the interpolated one.
+        // Otherwise, at grazing angles (the terminator), the interpolated normal might point
+        // slightly away from the ray even on a front-face hit, causing us to incorrectly flip it
+        // and shoot rays into the interior of the mesh!
+        if rd.dot(geom_normal) > 0.0 {
             normal = -normal;
+        }
+        
+        // Also ensure the interpolated normal doesn't point perfectly away from the viewer, 
+        // which can cause self-shadowing/terminator artifacts. We gently nudge it if needed.
+        if rd.dot(normal) > 0.0 {
+            // It's pointing away from the ray (into the surface from the ray's perspective).
+            // We can't use this normal or we'll get black patches. Let's fallback to geometric normal
+            // for this grazing hit.
+            normal = if rd.dot(geom_normal) > 0.0 { -geom_normal } else { geom_normal };
         }
 
         // UV mapping: use vertex UVs if available (from OBJ vt), else barycentric coordinates.
