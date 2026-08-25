@@ -35,16 +35,24 @@ fn render_image(
 
     let cam_origin = glam::DVec3::from_array(cam.origin);
 
-    // Dynamic viewport scaling matching Python
-    let aspect_ratio = width as f64 / height as f64;
-    let vpheight = cam.vpwidth / aspect_ratio;
-
     // Default look_at if None
+    let distance = cam.distance.unwrap_or(1.0);
     let look_at = if let Some(la) = cam.look_at {
         glam::DVec3::from_array(la)
     } else {
-        glam::DVec3::new(0.0, 0.0, cam.distance)
+        glam::DVec3::new(0.0, 0.0, distance)
     };
+
+    // Calculate vpwidth and vpheight, with fov_degrees taking precedence
+    let mut vpwidth = cam.vpwidth.unwrap_or(1.0);
+    if let Some(fov) = cam.fov_degrees {
+        let fov_rad = fov.to_radians();
+        vpwidth = 2.0 * distance * (fov_rad / 2.0).tan();
+    }
+    
+    // Dynamic viewport scaling matching Python
+    let aspect_ratio = width as f64 / height as f64;
+    let vpheight = vpwidth / aspect_ratio;
 
     let up = if let Some(up_vec) = cam.up {
         glam::DVec3::from_array(up_vec)
@@ -54,7 +62,7 @@ fn render_image(
 
     let samples_per_pixel = cam.samples_per_pixel.unwrap_or(1);
     let aperture = cam.aperture.unwrap_or(0.0);
-    let focal_distance = cam.focal_distance.unwrap_or(cam.distance); // focal_distance defaults to camera distance (w_norm)
+    let focal_distance = cam.focal_distance.unwrap_or(distance); // focal_distance defaults to camera distance (w_norm)
 
 
     println!("Integrator from scene: {}", scene.integrator);
@@ -72,7 +80,8 @@ fn render_image(
             cam_origin,
             look_at,
             up,
-            cam.vpwidth,
+            distance,
+            vpwidth,
             vpheight,
             width,
             height,

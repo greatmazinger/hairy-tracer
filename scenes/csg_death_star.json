@@ -3,7 +3,7 @@
         "origin": [0.0, 1.5, 12.0],
         "look_at": [0.0, 0.0, 0.0],
         "up": [0.0, 1.0, 0.0],
-        "distance": 1.0, "vpwidth": 12.0, "vpheight": 12.0
+        "distance": 1.0, "vpwidth": 1.0, "vpheight": 1.0
     },
     "materials": {
         "grey": {

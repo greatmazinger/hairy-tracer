@@ -42,6 +42,7 @@ fn main() {
             new_up,
             1.0,
             1.0,
+            1.0,
             width,
             height,
             2,

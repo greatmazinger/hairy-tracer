@@ -273,6 +273,7 @@ pub fn render_image_serial(integrator: &dyn Integrator,
     cam_origin: DVec3,
     look_at: DVec3,
     up: DVec3,
+    distance: f64,
     vpwidth: f64,
     vpheight: f64,
     width: usize,
@@ -308,7 +309,7 @@ pub fn render_image_serial(integrator: &dyn Integrator,
                 let x_scalar = -xright + (xtmp as f64 + dx) * xd;
                 let y_scalar = -yright + (ytmp as f64 + dy) * yd;
 
-                let target_point = look_at + x_scalar * u + y_scalar * v;
+                let target_point = cam_origin - w * distance + x_scalar * u + y_scalar * v;
                 let ray_dir = target_point - cam_origin;
 
                 let (ray_origin, final_dir) = if aperture > 0.0 {
@@ -352,6 +353,7 @@ pub fn render_image_parallel(integrator: &dyn Integrator,
     cam_origin: DVec3,
     look_at: DVec3,
     up: DVec3,
+    distance: f64,
     vpwidth: f64,
     vpheight: f64,
     width: usize,
@@ -391,7 +393,7 @@ pub fn render_image_parallel(integrator: &dyn Integrator,
                     let x_scalar = -xright + (xtmp as f64 + dx) * xd;
                     let y_scalar = -yright + (ytmp as f64 + dy) * yd;
 
-                    let target_point = look_at + x_scalar * u + y_scalar * v;
+                    let target_point = cam_origin - w * distance + x_scalar * u + y_scalar * v;
                     let ray_dir = target_point - cam_origin;
 
                     let (ray_origin, final_dir) = if aperture > 0.0 {

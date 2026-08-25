@@ -29,9 +29,10 @@ pub struct SceneJson {
 #[serde(deny_unknown_fields)]
 pub struct CameraJson {
     pub origin: [f64; 3],
-    pub distance: f64,
-    pub vpwidth: f64,
-    pub vpheight: f64,
+    pub distance: Option<f64>,
+    pub vpwidth: Option<f64>,
+    pub vpheight: Option<f64>,
+    pub fov_degrees: Option<f64>,
     pub look_at: Option<[f64; 3]>,
     pub up: Option<[f64; 3]>,
 
