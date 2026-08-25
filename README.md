@@ -37,6 +37,37 @@ The repository's scenes are organized by the specific set of capabilities they t
 * **`scenes/path_trace/pbr/`**: Advanced path tracing featuring Physically Based Rendering (PBR), GGX Microfacet specular, and Next Event Estimation.
 * **`scenes/stress/`**: Scenes meant for profiling Bounding Volume Hierarchy (BVH) and engine performance.
 
+## Installation & Setup
+
+To run the engine (which is now powered by the fast Rust core), you will need both **Python 3.10+** and **Rust** installed on your system.
+
+**1. Install Rust** (MacOS/Linux):
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+**2. Setup Python Environment**:
+It is recommended to use a virtual environment:
+```bash
+python3 -m venv env
+source env/bin/activate
+```
+
+**3. Install Dependencies**:
+You need `maturin` to build the Rust bindings, plus standard image libraries:
+```bash
+pip install maturin pillow numpy
+```
+
+**4. Build the Rust Core**:
+Before rendering, you must compile the Rust engine. From the root of the repository:
+```bash
+cd hairy-tracer-core
+maturin develop --release
+cd ..
+```
+*(You only need to do this once, or after modifying the Rust source code).*
+
 ## How to Render
 
 To render a specific scene from any capability tier, use the `btrace.py` CLI script. It defaults to the fast Rust core engine:

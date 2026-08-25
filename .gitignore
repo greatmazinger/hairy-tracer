@@ -83,7 +83,6 @@ test_nan_clamp.rs
 
 # Debug text files and prompts
 *.txt
-hairy-tracer-*.md
 sponza_*.md
 test_*.exp
 *reduced.json
