@@ -345,7 +345,9 @@ pub fn render_image_serial(integrator: &dyn Integrator,
                 };
 
                 let ray = Ray::new(ray_origin, final_dir);
-                color_sum += integrator.trace_ray(&ray, 1, scene, max_depth, None);
+                let mut sample = integrator.trace_ray(&ray, 1, scene, max_depth, None);
+                    sample = sample.clamp(DVec3::ZERO, DVec3::splat(5000.0));
+                    color_sum += sample;
             }
 
             let color = color_sum / (samples_per_pixel as f64);
@@ -444,7 +446,9 @@ pub fn render_image_parallel(integrator: &dyn Integrator,
                     };
 
                     let ray = Ray::new(ray_origin, final_dir);
-                    color_sum += integrator.trace_ray(&ray, 1, scene, max_depth, None);
+                    let mut sample = integrator.trace_ray(&ray, 1, scene, max_depth, None);
+                    sample = sample.clamp(DVec3::ZERO, DVec3::splat(5000.0));
+                    color_sum += sample;
                 }
 
                 let color = color_sum / (samples_per_pixel as f64);
