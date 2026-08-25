@@ -58,3 +58,32 @@ target/
 .*swo
 
 *.bak
+
+# Debug scripts and temporary Python patches
+check_*.py
+fix_*.py
+patch_*.py
+update_*.py
+test_*.py
+finalize_*.py
+make_diffuse.py
+regen_snapshots.py
+remove_textures.py
+sample_bleed.py
+trace_debug.py
+final_verify.py
+verify.py
+
+# Temporary render outputs and images
+*.bmp
+*.png
+output_pt/
+test_nan_clamp
+test_nan_clamp.rs
+
+# Debug text files and prompts
+*.txt
+hairy-tracer-*.md
+sponza_*.md
+test_*.exp
+*reduced.json

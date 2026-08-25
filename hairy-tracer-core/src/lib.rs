@@ -1,3 +1,4 @@
+pub mod normals_integrator;
 pub mod integrator;
 pub mod path_tracer;
 pub mod aabb;
@@ -56,6 +57,7 @@ fn render_image(
     let integrator: Box<dyn crate::integrator::Integrator> = match scene.integrator.as_str() {
         "whitted" => Box::new(render::WhittedIntegrator),
         "pathtracer" => Box::new(crate::path_tracer::PathTracingIntegrator),
+        "normals" => Box::new(normals_integrator::NormalsIntegrator),
         _ => Box::new(render::WhittedIntegrator),
     };
 

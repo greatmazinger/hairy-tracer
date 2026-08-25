@@ -1,0 +1,642 @@
+{
+  "camera": {
+    "origin": [
+      0.0,
+      200.0,
+      0.0
+    ],
+    "look_at": [
+      1000.0,
+      200.0,
+      0.0
+    ],
+    "up": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "distance": 1.0,
+    "vpwidth": 1000.0,
+    "vpheight": 1000.0,
+    "samples_per_pixel": 100,
+    "aperture": 0.0,
+    "focal_distance": 1.0
+  },
+  "integrator": "pathtracer",
+  "materials": {
+    "leaf": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_thorn_diff.png"
+      }
+    },
+    "vase_round": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.01,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/vase_round.png"
+      }
+    },
+    "Material__57": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/vase_plant.png"
+      }
+    },
+    "Material__298": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.01,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/background.png"
+      }
+    },
+    "bricks": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.015,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/spnza_bricks_a_diff.png"
+      }
+    },
+    "arch": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.10000000000000002,
+      "nS": 40.0,
+      "roughness": 0.21821789023599236,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_arch_diff.png"
+      }
+    },
+    "ceiling": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.01,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_ceiling_a_diff.png"
+      }
+    },
+    "column_a": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.01,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_column_a_diff.png"
+      }
+    },
+    "floor": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.5,
+      "nS": 70.0,
+      "roughness": 0.16666666666666666,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_floor_a_diff.png"
+      }
+    },
+    "column_c": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.01,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_column_c_diff.png"
+      }
+    },
+    "details": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_details_diff.png"
+      }
+    },
+    "column_b": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_column_b_diff.png"
+      }
+    },
+    "Material__47": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0
+    },
+    "flagpole": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.05000000000000001,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_flagpole_diff.png"
+      }
+    },
+    "fabric_e": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 0.1,
+      "roughness": 0.816496580927726,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_fabric_green_diff.png"
+      }
+    },
+    "fabric_d": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 0.1,
+      "roughness": 0.816496580927726,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_fabric_blue_diff.png"
+      }
+    },
+    "fabric_a": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 0.1,
+      "roughness": 0.816496580927726,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_fabric_diff.png"
+      }
+    },
+    "fabric_g": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 0.1,
+      "roughness": 0.816496580927726,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_curtain_blue_diff.png"
+      }
+    },
+    "fabric_c": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 0.1,
+      "roughness": 0.816496580927726,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_curtain_diff.png"
+      }
+    },
+    "fabric_f": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 0.1,
+      "roughness": 0.816496580927726,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_curtain_green_diff.png"
+      }
+    },
+    "chain": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.10000000000000002,
+      "nS": 50.0,
+      "roughness": 0.19611613513818404,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/chain_texture.png"
+      }
+    },
+    "vase_hanging": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.5,
+      "nS": 50.0,
+      "roughness": 0.19611613513818404,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/vase_hanging.png"
+      }
+    },
+    "vase": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/vase_dif.png"
+      }
+    },
+    "Material__25": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.01,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/lion.png"
+      }
+    },
+    "roof": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "kSpecular": 0.0,
+      "nS": 10.0,
+      "roughness": 0.408248290463863,
+      "metallic": 0.0,
+      "texture": {
+        "type": "image",
+        "path": "models/sponza/textures/sponza_roof_diff.png"
+      }
+    },
+    "default": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "kSpecular": 0.0,
+      "nS": 0.0,
+      "roughness": 1.0,
+      "metallic": 0.0
+    }
+  },
+  "lights": [
+    {
+      "origin": [
+        0.0,
+        1500.0,
+        0.0
+      ],
+      "color": [
+        150.0,
+        140.0,
+        130.0
+      ],
+      "radius": 150.0
+    },
+    {
+      "origin": [
+        0.0,
+        200.0,
+        0.0
+      ],
+      "color": [
+        30.0,
+        30.0,
+        35.0
+      ],
+      "radius": 50.0
+    },
+    {
+      "origin": [
+        -800.0,
+        200.0,
+        0.0
+      ],
+      "color": [
+        25.0,
+        25.0,
+        30.0
+      ],
+      "radius": 50.0
+    },
+    {
+      "origin": [
+        800.0,
+        200.0,
+        0.0
+      ],
+      "color": [
+        25.0,
+        25.0,
+        30.0
+      ],
+      "radius": 50.0
+    }
+  ],
+  "objects": [
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_leaf.obj",
+      "material": "leaf",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_Material__57.obj",
+      "material": "Material__57",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_vase_round.obj",
+      "material": "vase_round",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_Material__298.obj",
+      "material": "Material__298",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_bricks.obj",
+      "material": "bricks",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_arch.obj",
+      "material": "arch",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_ceiling.obj",
+      "material": "ceiling",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_column_a.obj",
+      "material": "column_a",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_floor.obj",
+      "material": "floor",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_column_c.obj",
+      "material": "column_c",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_details.obj",
+      "material": "details",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_column_b.obj",
+      "material": "column_b",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_Material__47.obj",
+      "material": "Material__47",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_flagpole.obj",
+      "material": "flagpole",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_fabric_e.obj",
+      "material": "fabric_e",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_fabric_d.obj",
+      "material": "fabric_d",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_fabric_a.obj",
+      "material": "fabric_a",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_fabric_g.obj",
+      "material": "fabric_g",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_fabric_c.obj",
+      "material": "fabric_c",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_fabric_f.obj",
+      "material": "fabric_f",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_chain.obj",
+      "material": "chain",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_vase_hanging.obj",
+      "material": "vase_hanging",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_vase.obj",
+      "material": "vase",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_Material__25.obj",
+      "material": "Material__25",
+      "smooth_shading": true
+    },
+    {
+      "type": "mesh",
+      "file": "models/sponza/sponza_roof.obj",
+      "material": "roof",
+      "smooth_shading": true
+    }
+  ]
+}
