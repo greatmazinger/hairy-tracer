@@ -230,54 +230,98 @@ let hit = match best_hit {
                 }
             }
 
-            // 2. Indirect Light (Cosine-Weighted Hemisphere Sampling)
+            // 2. Indirect Light
             let (u, v) = create_orthonormal_basis(hit.normal);
             let r1: f64 = rng.gen();
             let r2: f64 = rng.gen();
-
-            // Cosine-weighted hemisphere
-            let theta = r1.sqrt().acos();
-            let phi = 2.0 * PI * r2;
-            let dir_local = DVec3::new(theta.sin() * phi.cos(), theta.sin() * phi.sin(), theta.cos());
-            
-            // Transform to world space
-            let bounce_dir = (dir_local.x * u + dir_local.y * v + dir_local.z * hit.normal).normalize();
-
-            let bounce_ray = Ray::new(hit.point + hit.normal * 1e-4, bounce_dir);
-            let indirect_radiance = self.trace_ray(&bounce_ray, depth + 1, scene, max_depth, None);
             
             let view_dir = -ray.direction;
             let ndotv = hit.normal.dot(view_dir).max(0.001);
-            let l_dir = bounce_dir;
-            let ndotl = hit.normal.dot(l_dir).max(0.0);
-            let half_vector = (l_dir + view_dir).normalize();
-
-            let mut brdf_weight = albedo;
+            
+            let mut bounce_dir = DVec3::ZERO;
+            let mut brdf_weight = DVec3::ZERO;
+            
             if let Some(r) = material.roughness {
                 let m = material.metallic.unwrap_or(0.0);
                 let f0 = DVec3::splat(0.04).lerp(albedo, m);
-                let ndoth = hit.normal.dot(half_vector).max(0.0);
-                let vdoth = view_dir.dot(half_vector).max(0.0);
-
-                let ndf = ggx_ndf(ndoth, r);
-                let g = ggx_geometry_smith(ndotv, ndotl, r);
-                let f = fresnel_schlick(vdoth, f0);
-
-                let nominator = f * ndf * g;
-                let denominator = 4.0 * ndotv * ndotl + 0.001;
-                let specular = nominator / denominator;
-
-                let ks = f;
-                let kd = (DVec3::splat(1.0) - ks) * (1.0 - m);
-
-                let brdf = kd * albedo / PI + specular;
-                // Rendering eq: L_in * BRDF * ndotl / PDF
-                // PDF = ndotl / PI
-                // Weight = BRDF * PI
-                brdf_weight = brdf * PI;
+                
+                // Extremely simple probabilistic lobe selection
+                // If metallic is high, we almost always sample specular.
+                // We use F0 average to estimate specular probability for non-metals too.
+                let f0_avg = (f0.x + f0.y + f0.z) / 3.0;
+                let p_spec = (f0_avg + m).clamp(0.1, 0.9);
+                
+                let is_specular_bounce = rng.gen::<f64>() < p_spec;
+                
+                let alpha = r * r;
+                let alpha2 = alpha * alpha;
+                
+                let (ndotl, pdf) = if is_specular_bounce {
+                    // GGX Importance Sampling
+                    let phi = 2.0 * PI * r1;
+                    let cos_theta = ((1.0 - r2) / (1.0 + (alpha2 - 1.0) * r2)).max(0.0).sqrt();
+                    let sin_theta = (1.0 - cos_theta * cos_theta).max(0.0).sqrt();
+                    
+                    let h_local = DVec3::new(sin_theta * phi.cos(), sin_theta * phi.sin(), cos_theta);
+                    let h = (h_local.x * u + h_local.y * v + h_local.z * hit.normal).normalize();
+                    
+                    bounce_dir = (2.0 * view_dir.dot(h) * h - view_dir).normalize();
+                    let ndotl = hit.normal.dot(bounce_dir).max(0.0);
+                    let ndoth = hit.normal.dot(h).max(0.0);
+                    let vdoth = view_dir.dot(h).max(0.0);
+                    
+                    if ndotl > 0.0 && vdoth > 0.0 {
+                        let ndf = ggx_ndf(ndoth, r);
+                        let pdf_h = ndf * ndoth;
+                        let pdf = pdf_h / (4.0 * vdoth);
+                        (ndotl, pdf * p_spec)
+                    } else {
+                        (0.0, 0.0)
+                    }
+                } else {
+                    // Diffuse Cosine Sampling
+                    let theta = r1.sqrt().acos();
+                    let phi = 2.0 * PI * r2;
+                    let dir_local = DVec3::new(theta.sin() * phi.cos(), theta.sin() * phi.sin(), theta.cos());
+                    bounce_dir = (dir_local.x * u + dir_local.y * v + dir_local.z * hit.normal).normalize();
+                    let ndotl = hit.normal.dot(bounce_dir).max(0.0);
+                    (ndotl, (ndotl / PI) * (1.0 - p_spec))
+                };
+                
+                if ndotl > 0.0 && pdf > 1e-6 {
+                    let half_vector = (bounce_dir + view_dir).normalize();
+                    let ndoth = hit.normal.dot(half_vector).max(0.0);
+                    let vdoth = view_dir.dot(half_vector).max(0.0);
+                    
+                    let ndf = ggx_ndf(ndoth, r);
+                    let g = ggx_geometry_smith(ndotv, ndotl, r);
+                    let f = fresnel_schlick(vdoth, f0);
+                    
+                    let specular = (f * ndf * g) / (4.0 * ndotv * ndotl + 0.001);
+                    
+                    let ks = f;
+                    let kd = (DVec3::splat(1.0) - ks) * (1.0 - m);
+                    let brdf = kd * albedo / PI + specular;
+                    
+                    brdf_weight = brdf * ndotl / pdf;
+                }
+            } else {
+                // Legacy non-PBR (Diffuse only)
+                let theta = r1.sqrt().acos();
+                let phi = 2.0 * PI * r2;
+                let dir_local = DVec3::new(theta.sin() * phi.cos(), theta.sin() * phi.sin(), theta.cos());
+                bounce_dir = (dir_local.x * u + dir_local.y * v + dir_local.z * hit.normal).normalize();
+                
+                brdf_weight = albedo; // ndotl/PI cancels with PDF=ndotl/PI
             }
-
-            let indirect_light = indirect_radiance * brdf_weight;
+            
+            let indirect_light = if brdf_weight.length_squared() > 1e-6 {
+                let bounce_ray = Ray::new(hit.point + hit.normal * 1e-4, bounce_dir);
+                let indirect_radiance = self.trace_ray(&bounce_ray, depth + 1, scene, max_depth, None);
+                indirect_radiance * brdf_weight
+            } else {
+                DVec3::ZERO
+            };
 
             L_out += direct_light + indirect_light;
         }
