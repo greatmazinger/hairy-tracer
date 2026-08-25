@@ -69,6 +69,75 @@ impl Intersectable for Plane {
             v,
         })
     }
+
+    fn intervals(&self, ray: &Ray, object_index: usize) -> Vec<crate::intersect::Interval> {
+        let rd = ray.direction;
+        let vd = self.normal.dot(rd);
+
+        if vd.abs() < PARALLEL_EPSILON {
+            let v0 = -(self.normal.dot(ray.origin) + self.distance);
+            if v0 > 0.0 {
+                // Ray is entirely inside the half-space
+                let mut dummy_hit = Hit {
+                    t: 0.0,
+                    point: DVec3::ZERO,
+                    normal: self.normal,
+                    object_index,
+                    material_id: self.material_id,
+                    u: 0.0,
+                    v: 0.0,
+                };
+                return vec![crate::intersect::Interval {
+                    t_enter: f64::NEG_INFINITY,
+                    t_exit: f64::INFINITY,
+                    hit_enter: dummy_hit,
+                    hit_exit: dummy_hit,
+                }];
+            } else {
+                return vec![];
+            }
+        }
+
+        let v0 = -(self.normal.dot(ray.origin) + self.distance);
+        let t = v0 / vd;
+
+        let point = ray.at(t);
+        let u = point.x - point.x.floor();
+        let v = point.z - point.z.floor();
+
+        let hit = Hit {
+            t,
+            point,
+            normal: self.normal,
+            object_index,
+            material_id: self.material_id,
+            u,
+            v,
+        };
+
+        let mut dummy_hit_inf = hit;
+        let mut dummy_hit_neg_inf = hit;
+        dummy_hit_inf.t = f64::INFINITY;
+        dummy_hit_neg_inf.t = f64::NEG_INFINITY;
+
+        if vd < 0.0 {
+            // Entering the solid space
+            vec![crate::intersect::Interval {
+                t_enter: t,
+                t_exit: f64::INFINITY,
+                hit_enter: hit,
+                hit_exit: dummy_hit_inf,
+            }]
+        } else {
+            // Exiting the solid space
+            vec![crate::intersect::Interval {
+                t_enter: f64::NEG_INFINITY,
+                t_exit: t,
+                hit_enter: dummy_hit_neg_inf,
+                hit_exit: hit,
+            }]
+        }
+    }
 }
 
 #[cfg(test)]

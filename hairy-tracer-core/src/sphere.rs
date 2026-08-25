@@ -82,6 +82,62 @@ impl Intersectable for Sphere {
             v,
         })
     }
+
+    fn intervals(&self, ray: &Ray, object_index: usize) -> Vec<crate::intersect::Interval> {
+        let rd = ray.direction;
+        let og = ray.origin;
+        let oc = og - self.center;
+
+        let b = 2.0 * rd.dot(oc);
+        let c = oc.dot(oc) - self.r2;
+        let disc = b * b - 4.0 * c;
+
+        if disc < 0.0 {
+            return vec![];
+        }
+
+        let sq_disc = disc.sqrt();
+        let t1 = (-b - sq_disc) * 0.5;
+        let t2 = (-b + sq_disc) * 0.5;
+
+        if t2 < 0.0 {
+            return vec![]; // Entirely behind ray
+        }
+
+        let t_enter = t1;
+        let t_exit = t2;
+
+        let point_enter = ray.at(t_enter);
+        let normal_enter = self.unit_normal(point_enter);
+        let hit_enter = Hit {
+            t: t_enter,
+            point: point_enter,
+            normal: normal_enter,
+            object_index,
+            material_id: self.material_id,
+            u: 0.5 + (normal_enter.z.atan2(normal_enter.x)) / (2.0 * std::f64::consts::PI),
+            v: 0.5 + normal_enter.y.asin() / std::f64::consts::PI,
+        };
+
+        let point_exit = ray.at(t_exit);
+        let normal_exit = self.unit_normal(point_exit);
+        let hit_exit = Hit {
+            t: t_exit,
+            point: point_exit,
+            normal: normal_exit,
+            object_index,
+            material_id: self.material_id,
+            u: 0.5 + (normal_exit.z.atan2(normal_exit.x)) / (2.0 * std::f64::consts::PI),
+            v: 0.5 + normal_exit.y.asin() / std::f64::consts::PI,
+        };
+
+        vec![crate::intersect::Interval {
+            t_enter,
+            t_exit,
+            hit_enter,
+            hit_exit,
+        }]
+    }
 }
 
 #[cfg(test)]

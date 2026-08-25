@@ -1,0 +1,97 @@
+{
+    "camera": {
+        "origin": [3.0, 3.5, 7.0],
+        "look_at": [0.0, 0.0, 0.0],
+        "up": [0.0, 1.0, 0.0],
+        "distance": 1.0, "vpwidth": 1.0, "vpheight": 1.0
+    },
+    "materials": {
+        "red": {
+            "kAmbient": 0.1,
+            "kDiffuse": [0.9, 0.2, 0.2],
+            "kSpecular": 0.3,
+            "nS": 50.0,
+            "ambientColor": [220.0, 50.0, 50.0]
+        },
+        "floor": {
+            "kAmbient": 0.2,
+            "kDiffuse": [0.2, 0.2, 0.8],
+            "kSpecular": 0.1,
+            "nS": 10.0,
+            "ambientColor": [50.0, 50.0, 200.0]
+        }
+    },
+    "lights": [
+        {
+            "origin": [5.0, 10.0, 8.0],
+            "color": [400.0, 400.0, 400.0],
+            "radius": 0.0
+        },
+        {
+            "origin": [-5.0, 5.0, 8.0],
+            "color": [200.0, 200.0, 200.0],
+            "radius": 0.0
+        }
+    ],
+    "objects": [
+        {
+            "type": "checkered_plane",
+            "normal": [0.0, 1.0, 0.0],
+            "distance": -3.0,
+            "material1": "floor",
+            "material2": "red"
+        },
+        {
+            "type": "csg",
+            "op": "difference",
+            "left": {
+                "type": "csg",
+                "op": "difference",
+                "left": {
+                    "type": "csg",
+                    "op": "difference",
+                    "left": {
+                        "type": "csg",
+                        "op": "intersection",
+                        "left": {
+                            "type": "cube",
+                            "min": [-2.0, -2.0, -2.0],
+                            "max": [2.0, 2.0, 2.0],
+                            "material": "red"
+                        },
+                        "right": {
+                            "type": "sphere",
+                            "center": [0.0, 0.0, 0.0],
+                            "radius": 2.6,
+                            "material": "red"
+                        }
+                    },
+                    "right": {
+                        "type": "cylinder",
+                        "center": [0.0, 0.0, 0.0],
+                        "radius": 1.2,
+                        "height": 5.0,
+                        "axis": "x",
+                        "material": "red"
+                    }
+                },
+                "right": {
+                    "type": "cylinder",
+                    "center": [0.0, 0.0, 0.0],
+                    "radius": 1.2,
+                    "height": 5.0,
+                    "axis": "y",
+                    "material": "red"
+                }
+            },
+            "right": {
+                "type": "cylinder",
+                "center": [0.0, 0.0, 0.0],
+                "radius": 1.2,
+                "height": 5.0,
+                "axis": "z",
+                "material": "red"
+            }
+        }
+    ]
+}

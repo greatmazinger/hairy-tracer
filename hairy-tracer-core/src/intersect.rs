@@ -14,4 +14,21 @@ pub trait Intersectable: Send + Sync {
     /// `object_index` is the caller-assigned index of this object in the scene
     /// list, threaded through so that `Hit` can report which object was hit.
     fn intersect(&self, ray: &Ray, object_index: usize) -> Option<Hit>;
+
+    /// Get all intervals inside this object along the ray.
+    /// 
+    /// Used for Constructive Solid Geometry (CSG) operations. 
+    /// Primitives that support CSG must return the entry/exit intervals.
+    fn intervals(&self, _ray: &Ray, _object_index: usize) -> Vec<Interval> {
+        vec![]
+    }
+}
+
+/// A segment of a ray that is "inside" a solid primitive, used for CSG.
+#[derive(Debug, Clone)]
+pub struct Interval {
+    pub t_enter: f64,
+    pub t_exit: f64,
+    pub hit_enter: Hit,
+    pub hit_exit: Hit,
 }

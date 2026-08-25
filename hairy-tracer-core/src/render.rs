@@ -284,23 +284,9 @@ pub fn render_image_serial(integrator: &dyn Integrator,
 ) -> Vec<u8> {
     let mut pixels = vec![0u8; width * height * 3];
 
-    let w = cam_origin - look_at;
-    let w_norm = w.length();
-    let w = if w_norm == 0.0 {
-        DVec3::new(0.0, 0.0, 1.0)
-    } else {
-        w / w_norm
-    };
-
-    let u = up.cross(w);
-    let u_norm = u.length();
-    let u = if u_norm == 0.0 {
-        DVec3::new(1.0, 0.0, 0.0)
-    } else {
-        u / u_norm
-    };
-
-    let v = w.cross(u);
+    let orient = crate::camera::CameraOrientation::from_look_at(cam_origin, look_at, up);
+    let (u, v, w) = orient.basis_vectors();
+    let w_norm = (cam_origin - look_at).length();
 
     let xd = vpwidth / width as f64;
     let yd = vpheight / height as f64;
@@ -377,23 +363,9 @@ pub fn render_image_parallel(integrator: &dyn Integrator,
 ) -> Vec<u8> {
     let mut pixels = vec![0u8; width * height * 3];
 
-    let w = cam_origin - look_at;
-    let w_norm = w.length();
-    let w = if w_norm == 0.0 {
-        DVec3::new(0.0, 0.0, 1.0)
-    } else {
-        w / w_norm
-    };
-
-    let u = up.cross(w);
-    let u_norm = u.length();
-    let u = if u_norm == 0.0 {
-        DVec3::new(1.0, 0.0, 0.0)
-    } else {
-        u / u_norm
-    };
-
-    let v = w.cross(u);
+    let orient = crate::camera::CameraOrientation::from_look_at(cam_origin, look_at, up);
+    let (u, v, w) = orient.basis_vectors();
+    let w_norm = (cam_origin - look_at).length();
 
     let xd = vpwidth / width as f64;
     let yd = vpheight / height as f64;

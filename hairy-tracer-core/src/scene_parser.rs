@@ -102,6 +102,15 @@ pub struct ObjectJson {
     pub v1: Option<[f64; 3]>,
     pub v2: Option<[f64; 3]>,
 
+    pub min: Option<[f64; 3]>,
+    pub max: Option<[f64; 3]>,
+    pub height: Option<f64>,
+    pub axis: Option<String>,
+
+    pub op: Option<String>,
+    pub left: Option<Box<ObjectJson>>,
+    pub right: Option<Box<ObjectJson>>,
+
     pub file: Option<String>,
     pub smooth_shading: Option<bool>,
 
@@ -199,120 +208,8 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
 
     // 4. Objects
     for obj in &data.objects {
-        let t = obj.obj_type.as_str();
-
-        let mut mat_id = MaterialId(0);
-        if let Some(ref m) = obj.material {
-            if let Some(id) = mat_map.get(m) {
-                mat_id = *id;
-            } else {
-                return Err(format!("Unknown material '{}' referenced by object", m));
-            }
-        }
-
-        // Override reflection/refraction
-        if obj.is_reflector || obj.is_refractor {
-            let mut new_mat = scene.materials[mat_id.0].clone();
-            new_mat.is_reflector = obj.is_reflector;
-            new_mat.is_refractor = obj.is_refractor;
-            mat_id = MaterialId(scene.materials.len());
-            scene.materials.push(new_mat);
-        }
-
-        match t {
-            "sphere" => {
-                let center = DVec3::from_array(obj.center.unwrap());
-                let radius = obj.radius.unwrap();
-                let mut mat = scene.materials[mat_id.0].clone();
-                if !mat.has_explicit_ambient {
-                    mat.ambient_color = DVec3::new(15.0, 75.0, 255.0);
-                }
-                let new_mat_id = MaterialId(scene.materials.len());
-                scene.materials.push(mat);
-                scene
-                    .objects
-                    .push(Box::new(Sphere::new(center, radius, new_mat_id)));
-            }
-            "plane" => {
-                let normal = DVec3::from_array(obj.normal.unwrap());
-                let distance = obj.distance.unwrap();
-                scene
-                    .objects
-                    .push(Box::new(Plane::new(normal, distance, mat_id)));
-            }
-            "checkered_plane" => {
-                let normal = DVec3::from_array(obj.normal.unwrap());
-                let distance = obj.distance.unwrap();
-
-                let mat1_id = *mat_map.get(obj.material1.as_ref().unwrap()).unwrap();
-                let mut mat1 = scene.materials[mat1_id.0].clone();
-                if !mat1.has_explicit_ambient {
-                    mat1.ambient_color = DVec3::new(10.0, 10.0, 250.0);
-                }
-                let new_mat1_id = MaterialId(scene.materials.len());
-                scene.materials.push(mat1);
-
-                let mat2_id = *mat_map.get(obj.material2.as_ref().unwrap()).unwrap();
-                let mut mat2 = scene.materials[mat2_id.0].clone();
-                if !mat2.has_explicit_ambient {
-                    mat2.ambient_color = DVec3::new(150.0, 10.0, 10.0);
-                }
-                let new_mat2_id = MaterialId(scene.materials.len());
-                scene.materials.push(mat2);
-
-                scene.objects.push(Box::new(CheckeredPlane::new(
-                    normal,
-                    distance,
-                    new_mat1_id,
-                    new_mat2_id,
-                )));
-            }
-            "triangle" => {
-                let v0 = DVec3::from_array(obj.v0.unwrap());
-                let v1 = DVec3::from_array(obj.v1.unwrap());
-                let v2 = DVec3::from_array(obj.v2.unwrap());
-                let mut mat = scene.materials[mat_id.0].clone();
-                if !mat.has_explicit_ambient {
-                    mat.ambient_color = DVec3::new(15.0, 75.0, 255.0);
-                }
-                let new_mat_id = MaterialId(scene.materials.len());
-                scene.materials.push(mat);
-                scene
-                    .objects
-                    .push(Box::new(Triangle::new(v0, v1, v2, new_mat_id, 0)));
-            }
-            "mesh" => {
-                let filepath = obj.file.as_ref().unwrap();
-                let smooth_shading = obj.smooth_shading.unwrap_or(false);
-                let (tris, tex_coords, norms) = load_obj(filepath, smooth_shading)
-                    .map_err(|e| format!("Failed to load {}: {}", filepath, e))?;
-
-                let mut mat = scene.materials[mat_id.0].clone();
-                if !mat.has_explicit_ambient {
-                    mat.ambient_color = DVec3::new(15.0, 75.0, 255.0);
-                }
-                let new_mat_id = MaterialId(scene.materials.len());
-                scene.materials.push(mat);
-
-                let mut tri_objects = Vec::new();
-                for (i, (v0, v1, v2)) in tris.iter().enumerate() {
-                    let mut tri = Triangle::new(*v0, *v1, *v2, new_mat_id, i);
-                    if let Some(ref uvs) = tex_coords {
-                        let (uv0, uv1, uv2) = uvs[i];
-                        tri.set_uvs(uv0, uv1, uv2);
-                    }
-                    if let Some(ref ns) = norms {
-                        let (n0, n1, n2) = ns[i];
-                        tri.set_normals(n0, n1, n2);
-                    }
-                    tri_objects.push(tri);
-                }
-                scene
-                    .objects
-                    .push(Box::new(Mesh::from_triangles(tri_objects, new_mat_id)));
-            }
-            _ => return Err(format!("Unknown object type: {}", t)),
-        }
+        let parsed_obj = parse_object(obj, &mut scene, &mat_map)?;
+        scene.objects.push(parsed_obj);
     }
 
     Ok((scene, data.camera))
@@ -515,3 +412,124 @@ f 1 3 4
         assert!((n0_tri1 - expected_tip_normal).length() < 1e-6, "Expected {:?}, got {:?}", expected_tip_normal, n0_tri1);
     }
 }
+
+
+fn parse_object(obj: &ObjectJson, scene: &mut Scene, mat_map: &HashMap<String, MaterialId>, ) -> Result<Box<dyn crate::intersect::Intersectable>, String> {
+    let t = obj.obj_type.as_str();
+
+    let mut mat_id = MaterialId(0);
+    if let Some(ref m) = obj.material {
+        if let Some(id) = mat_map.get(m) {
+            mat_id = *id;
+        } else {
+            return Err(format!("Unknown material '{}' referenced by object", m));
+        }
+    }
+
+    if obj.is_reflector || obj.is_refractor {
+        let mut new_mat = scene.materials[mat_id.0].clone();
+        new_mat.is_reflector = obj.is_reflector;
+        new_mat.is_refractor = obj.is_refractor;
+        mat_id = MaterialId(scene.materials.len());
+        scene.materials.push(new_mat);
+    }
+
+    match t {
+        "sphere" => {
+            let center = DVec3::from_array(obj.center.unwrap());
+            let radius = obj.radius.unwrap();
+            let mut mat = scene.materials[mat_id.0].clone();
+            if !mat.has_explicit_ambient {
+                mat.ambient_color = DVec3::new(15.0, 75.0, 255.0);
+            }
+            let new_mat_id = MaterialId(scene.materials.len());
+            scene.materials.push(mat);
+            Ok(Box::new(crate::sphere::Sphere::new(center, radius, new_mat_id)))
+        }
+        "plane" => {
+            let normal = DVec3::from_array(obj.normal.unwrap());
+            let distance = obj.distance.unwrap();
+            Ok(Box::new(crate::plane::Plane::new(normal, distance, mat_id)))
+        }
+        "checkered_plane" => {
+            let normal = DVec3::from_array(obj.normal.unwrap());
+            let distance = obj.distance.unwrap();
+            let mut m1 = mat_id;
+            let mut m2 = mat_id;
+            if let Some(ref m) = obj.material1 {
+                m1 = *mat_map.get(m).unwrap();
+            }
+            if let Some(ref m) = obj.material2 {
+                m2 = *mat_map.get(m).unwrap();
+            }
+            Ok(Box::new(crate::checkered_plane::CheckeredPlane::new(
+                normal, distance, m1, m2,
+            )))
+        }
+        "triangle" => {
+            let v0 = DVec3::from_array(obj.v0.unwrap());
+            let v1 = DVec3::from_array(obj.v1.unwrap());
+            let v2 = DVec3::from_array(obj.v2.unwrap());
+            Ok(Box::new(crate::triangle::Triangle::new(v0, v1, v2, mat_id, 0)))
+        }
+        "mesh" => {
+            let filepath = obj.file.as_ref().unwrap();
+            let path = std::path::Path::new(filepath);
+            let smooth_shading = obj.smooth_shading.unwrap_or(false);
+            let (tris, tex_coords, norms) = load_obj(path.to_str().unwrap(), smooth_shading)
+                .map_err(|e| format!("Failed to load {}: {}", filepath, e))?;
+
+            let mut mat = scene.materials[mat_id.0].clone();
+            if !mat.has_explicit_ambient {
+                mat.ambient_color = DVec3::new(15.0, 75.0, 255.0);
+            }
+            let new_mat_id = MaterialId(scene.materials.len());
+            scene.materials.push(mat);
+
+            let mut tri_objects = Vec::new();
+            for (i, (v0, v1, v2)) in tris.iter().enumerate() {
+                let mut tri = crate::triangle::Triangle::new(*v0, *v1, *v2, new_mat_id, i);
+                if let Some(ref uvs) = tex_coords {
+                    let (uv0, uv1, uv2) = uvs[i];
+                    tri.set_uvs(uv0, uv1, uv2);
+                }
+                if let Some(ref ns) = norms {
+                    let (n0, n1, n2) = ns[i];
+                    tri.set_normals(n0, n1, n2);
+                }
+                tri_objects.push(tri);
+            }
+            Ok(Box::new(crate::mesh::Mesh::from_triangles(tri_objects, new_mat_id)))
+        }
+        "cube" => {
+            let min = DVec3::from_array(obj.min.unwrap());
+            let max = DVec3::from_array(obj.max.unwrap());
+            Ok(Box::new(crate::cube::Cube::new(min, max, mat_id)))
+        }
+        "cylinder" => {
+            let center = DVec3::from_array(obj.center.unwrap());
+            let radius = obj.radius.unwrap();
+            let height = obj.height.unwrap();
+            let axis = match obj.axis.as_deref().unwrap_or("y") {
+                "x" => crate::cylinder::Axis::X,
+                "z" => crate::cylinder::Axis::Z,
+                _ => crate::cylinder::Axis::Y,
+            };
+            Ok(Box::new(crate::cylinder::Cylinder { center, radius, height, axis, material_id: mat_id }))
+        }
+        "csg" => {
+            let op = match obj.op.as_deref().unwrap_or("union") {
+                "intersection" => crate::csg::CsgOp::Intersection,
+                "difference" => crate::csg::CsgOp::Difference,
+                _ => crate::csg::CsgOp::Union,
+            };
+            let left_json = obj.left.as_ref().unwrap();
+            let right_json = obj.right.as_ref().unwrap();
+            let left = parse_object(left_json, scene, mat_map)?;
+            let right = parse_object(right_json, scene, mat_map)?;
+            Ok(Box::new(crate::csg::CsgNode { left, right, op }))
+        }
+        _ => Err(format!("Unknown object type '{}'", t)),
+    }
+}
+

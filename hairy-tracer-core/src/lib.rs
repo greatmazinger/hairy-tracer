@@ -14,6 +14,10 @@ pub mod scene;
 pub mod scene_parser;
 pub mod sphere;
 pub mod triangle;
+pub mod camera;
+pub mod cube;
+pub mod cylinder;
+pub mod csg;
 
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;
