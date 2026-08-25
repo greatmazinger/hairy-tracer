@@ -1,0 +1,114 @@
+{
+  "camera": {
+    "origin": [
+      0.0,
+      0.0,
+      20.0
+    ],
+    "distance": 4.0,
+    "vpwidth": 15.36,
+    "vpheight": 11.52
+  },
+  "materials": {
+    "ill_model2a": {
+      "kAmbient": 0.2,
+      "kDiffuse": [
+        0.7,
+        0.7,
+        0.0
+      ],
+      "kSpecular": 0.4,
+      "nS": 1.0
+    },
+    "ill_model2b": {
+      "kAmbient": 0.1,
+      "kDiffuse": [
+        0.2,
+        0.2,
+        0.2
+      ],
+      "kSpecular": 0.9,
+      "nS": 100.0
+    },
+    "ill_model3": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        0.1,
+        0.7,
+        0.0
+      ],
+      "kSpecular": 0.7,
+      "nS": 10.0
+    },
+    "ill_model4": {
+      "kAmbient": 0.0,
+      "kDiffuse": [
+        0.3,
+        0.3,
+        0.9
+      ],
+      "kSpecular": 1.0,
+      "nS": 100.0
+    }
+  },
+  "lights": [
+    {
+      "origin": [
+        0.0,
+        5.0,
+        40.0
+      ],
+      "color": [
+        250,
+        250,
+        250
+      ]
+    },
+    {
+      "origin": [
+        -20.0,
+        40.0,
+        0.0
+      ],
+      "color": [
+        205,
+        10,
+        15
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "type": "checkered_plane",
+      "normal": [
+        0.0,
+        0.96592583,
+        0.25881905
+      ],
+      "distance": -0.2,
+      "material1": "ill_model2a",
+      "material2": "ill_model2b"
+    },
+    {
+      "type": "sphere",
+      "center": [
+        1.0,
+        1.5,
+        9.0
+      ],
+      "radius": 1.0,
+      "material": "ill_model3"
+    },
+    {
+      "type": "sphere",
+      "center": [
+        -1.0,
+        2.0,
+        7.0
+      ],
+      "radius": 2.0,
+      "material": "ill_model4"
+    }
+  ],
+  "integrator": "pathtracer"
+}

@@ -1,0 +1,103 @@
+{
+  "camera": {
+    "origin": [
+      0.0,
+      0.0,
+      20.0
+    ],
+    "distance": 4.0,
+    "vpwidth": 15.36,
+    "vpheight": 11.52
+  },
+  "materials": {
+    "mat_checkers_a": {
+      "kAmbient": 0.2,
+      "kDiffuse": [
+        0.7,
+        0.7,
+        0.0
+      ],
+      "kSpecular": 0.4,
+      "nS": 1.0
+    },
+    "mat_checkers_b": {
+      "kAmbient": 0.1,
+      "kDiffuse": [
+        0.2,
+        0.2,
+        0.2
+      ],
+      "kSpecular": 0.9,
+      "nS": 100.0
+    },
+    "mat_triangle": {
+      "kAmbient": 0.1,
+      "kDiffuse": [
+        0.9,
+        0.1,
+        0.1
+      ],
+      "kSpecular": 0.8,
+      "nS": 50.0
+    }
+  },
+  "lights": [
+    {
+      "origin": [
+        0.0,
+        15.0,
+        10.0
+      ],
+      "color": [
+        250,
+        250,
+        250
+      ]
+    },
+    {
+      "origin": [
+        -20.0,
+        40.0,
+        20.0
+      ],
+      "color": [
+        205,
+        10,
+        15
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "type": "checkered_plane",
+      "normal": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "distance": 4.0,
+      "material1": "mat_checkers_a",
+      "material2": "mat_checkers_b"
+    },
+    {
+      "type": "triangle",
+      "v0": [
+        -3.0,
+        -2.0,
+        5.0
+      ],
+      "v1": [
+        3.0,
+        -2.0,
+        5.0
+      ],
+      "v2": [
+        0.0,
+        4.0,
+        5.0
+      ],
+      "material": "mat_triangle"
+    }
+  ],
+  "integrator": "pathtracer"
+}

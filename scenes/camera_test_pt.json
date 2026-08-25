@@ -1,0 +1,87 @@
+{
+  "camera": {
+    "origin": [
+      10.0,
+      15.0,
+      10.0
+    ],
+    "look_at": [
+      0.0,
+      2.0,
+      0.0
+    ],
+    "up": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "distance": 8.0,
+    "vpwidth": 16.0,
+    "vpheight": 12.0
+  },
+  "materials": {
+    "mat_checkers_a": {
+      "kAmbient": 0.2,
+      "kDiffuse": [
+        0.7,
+        0.7,
+        0.0
+      ],
+      "kSpecular": 0.4,
+      "nS": 1.0
+    },
+    "mat_checkers_b": {
+      "kAmbient": 0.1,
+      "kDiffuse": [
+        0.2,
+        0.2,
+        0.2
+      ],
+      "kSpecular": 0.9,
+      "nS": 100.0
+    },
+    "mat_pyramid": {
+      "kAmbient": 0.1,
+      "kDiffuse": [
+        0.1,
+        0.8,
+        0.3
+      ],
+      "kSpecular": 0.8,
+      "nS": 50.0
+    }
+  },
+  "lights": [
+    {
+      "origin": [
+        25.0,
+        25.0,
+        5.0
+      ],
+      "color": [
+        255,
+        255,
+        255
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "type": "checkered_plane",
+      "normal": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "distance": 2.1,
+      "material1": "mat_checkers_a",
+      "material2": "mat_checkers_b"
+    },
+    {
+      "type": "mesh",
+      "file": "models/pyramid.obj",
+      "material": "mat_pyramid"
+    }
+  ],
+  "integrator": "pathtracer"
+}
