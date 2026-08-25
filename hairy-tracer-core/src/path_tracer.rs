@@ -216,16 +216,37 @@ let hit = match best_hit {
                     }
 
                     if !shadowed {
-                        let brdf = albedo / PI;
-                        // Light intensity is color (we interpret color as radiant intensity for point light)
+                        // Diffuse BRDF
+                        let mut brdf = albedo / PI;
+                        
+                        // Add GGX Specular BRDF if material is PBR
+                        if let Some(r) = material.roughness {
+                            let m = material.metallic.unwrap_or(0.0);
+                            let f0 = DVec3::splat(0.04).lerp(albedo, m);
+                            let view_dir = -ray.direction;
+                            let ndotv = hit.normal.dot(view_dir).max(0.001);
+                            let half_vector = (l_dir + view_dir).normalize();
+                            let ndoth = hit.normal.dot(half_vector).max(0.0);
+                            let vdoth = view_dir.dot(half_vector).max(0.0);
+                            
+                            let ndf = ggx_ndf(ndoth, r);
+                            let g = ggx_geometry_smith(ndotv, ndotl, r);
+                            let f = fresnel_schlick(vdoth, f0);
+                            
+                            let specular = (f * ndf * g) / (4.0 * ndotv * ndotl + 0.001);
+                            
+                            let ks = f;
+                            let kd = (DVec3::splat(1.0) - ks) * (1.0 - m);
+                            
+                            brdf = kd * albedo / PI + specular;
+                        }
+                        
+                        // Light intensity
                         let l_intensity = light.color;
                         
-                        // Solid angle or inverse square falloff.
-                        // The Whitted integrator doesn't do inverse square falloff, it just adds the color. 
-                        // To match expectations somewhat but stay physically based, let's just do NDotL * Color.
-                        // Wait, true path tracing needs inverse square falloff if it's a point light.
-                        // But let's just use `light.color * ndotl * brdf` for simplicity, assuming light.color is pre-scaled.
-                        direct_light += l_intensity * brdf * ndotl * PI; // Multiply by PI to cancel the /PI in BRDF, preserving intuitive light color.
+                        // For a point/sphere light in this basic engine, we just add `intensity * brdf * ndotl * PI`
+                        // (Multiplying by PI here is a legacy behavior of the engine to preserve intuitive light brightness)
+                        direct_light += l_intensity * brdf * ndotl * PI;
                     }
                 }
             }
