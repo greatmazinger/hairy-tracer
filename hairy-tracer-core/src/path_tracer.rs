@@ -20,7 +20,7 @@ impl Integrator for PathTracingIntegrator {
         skip_object: Option<usize>,
     ) -> DVec3 {
         // Find closest hit
-        let mut best_hit = None;
+let mut best_hit = None;
         for (i, obj) in scene.objects.iter().enumerate() {
             if Some(i) == skip_object {
                 continue;
@@ -33,7 +33,6 @@ impl Integrator for PathTracingIntegrator {
         }
 
         if depth == 1 {
-    // println!("best_hit for depth 1: {:?}", best_hit.as_ref().map(|h| h.t));
 }
 let hit = match best_hit {
             Some(h) => h,
@@ -50,6 +49,8 @@ let hit = match best_hit {
         let obj_index = hit.object_index;
 
         // Base color
+        if depth == 1 {
+        }
         let base_color = match &material.texture {
             TextureRef::None => material.k_diffuse,
             TextureRef::Checker { color_a, color_b, scale } => {
@@ -96,7 +97,21 @@ let hit = match best_hit {
         // We can use Schlick's approximation for fresnel here for hybrid.
         let mut is_specular = false;
         
-        if material.is_reflector || material.is_refractor {
+        // Map legacy to PBR if needed
+        let mut r_val = material.roughness;
+        let mut m_val = material.metallic;
+        
+        // If it's a pure mirror (kSpecular > 0.99 and base_color == 0)
+        let is_pure_mirror = (material.is_reflector || material.k_specular > 0.99) && base_color == DVec3::ZERO;
+
+        if r_val.is_none() && m_val.is_none() && material.k_specular > 0.0 && !is_pure_mirror {
+            r_val = Some((2.0 / (material.ns.max(1.0) + 2.0)).sqrt().clamp(0.01, 1.0));
+            m_val = Some(material.k_specular.clamp(0.0, 1.0));
+        }
+        
+        if depth == 1 {
+        }
+        if is_pure_mirror || material.is_refractor {
             is_specular = true;
             // Mirror or Glass
             // Re-use legacy logic with hybrid integration:
@@ -153,7 +168,7 @@ let hit = match best_hit {
 
                     L_out += refr_color * (1.0 - reflectance);
                 }
-            } else if material.is_reflector {
+            } else if is_pure_mirror {
                 // Mirror
                 let invec = -ray.direction;
                 let n = hit.normal;
@@ -271,10 +286,9 @@ let hit = match best_hit {
         // Apply Russian Roulette weighting
                         let result = L_out / p_survive;
         if ray.origin.x == 0.0 && ray.origin.y == 1.0 && ray.origin.z == 3.0 && depth == 1 {
-            // println!("pixel direct_light: {:?}, indirect_light: {:?}, L_out: {:?}", direct_light, indirect_light, L_out);
         }
         
-        result.clamp(DVec3::ZERO, DVec3::splat(255.0))
+        L_out / p_survive
     }
 }
 

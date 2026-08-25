@@ -355,9 +355,9 @@ pub fn render_image_serial(integrator: &dyn Integrator,
             let color = color_sum / (samples_per_pixel as f64);
 
             let idx = (ytmp * width + xtmp) * 3;
-            pixels[idx] = color.x as u8;
-            pixels[idx + 1] = color.y as u8;
-            pixels[idx + 2] = color.z as u8;
+            pixels[idx] = color.x.clamp(0.0, 255.0) as u8;
+            pixels[idx + 1] = color.y.clamp(0.0, 255.0) as u8;
+            pixels[idx + 2] = color.z.clamp(0.0, 255.0) as u8;
         }
     }
 
@@ -454,9 +454,9 @@ pub fn render_image_parallel(integrator: &dyn Integrator,
                 let color = color_sum / (samples_per_pixel as f64);
 
                 let idx = xtmp * 3;
-                row[idx] = color.x as u8;
-                row[idx + 1] = color.y as u8;
-                row[idx + 2] = color.z as u8;
+                row[idx] = color.x.clamp(0.0, 255.0) as u8;
+                row[idx + 1] = color.y.clamp(0.0, 255.0) as u8;
+                row[idx + 2] = color.z.clamp(0.0, 255.0) as u8;
             }
         });
 
