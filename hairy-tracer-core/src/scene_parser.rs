@@ -333,6 +333,7 @@ fn load_obj(
     let mut tex_coords: Vec<[f64; 2]> = Vec::new();
     let mut normals: Vec<DVec3> = Vec::new();
     let mut triangles = Vec::new();
+    let mut tri_indices = Vec::new();
     let mut tri_uvs: Vec<([f64; 2], [f64; 2], [f64; 2])> = Vec::new();
     let mut tri_normals: Vec<(DVec3, DVec3, DVec3)> = Vec::new();
     let mut has_uvs = false;
@@ -386,6 +387,11 @@ fn load_obj(
             }
             // Triangulate n-gon using triangle fan
             for i in 1..(face_v_indices.len() - 1) {
+                tri_indices.push((
+                    face_v_indices[0],
+                    face_v_indices[i],
+                    face_v_indices[i + 1],
+                ));
                 triangles.push((
                     vertices[face_v_indices[0]],
                     vertices[face_v_indices[i]],
@@ -418,8 +424,90 @@ fn load_obj(
     let norms = if has_normals && tri_normals.len() == triangles.len() {
         Some(tri_normals)
     } else {
-        None
+        // Generate angle-weighted vertex normals!
+        let mut vertex_normals_accum = vec![glam::DVec3::ZERO; vertices.len()];
+        
+        for (i, &(i0, i1, i2)) in tri_indices.iter().enumerate() {
+            let v0 = vertices[i0];
+            let v1 = vertices[i1];
+            let v2 = vertices[i2];
+            
+            let e1 = (v1 - v0).normalize();
+            let e2 = (v2 - v0).normalize();
+            let e3 = (v2 - v1).normalize();
+            let e4 = (v0 - v1).normalize();
+            let e5 = (v0 - v2).normalize();
+            let e6 = (v1 - v2).normalize();
+            
+            // Geometric face normal
+            let face_normal = (v1 - v0).cross(v2 - v0).normalize();
+            
+            // Angles at each vertex
+            let angle0 = e1.dot(e2).clamp(-1.0, 1.0).acos();
+            let angle1 = e3.dot(e4).clamp(-1.0, 1.0).acos();
+            let angle2 = e5.dot(e6).clamp(-1.0, 1.0).acos();
+            
+            vertex_normals_accum[i0] += face_normal * angle0;
+            vertex_normals_accum[i1] += face_normal * angle1;
+            vertex_normals_accum[i2] += face_normal * angle2;
+        }
+        
+        let mut gen_tri_normals = Vec::with_capacity(triangles.len());
+        for &(i0, i1, i2) in &tri_indices {
+            let n0 = vertex_normals_accum[i0].normalize();
+            let n1 = vertex_normals_accum[i1].normalize();
+            let n2 = vertex_normals_accum[i2].normalize();
+            
+            // Fallback for degenerate normals (e.g. vertices with 0 area faces)
+            let fn0 = if n0.is_nan() || n0.length_squared() == 0.0 { glam::DVec3::new(0.0, 1.0, 0.0) } else { n0 };
+            let fn1 = if n1.is_nan() || n1.length_squared() == 0.0 { glam::DVec3::new(0.0, 1.0, 0.0) } else { n1 };
+            let fn2 = if n2.is_nan() || n2.length_squared() == 0.0 { glam::DVec3::new(0.0, 1.0, 0.0) } else { n2 };
+            
+            gen_tri_normals.push((fn0, fn1, fn2));
+        }
+        
+        Some(gen_tri_normals)
     };
 
     Ok((triangles, uvs, norms))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+
+    #[test]
+    fn test_dynamic_vertex_normals() {
+        let obj_data = "\
+v 0.0 0.0 1.0
+v 1.0 0.0 0.0
+v 0.0 1.0 0.0
+v -1.0 0.0 0.0
+f 1 2 3
+f 1 3 4
+";
+        let filepath = "test_dynamic.obj";
+        fs::write(filepath, obj_data).unwrap();
+
+        let (triangles, _uvs, norms) = load_obj(filepath).unwrap();
+        fs::remove_file(filepath).unwrap();
+
+        let normals = norms.expect("Normals should be generated");
+        assert_eq!(triangles.len(), 2);
+        assert_eq!(normals.len(), 2);
+
+        // For the first triangle (1, 2, 3), the tip is v0.
+        // We expect the generated normal for v0 (which is the first normal of both triangles)
+        // to be (0, 1/sqrt(2), 1/sqrt(2)).
+        
+        let expected_tip_normal = DVec3::new(0.0, 1.0 / 2.0_f64.sqrt(), 1.0 / 2.0_f64.sqrt());
+        
+        let n0_tri1 = normals[0].0;
+        let n0_tri2 = normals[1].0;
+        
+        // They should be identical since they share the vertex
+        assert!((n0_tri1 - n0_tri2).length() < 1e-6);
+        assert!((n0_tri1 - expected_tip_normal).length() < 1e-6, "Expected {:?}, got {:?}", expected_tip_normal, n0_tri1);
+    }
 }

@@ -84,9 +84,7 @@ pub fn does_intersect(
 ) -> bool {
     let ray = Ray::new(origin, direction);
     for (idx, obj) in scene.objects.iter().enumerate() {
-        if Some(idx) == skip_object {
-            continue;
-        }
+        
         if let Some(hit) = obj.intersect(&ray, idx) {
             if hit.t > 0.0 {
                 return true;
@@ -114,9 +112,7 @@ impl Integrator for WhittedIntegrator {
     // Manual closest hit to mimic world.findIntersectionAndColor skipping srcobject
     let mut best: Option<Hit> = None;
     for (idx, obj) in scene.objects.iter().enumerate() {
-        if Some(idx) == skip_object {
-            continue;
-        }
+        
         if let Some(hit) = obj.intersect(ray, idx) {
             if best.as_ref().map_or(true, |b| hit.t < b.t) {
                 best = Some(hit);
@@ -167,7 +163,7 @@ impl Integrator for WhittedIntegrator {
 
         let lightvec = (jittered_light_origin - hit.point).normalize();
 
-        let is_shadowed = does_intersect(scene, hit.point, lightvec, Some(obj_index));
+        let is_shadowed = does_intersect(scene, hit.point, lightvec, None);
 
         let mut color_for_light = material.ambient_color * material.k_ambient;
 
@@ -208,7 +204,7 @@ impl Integrator for WhittedIntegrator {
             let rvec = calc_reflection_vector(invec, hit.normal).normalize();
             let refray = Ray::new(hit.point, rvec);
             let refl_color =
-                self.trace_ray(&refray, depth + 1, scene, max_depth, Some(obj_index));
+                self.trace_ray(&refray, depth + 1, scene, max_depth, None);
             total_color += refl_color * reflectance;
         }
 
@@ -221,7 +217,7 @@ impl Integrator for WhittedIntegrator {
                 let offset_point = hit.point + refract_vec * 0.001;
                 let refract_ray = Ray::new(offset_point, refract_vec);
                 let mut refr_color =
-                    self.trace_ray(&refract_ray, depth + 1, scene, max_depth, Some(obj_index));
+                    self.trace_ray(&refract_ray, depth + 1, scene, max_depth, None);
 
                 // Beer-Lambert absorption
                 if material.absorption != DVec3::ZERO {
@@ -252,7 +248,7 @@ impl Integrator for WhittedIntegrator {
             let rvec = calc_reflection_vector(invec, hit.normal).normalize();
             let refray = Ray::new(hit.point, rvec);
             let refl_color =
-                self.trace_ray(&refray, depth + 1, scene, max_depth, Some(obj_index));
+                self.trace_ray(&refray, depth + 1, scene, max_depth, None);
             total_color += refl_color;
         }
 
@@ -262,7 +258,7 @@ impl Integrator for WhittedIntegrator {
                 let offset_point = hit.point + refract_vec * 0.001;
                 let refract_ray = Ray::new(offset_point, refract_vec);
                 let refr_color =
-                    self.trace_ray(&refract_ray, depth + 1, scene, max_depth, Some(obj_index));
+                    self.trace_ray(&refract_ray, depth + 1, scene, max_depth, None);
                 total_color += refr_color;
             }
         }

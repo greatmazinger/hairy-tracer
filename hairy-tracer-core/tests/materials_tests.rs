@@ -1,10 +1,11 @@
+use hairy_tracer_core::integrator::Integrator;
 use glam::DVec3;
 use hairy_tracer_core::material::{
     EnvironmentMap, Light, Material, MaterialId, TextureImage, TextureRef,
 };
 use hairy_tracer_core::plane::Plane;
 use hairy_tracer_core::ray::Ray;
-use hairy_tracer_core::render::{render_image_parallel, trace_ray_worker};
+use hairy_tracer_core::render::{render_image_parallel};
 use hairy_tracer_core::scene::Scene;
 use hairy_tracer_core::scene_parser::parse_scene_json;
 use hairy_tracer_core::sphere::Sphere;
@@ -64,8 +65,7 @@ fn test_fresnel_gated_behind_flag() {
     }
 
     // Just verify it renders without crashing
-    let img = render_image_parallel(
-        &scene,
+    let img = render_image_parallel(&hairy_tracer_core::render::WhittedIntegrator, &scene,
         DVec3::new(0.0, 0.0, 5.0),
         DVec3::new(0.0, 0.0, 0.0),
         DVec3::new(0.0, 1.0, 0.0),
@@ -118,8 +118,7 @@ fn test_fresnel_changes_output_when_enabled() {
     let (scene_off, _) = parse_scene_json(json_off).unwrap();
     let (scene_on, _) = parse_scene_json(json_on).unwrap();
 
-    let img_off = render_image_parallel(
-        &scene_off,
+    let img_off = render_image_parallel(&hairy_tracer_core::render::WhittedIntegrator, &scene_off,
         DVec3::new(0.0, 0.0, 10.0),
         DVec3::new(0.0, 0.0, 0.0),
         DVec3::new(0.0, 1.0, 0.0),
@@ -132,8 +131,7 @@ fn test_fresnel_changes_output_when_enabled() {
         0.0,
         10.0,
     );
-    let img_on = render_image_parallel(
-        &scene_on,
+    let img_on = render_image_parallel(&hairy_tracer_core::render::WhittedIntegrator, &scene_on,
         DVec3::new(0.0, 0.0, 10.0),
         DVec3::new(0.0, 0.0, 0.0),
         DVec3::new(0.0, 1.0, 0.0),
@@ -194,7 +192,7 @@ fn test_absorption_matches_beer_lambert() {
         let (scene, _) = parse_scene_json(&json).unwrap();
         // Fire single ray dead-center through the sphere
         let ray = Ray::new(DVec3::new(0.0, 0.0, 10.0), DVec3::new(0.0, 0.0, -1.0));
-        let color = trace_ray_worker(&ray, 1, &scene, 5, None);
+        let color = hairy_tracer_core::render::WhittedIntegrator.trace_ray(&ray, 1, &scene, 5, None);
 
         // Normalize: background white = 255.0 (through ambient channel)
         let measured_t = color.x / 255.0;
@@ -249,8 +247,7 @@ fn test_checker_texture_samples() {
     );
 
     // Render and verify it produces non-uniform output (checker pattern)
-    let img = render_image_parallel(
-        &scene,
+    let img = render_image_parallel(&hairy_tracer_core::render::WhittedIntegrator, &scene,
         DVec3::new(0.0, 5.0, 5.0),
         DVec3::new(0.0, 0.0, 0.0),
         DVec3::new(0.0, 1.0, 0.0),
@@ -395,7 +392,7 @@ fn test_environment_map_miss_returns_env_color() {
     });
 
     let ray = Ray::new(DVec3::new(0.0, 0.0, 0.0), DVec3::new(0.0, 0.0, -1.0));
-    let color = trace_ray_worker(&ray, 1, &scene, 2, None);
+    let color = hairy_tracer_core::render::WhittedIntegrator.trace_ray(&ray, 1, &scene, 2, None);
     assert!(
         (color.x - 100.0).abs() < 5.0,
         "Env map miss should return env color, got {:?}",
@@ -410,6 +407,6 @@ fn test_no_environment_map_miss_returns_black() {
     // Scene with no objects and no environment map — miss should return black
     let scene = Scene::new();
     let ray = Ray::new(DVec3::new(0.0, 0.0, 0.0), DVec3::new(0.0, 0.0, -1.0));
-    let color = trace_ray_worker(&ray, 1, &scene, 2, None);
+    let color = hairy_tracer_core::render::WhittedIntegrator.trace_ray(&ray, 1, &scene, 2, None);
     assert_eq!(color, DVec3::ZERO, "No env map miss should return black");
 }

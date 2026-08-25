@@ -138,7 +138,7 @@ let hit = match best_hit {
                 let invec = -ray.direction;
                 let rvec = ((n * (n.dot(invec) * 2.0)) - invec).normalize();
                 let refray = Ray::new(hit.point + rvec * 1e-4, rvec);
-                let refl_color = self.trace_ray(&refray, depth + 1, scene, max_depth, Some(obj_index));
+                let refl_color = self.trace_ray(&refray, depth + 1, scene, max_depth, None);
 
                 L_out += refl_color * reflectance;
 
@@ -146,7 +146,7 @@ let hit = match best_hit {
                 if k >= 0.0 {
                     let refract_vec = (ray.direction * eta + n * (eta * cosi - k.sqrt())).normalize();
                     let refract_ray = Ray::new(hit.point + refract_vec * 1e-4, refract_vec);
-                    let mut refr_color = self.trace_ray(&refract_ray, depth + 1, scene, max_depth, Some(obj_index));
+                    let mut refr_color = self.trace_ray(&refract_ray, depth + 1, scene, max_depth, None);
 
                     // Beer-Lambert absorption
                     if material.absorption != DVec3::ZERO {
@@ -174,7 +174,7 @@ let hit = match best_hit {
                 let n = hit.normal;
                 let rvec = ((n * (n.dot(invec) * 2.0)) - invec).normalize();
                 let refray = Ray::new(hit.point + rvec * 1e-4, rvec);
-                let refl_color = self.trace_ray(&refray, depth + 1, scene, max_depth, Some(obj_index));
+                let refl_color = self.trace_ray(&refray, depth + 1, scene, max_depth, None);
                 L_out += refl_color;
             }
         } else {
@@ -207,8 +207,7 @@ let hit = match best_hit {
                     let shadow_ray = Ray::new(hit.point + hit.normal * 1e-4, l_dir);
                     let mut shadowed = false;
                     for (j, obj) in scene.objects.iter().enumerate() {
-                        if Some(j) == Some(obj_index) { continue; } // ignore self intersection safely
-                        if let Some(sh_hit) = obj.intersect(&shadow_ray, j) {
+                                                if let Some(sh_hit) = obj.intersect(&shadow_ray, j) {
                             if sh_hit.t < dist {
                                 shadowed = true;
                                 break;
@@ -245,7 +244,7 @@ let hit = match best_hit {
             let bounce_dir = (dir_local.x * u + dir_local.y * v + dir_local.z * hit.normal).normalize();
 
             let bounce_ray = Ray::new(hit.point + hit.normal * 1e-4, bounce_dir);
-            let indirect_radiance = self.trace_ray(&bounce_ray, depth + 1, scene, max_depth, Some(obj_index));
+            let indirect_radiance = self.trace_ray(&bounce_ray, depth + 1, scene, max_depth, None);
             
             let view_dir = -ray.direction;
             let ndotv = hit.normal.dot(view_dir).max(0.001);

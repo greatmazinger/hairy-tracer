@@ -23,8 +23,7 @@ fn test_anti_aliasing_smoothes_edges() {
     let up = DVec3::new(0.0, 1.0, 0.0);
 
     // Render at 1 SPP (width=4, height=1)
-    let img_1spp = render_image_parallel(
-        &scene, cam_origin, look_at, up, 1.0, 1.0, 4, 1, 1, 1, 0.0, 5.0,
+    let img_1spp = render_image_parallel(&hairy_tracer_core::render::WhittedIntegrator, &scene, cam_origin, look_at, up, 1.0, 1.0, 4, 1, 1, 1, 0.0, 5.0,
     );
 
     let mut has_intermediate_1spp = false;
@@ -37,8 +36,7 @@ fn test_anti_aliasing_smoothes_edges() {
     assert!(!has_intermediate_1spp, "1 SPP should be completely aliased");
 
     // Render at 100 SPP
-    let img_100spp = render_image_parallel(
-        &scene, cam_origin, look_at, up, 1.0, 1.0, 4, 1, 1, 100, 0.0, 5.0,
+    let img_100spp = render_image_parallel(&hairy_tracer_core::render::WhittedIntegrator, &scene, cam_origin, look_at, up, 1.0, 1.0, 4, 1, 1, 100, 0.0, 5.0,
     );
     let mut has_intermediate_100spp = false;
     for i in 0..4 {
@@ -79,14 +77,12 @@ fn test_soft_shadows_penumbra() {
     let look_at = DVec3::new(0.0, 0.0, 0.0);
     let up = DVec3::new(0.0, 1.0, 0.0);
 
-    let img_hard = render_image_parallel(
-        &scene, cam_origin, look_at, up, 5.0, 5.0, 20, 20, 1, 10, 0.0, 5.0,
+    let img_hard = render_image_parallel(&hairy_tracer_core::render::WhittedIntegrator, &scene, cam_origin, look_at, up, 5.0, 5.0, 20, 20, 1, 10, 0.0, 5.0,
     );
 
     // Make light soft
     scene.lights[0].radius = 1.0;
-    let img_soft = render_image_parallel(
-        &scene, cam_origin, look_at, up, 5.0, 5.0, 20, 20, 1, 100, 0.0, 5.0,
+    let img_soft = render_image_parallel(&hairy_tracer_core::render::WhittedIntegrator, &scene, cam_origin, look_at, up, 5.0, 5.0, 20, 20, 1, 100, 0.0, 5.0,
     );
 
     // Check for intermediate values in the shadow region that didn't exist in the hard shadow.
@@ -135,13 +131,11 @@ fn test_dof_blurs_off_focal_plane() {
     let up = DVec3::new(0.0, 1.0, 0.0);
 
     // 1. Focus at z=5 (focal_distance = 5). Near sphere is sharp, far sphere is blurred.
-    let img_focus_near = render_image_parallel(
-        &scene, cam_origin, look_at, up, 2.0, 2.0, 20, 20, 1, 50, 1.0, 5.0,
+    let img_focus_near = render_image_parallel(&hairy_tracer_core::render::WhittedIntegrator, &scene, cam_origin, look_at, up, 2.0, 2.0, 20, 20, 1, 50, 1.0, 5.0,
     );
 
     // 2. Focus at z=0 (focal_distance = 10). Far sphere is sharp, near sphere is blurred.
-    let img_focus_far = render_image_parallel(
-        &scene, cam_origin, look_at, up, 2.0, 2.0, 20, 20, 1, 50, 1.0, 10.0,
+    let img_focus_far = render_image_parallel(&hairy_tracer_core::render::WhittedIntegrator, &scene, cam_origin, look_at, up, 2.0, 2.0, 20, 20, 1, 50, 1.0, 10.0,
     );
 
     // Since spheres are just white circles on black background, "blurred" means anti-aliased soft edges (intermediate pixels).
