@@ -12,6 +12,7 @@ use crate::sphere::Sphere;
 use crate::triangle::Triangle;
 
 #[derive(Deserialize, Debug)]
+#[serde(deny_unknown_fields)]
 pub struct SceneJson {
     pub camera: CameraJson,
     #[serde(default)]
@@ -25,6 +26,7 @@ pub struct SceneJson {
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(deny_unknown_fields)]
 pub struct CameraJson {
     pub origin: [f64; 3],
     pub distance: f64,
@@ -41,6 +43,7 @@ pub struct CameraJson {
 
 #[derive(Deserialize, Debug)]
 #[allow(non_snake_case)]
+#[serde(deny_unknown_fields)]
 pub struct MaterialJson {
     pub kAmbient: f64,
     pub kDiffuse: [f64; 3],
@@ -77,6 +80,7 @@ fn default_checker_scale() -> f64 {
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(deny_unknown_fields)]
 pub struct LightJson {
     pub origin: [f64; 3],
     pub color: [f64; 3],
@@ -84,6 +88,7 @@ pub struct LightJson {
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(deny_unknown_fields)]
 pub struct ObjectJson {
     #[serde(rename = "type")]
     pub obj_type: String,
@@ -199,6 +204,8 @@ pub fn parse_scene_json(json_str: &str) -> Result<(Scene, CameraJson), String> {
         if let Some(ref m) = obj.material {
             if let Some(id) = mat_map.get(m) {
                 mat_id = *id;
+            } else {
+                return Err(format!("Unknown material '{}' referenced by object", m));
             }
         }
 

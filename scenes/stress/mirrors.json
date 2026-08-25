@@ -28,10 +28,9 @@
         0.0
       ],
       "kSpecular": 1.0,
-      "nS": 50.0,
-      "is_reflector": true
+      "nS": 50.0
     },
-    "glass": {
+    "mat_glass": {
       "kAmbient": 0.0,
       "kDiffuse": [
         0.0,
@@ -40,7 +39,6 @@
       ],
       "kSpecular": 0.0,
       "nS": 0.0,
-      "is_refractor": true,
       "use_fresnel": true,
       "ior": 1.5
     }
