@@ -85,8 +85,8 @@ let hit = match best_hit {
             1.0
         };
 
-        // Normalize base color to [0, 1] range for energy calculations
-        let albedo = base_color; // Already [0, 1]
+        // Normalize base color to [0, 1] range for PBR energy calculations
+        let albedo = base_color / 255.0;
         let mut L_out = DVec3::ZERO;
 
         // Path Tracing Logic:
@@ -344,7 +344,7 @@ let hit = match best_hit {
                 DVec3::ZERO
             };
 
-            L_out += direct_light + indirect_light;
+            L_out += direct_light * 255.0 + indirect_light;
         }
 
         // Apply Russian Roulette weighting

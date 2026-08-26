@@ -1,0 +1,870 @@
+{
+  "camera": {
+    "origin": [
+      0.0,
+      5.0,
+      7.0
+    ],
+    "look_at": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "up": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "distance": 8.0,
+    "fov_degrees": 45.0,
+    "samples_per_pixel": 16
+  },
+  "integrator": "pathtracer",
+  "lights": [
+    {
+      "origin": [
+        5.0,
+        8.0,
+        6.0
+      ],
+      "color": [
+        1.0,
+        0.95,
+        0.9
+      ],
+      "radius": 0.8
+    },
+    {
+      "origin": [
+        -6.0,
+        3.0,
+        -2.0
+      ],
+      "color": [
+        0.3,
+        0.4,
+        0.6
+      ],
+      "radius": 0.0
+    },
+    {
+      "origin": [
+        -2.0,
+        6.0,
+        -8.0
+      ],
+      "color": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "radius": 0.0
+    }
+  ],
+  "materials": {
+    "gear_mat": {
+      "kDiffuse": [
+        205.0,
+        127.0,
+        50.0
+      ],
+      "kAmbient": 0.15,
+      "kSpecular": 0.8,
+      "nS": 60.0
+    },
+    "floor_mat": {
+      "kDiffuse": [
+        40.0,
+        50.0,
+        60.0
+      ],
+      "kAmbient": 0.15,
+      "kSpecular": 0.3,
+      "nS": 20.0
+    }
+  },
+  "objects": [
+    {
+      "type": "csg",
+      "op": "union",
+      "left": {
+        "type": "csg",
+        "op": "difference",
+        "left": {
+          "type": "cylinder",
+          "center": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "radius": 2.0,
+          "height": 1.0,
+          "axis": "y",
+          "material": "gear_mat"
+        },
+        "right": {
+          "type": "cylinder",
+          "center": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "radius": 0.5,
+          "height": 1.1,
+          "axis": "y",
+          "material": "gear_mat"
+        }
+      },
+      "right": {
+        "type": "csg",
+        "op": "union",
+        "left": {
+          "type": "csg",
+          "op": "union",
+          "left": {
+            "type": "csg",
+            "op": "union",
+            "left": {
+              "type": "csg",
+              "op": "union",
+              "left": {
+                "type": "transform",
+                "rotate": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "translate": [
+                  0.0,
+                  0.0,
+                  1.9
+                ],
+                "child": {
+                  "type": "cube",
+                  "min": [
+                    -0.25,
+                    -0.55,
+                    0.0
+                  ],
+                  "max": [
+                    0.25,
+                    0.55,
+                    0.35
+                  ],
+                  "material": "gear_mat"
+                }
+              },
+              "right": {
+                "type": "csg",
+                "op": "union",
+                "left": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    15.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                },
+                "right": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    30.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                }
+              }
+            },
+            "right": {
+              "type": "csg",
+              "op": "union",
+              "left": {
+                "type": "transform",
+                "rotate": [
+                  0.0,
+                  45.0,
+                  0.0
+                ],
+                "translate": [
+                  0.0,
+                  0.0,
+                  1.9
+                ],
+                "child": {
+                  "type": "cube",
+                  "min": [
+                    -0.25,
+                    -0.55,
+                    0.0
+                  ],
+                  "max": [
+                    0.25,
+                    0.55,
+                    0.35
+                  ],
+                  "material": "gear_mat"
+                }
+              },
+              "right": {
+                "type": "csg",
+                "op": "union",
+                "left": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    60.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                },
+                "right": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    75.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                }
+              }
+            }
+          },
+          "right": {
+            "type": "csg",
+            "op": "union",
+            "left": {
+              "type": "csg",
+              "op": "union",
+              "left": {
+                "type": "transform",
+                "rotate": [
+                  0.0,
+                  90.0,
+                  0.0
+                ],
+                "translate": [
+                  0.0,
+                  0.0,
+                  1.9
+                ],
+                "child": {
+                  "type": "cube",
+                  "min": [
+                    -0.25,
+                    -0.55,
+                    0.0
+                  ],
+                  "max": [
+                    0.25,
+                    0.55,
+                    0.35
+                  ],
+                  "material": "gear_mat"
+                }
+              },
+              "right": {
+                "type": "csg",
+                "op": "union",
+                "left": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    105.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                },
+                "right": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    120.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                }
+              }
+            },
+            "right": {
+              "type": "csg",
+              "op": "union",
+              "left": {
+                "type": "transform",
+                "rotate": [
+                  0.0,
+                  135.0,
+                  0.0
+                ],
+                "translate": [
+                  0.0,
+                  0.0,
+                  1.9
+                ],
+                "child": {
+                  "type": "cube",
+                  "min": [
+                    -0.25,
+                    -0.55,
+                    0.0
+                  ],
+                  "max": [
+                    0.25,
+                    0.55,
+                    0.35
+                  ],
+                  "material": "gear_mat"
+                }
+              },
+              "right": {
+                "type": "csg",
+                "op": "union",
+                "left": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    150.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                },
+                "right": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    165.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "right": {
+          "type": "csg",
+          "op": "union",
+          "left": {
+            "type": "csg",
+            "op": "union",
+            "left": {
+              "type": "csg",
+              "op": "union",
+              "left": {
+                "type": "transform",
+                "rotate": [
+                  0.0,
+                  180.0,
+                  0.0
+                ],
+                "translate": [
+                  0.0,
+                  0.0,
+                  1.9
+                ],
+                "child": {
+                  "type": "cube",
+                  "min": [
+                    -0.25,
+                    -0.55,
+                    0.0
+                  ],
+                  "max": [
+                    0.25,
+                    0.55,
+                    0.35
+                  ],
+                  "material": "gear_mat"
+                }
+              },
+              "right": {
+                "type": "csg",
+                "op": "union",
+                "left": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    195.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                },
+                "right": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    210.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                }
+              }
+            },
+            "right": {
+              "type": "csg",
+              "op": "union",
+              "left": {
+                "type": "transform",
+                "rotate": [
+                  0.0,
+                  225.0,
+                  0.0
+                ],
+                "translate": [
+                  0.0,
+                  0.0,
+                  1.9
+                ],
+                "child": {
+                  "type": "cube",
+                  "min": [
+                    -0.25,
+                    -0.55,
+                    0.0
+                  ],
+                  "max": [
+                    0.25,
+                    0.55,
+                    0.35
+                  ],
+                  "material": "gear_mat"
+                }
+              },
+              "right": {
+                "type": "csg",
+                "op": "union",
+                "left": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    240.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                },
+                "right": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    255.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                }
+              }
+            }
+          },
+          "right": {
+            "type": "csg",
+            "op": "union",
+            "left": {
+              "type": "csg",
+              "op": "union",
+              "left": {
+                "type": "transform",
+                "rotate": [
+                  0.0,
+                  270.0,
+                  0.0
+                ],
+                "translate": [
+                  0.0,
+                  0.0,
+                  1.9
+                ],
+                "child": {
+                  "type": "cube",
+                  "min": [
+                    -0.25,
+                    -0.55,
+                    0.0
+                  ],
+                  "max": [
+                    0.25,
+                    0.55,
+                    0.35
+                  ],
+                  "material": "gear_mat"
+                }
+              },
+              "right": {
+                "type": "csg",
+                "op": "union",
+                "left": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    285.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                },
+                "right": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    300.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                }
+              }
+            },
+            "right": {
+              "type": "csg",
+              "op": "union",
+              "left": {
+                "type": "transform",
+                "rotate": [
+                  0.0,
+                  315.0,
+                  0.0
+                ],
+                "translate": [
+                  0.0,
+                  0.0,
+                  1.9
+                ],
+                "child": {
+                  "type": "cube",
+                  "min": [
+                    -0.25,
+                    -0.55,
+                    0.0
+                  ],
+                  "max": [
+                    0.25,
+                    0.55,
+                    0.35
+                  ],
+                  "material": "gear_mat"
+                }
+              },
+              "right": {
+                "type": "csg",
+                "op": "union",
+                "left": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    330.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                },
+                "right": {
+                  "type": "transform",
+                  "rotate": [
+                    0.0,
+                    345.0,
+                    0.0
+                  ],
+                  "translate": [
+                    0.0,
+                    0.0,
+                    1.9
+                  ],
+                  "child": {
+                    "type": "cube",
+                    "min": [
+                      -0.25,
+                      -0.55,
+                      0.0
+                    ],
+                    "max": [
+                      0.25,
+                      0.55,
+                      0.35
+                    ],
+                    "material": "gear_mat"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "plane",
+      "normal": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "distance": 0.5,
+      "material": "floor_mat"
+    }
+  ]
+}
