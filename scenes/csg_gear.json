@@ -19,32 +19,20 @@
     "fov_degrees": 45.0,
     "samples_per_pixel": 4
   },
-  "integrator": "normals",
+  "integrator": "whitted",
   "lights": [
-    {
-      "origin": [
-        5.0,
-        10.0,
-        5.0
-      ],
-      "color": [
-        255.0,
-        255.0,
-        255.0
-      ]
-    }
+      { "origin": [5.0, 8.0, 6.0],   "color": [600.0, 550.0, 500.0], "radius": 0.8 },
+      { "origin": [-6.0, 3.0, -2.0], "color": [80.0, 90.0, 130.0],   "radius": 0.0 },
+      { "origin": [-2.0, 6.0, -8.0], "color": [200.0, 200.0, 220.0], "radius": 0.0 }
   ],
   "materials": {
     "gear_mat": {
-      "kDiffuse": [
-        200.0,
-        200.0,
-        200.0
-      ],
-      "kAmbient": 0.2,
-      "kSpecular": 0.5,
-      "nS": 32.0
-    }
+      "kDiffuse": [180.0, 180.0, 190.0],
+      "kAmbient": 0.15,
+      "kSpecular": 0.7,
+      "nS": 100.0
+    },
+    "floor_mat": { "kDiffuse": [220.0, 220.0, 220.0], "kAmbient": 0.15, "kSpecular": 0.05, "nS": 5.0 }
   },
   "objects": [
     {
@@ -818,6 +806,8 @@
           }
         }
       }
-    }
+    },
+    { "type": "plane", "normal": [0.0, 1.0, 0.0], "distance": 0.5, "material": "floor_mat" }
   ]
+
 }
