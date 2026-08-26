@@ -18,6 +18,10 @@ impl Integrator for PathTracingIntegrator {
         scene: &Scene,
         max_depth: u32,
     ) -> DVec3 {
+        if depth > max_depth {
+            return DVec3::ZERO;
+        }
+
         // Find closest hit
 let mut best_hit = None;
         for (i, obj) in scene.objects.iter().enumerate() {
