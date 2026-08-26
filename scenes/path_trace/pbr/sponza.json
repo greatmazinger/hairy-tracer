@@ -15,9 +15,8 @@
       1.0,
       0.0
     ],
-    "distance": 1.0,
-    "vpwidth": 1000.0,
-    "vpheight": 1000.0,
+    "distance": 1000.0,
+    "fov_degrees": 53.13,
     "samples_per_pixel": 100,
     "aperture": 0.0,
     "focal_distance": 1.0
