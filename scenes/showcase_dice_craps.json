@@ -1,6 +1,6 @@
 {
   "camera": {
-    "aperture": 0.15,
+    "aperture": 0.35,
     "distance": 1,
     "focal_distance": 13.3,
     "fov_degrees": 45.0,
@@ -89,18 +89,30 @@
       "nS": 10,
       "roughness": 0.9
     },
-    "ivory_mat": {
+    "ivory_body_mat": {
       "kAmbient": 0.1,
       "kDiffuse": [
         0.94,
         0.89,
         0.8
       ],
-      "kSpecular": 0.5,
-      "metallic": 0.05,
-      "nS": 35,
-      "roughness": 0.25,
+      "kSpecular": 0.6,
+      "metallic": 0.1,
+      "nS": 40,
+      "roughness": 0.2,
       "use_fresnel": true
+    },
+    "ivory_pip_mat": {
+      "kAmbient": 0.1,
+      "kDiffuse": [
+        0.05,
+        0.08,
+        0.25
+      ],
+      "kSpecular": 0.5,
+      "metallic": 0,
+      "nS": 40,
+      "roughness": 0.1
     },
     "pip_mat": {
       "kAmbient": 0.1,
@@ -120,23 +132,23 @@
       "child": {
         "child": {
           "child": {
-            "left": {
-              "material": "body_mat",
-              "max": [
-                1,
-                1,
-                1
-              ],
-              "min": [
-                -1,
-                -1,
-                -1
-              ],
-              "type": "cube"
-            },
-            "op": "difference",
-            "right": {
+            "child": {
               "left": {
+                "material": "body_mat",
+                "max": [
+                  1,
+                  1,
+                  1
+                ],
+                "min": [
+                  -1,
+                  -1,
+                  -1
+                ],
+                "type": "cube"
+              },
+              "op": "difference",
+              "right": {
                 "left": {
                   "left": {
                     "left": {
@@ -156,20 +168,34 @@
                                                 "left": {
                                                   "left": {
                                                     "left": {
-                                                      "center": [
-                                                        0,
-                                                        0,
-                                                        1
-                                                      ],
-                                                      "material": "pip_mat",
-                                                      "radius": 0.2,
-                                                      "type": "sphere"
+                                                      "left": {
+                                                        "center": [
+                                                          0,
+                                                          0,
+                                                          1
+                                                        ],
+                                                        "material": "pip_mat",
+                                                        "radius": 0.2,
+                                                        "type": "sphere"
+                                                      },
+                                                      "op": "union",
+                                                      "right": {
+                                                        "center": [
+                                                          -0.5,
+                                                          -0.6,
+                                                          -1
+                                                        ],
+                                                        "material": "pip_mat",
+                                                        "radius": 0.2,
+                                                        "type": "sphere"
+                                                      },
+                                                      "type": "csg"
                                                     },
                                                     "op": "union",
                                                     "right": {
                                                       "center": [
                                                         -0.5,
-                                                        -0.6,
+                                                        0,
                                                         -1
                                                       ],
                                                       "material": "pip_mat",
@@ -182,7 +208,7 @@
                                                   "right": {
                                                     "center": [
                                                       -0.5,
-                                                      0,
+                                                      0.6,
                                                       -1
                                                     ],
                                                     "material": "pip_mat",
@@ -194,8 +220,8 @@
                                                 "op": "union",
                                                 "right": {
                                                   "center": [
-                                                    -0.5,
-                                                    0.6,
+                                                    0.5,
+                                                    -0.6,
                                                     -1
                                                   ],
                                                   "material": "pip_mat",
@@ -208,7 +234,7 @@
                                               "right": {
                                                 "center": [
                                                   0.5,
-                                                  -0.6,
+                                                  0,
                                                   -1
                                                 ],
                                                 "material": "pip_mat",
@@ -221,7 +247,7 @@
                                             "right": {
                                               "center": [
                                                 0.5,
-                                                0,
+                                                0.6,
                                                 -1
                                               ],
                                               "material": "pip_mat",
@@ -233,9 +259,9 @@
                                           "op": "union",
                                           "right": {
                                             "center": [
-                                              0.5,
-                                              0.6,
-                                              -1
+                                              1,
+                                              -0.6,
+                                              -0.6
                                             ],
                                             "material": "pip_mat",
                                             "radius": 0.2,
@@ -247,8 +273,8 @@
                                         "right": {
                                           "center": [
                                             1,
-                                            -0.6,
-                                            -0.6
+                                            0,
+                                            0
                                           ],
                                           "material": "pip_mat",
                                           "radius": 0.2,
@@ -260,8 +286,8 @@
                                       "right": {
                                         "center": [
                                           1,
-                                          0,
-                                          0
+                                          0.6,
+                                          0.6
                                         ],
                                         "material": "pip_mat",
                                         "radius": 0.2,
@@ -272,9 +298,9 @@
                                     "op": "union",
                                     "right": {
                                       "center": [
-                                        1,
-                                        0.6,
-                                        0.6
+                                        -1,
+                                        -0.5,
+                                        -0.5
                                       ],
                                       "material": "pip_mat",
                                       "radius": 0.2,
@@ -286,7 +312,7 @@
                                   "right": {
                                     "center": [
                                       -1,
-                                      -0.5,
+                                      0.5,
                                       -0.5
                                     ],
                                     "material": "pip_mat",
@@ -299,8 +325,8 @@
                                 "right": {
                                   "center": [
                                     -1,
-                                    0.5,
-                                    -0.5
+                                    -0.5,
+                                    0.5
                                   ],
                                   "material": "pip_mat",
                                   "radius": 0.2,
@@ -312,7 +338,7 @@
                               "right": {
                                 "center": [
                                   -1,
-                                  -0.5,
+                                  0.5,
                                   0.5
                                 ],
                                 "material": "pip_mat",
@@ -324,9 +350,9 @@
                             "op": "union",
                             "right": {
                               "center": [
-                                -1,
-                                0.5,
-                                0.5
+                                -0.5,
+                                1,
+                                -0.5
                               ],
                               "material": "pip_mat",
                               "radius": 0.2,
@@ -337,7 +363,7 @@
                           "op": "union",
                           "right": {
                             "center": [
-                              -0.5,
+                              0.5,
                               1,
                               -0.5
                             ],
@@ -350,9 +376,9 @@
                         "op": "union",
                         "right": {
                           "center": [
-                            0.5,
+                            -0.5,
                             1,
-                            -0.5
+                            0.5
                           ],
                           "material": "pip_mat",
                           "radius": 0.2,
@@ -363,7 +389,7 @@
                       "op": "union",
                       "right": {
                         "center": [
-                          -0.5,
+                          0.5,
                           1,
                           0.5
                         ],
@@ -376,9 +402,9 @@
                     "op": "union",
                     "right": {
                       "center": [
-                        0.5,
+                        0,
                         1,
-                        0.5
+                        0
                       ],
                       "material": "pip_mat",
                       "radius": 0.2,
@@ -389,9 +415,9 @@
                   "op": "union",
                   "right": {
                     "center": [
-                      0,
-                      1,
-                      0
+                      -0.5,
+                      -1,
+                      -0.5
                     ],
                     "material": "pip_mat",
                     "radius": 0.2,
@@ -402,9 +428,9 @@
                 "op": "union",
                 "right": {
                   "center": [
-                    -0.5,
+                    0.5,
                     -1,
-                    -0.5
+                    0.5
                   ],
                   "material": "pip_mat",
                   "radius": 0.2,
@@ -412,38 +438,32 @@
                 },
                 "type": "csg"
               },
-              "op": "union",
-              "right": {
-                "center": [
-                  0.5,
-                  -1,
-                  0.5
-                ],
-                "material": "pip_mat",
-                "radius": 0.2,
-                "type": "sphere"
-              },
               "type": "csg"
             },
-            "type": "csg"
+            "rotate": [
+              0.0,
+              -65.0,
+              0.0
+            ],
+            "type": "transform"
           },
           "rotate": [
+            -25.0,
             0.0,
-            0.0,
-            -90.0
+            0.0
           ],
           "type": "transform"
         },
         "rotate": [
           0.0,
-          30.0,
-          0.0
+          0.0,
+          -10.0
         ],
         "type": "transform"
       },
       "translate": [
-        -1.4,
-        1.0,
+        -1.75,
+        1.53,
         0.0
       ],
       "type": "transform"
@@ -452,23 +472,23 @@
       "child": {
         "child": {
           "child": {
-            "left": {
-              "material": "ivory_mat",
-              "max": [
-                1,
-                1,
-                1
-              ],
-              "min": [
-                -1,
-                -1,
-                -1
-              ],
-              "type": "cube"
-            },
-            "op": "difference",
-            "right": {
+            "child": {
               "left": {
+                "material": "ivory_body_mat",
+                "max": [
+                  1,
+                  1,
+                  1
+                ],
+                "min": [
+                  -1,
+                  -1,
+                  -1
+                ],
+                "type": "cube"
+              },
+              "op": "difference",
+              "right": {
                 "left": {
                   "left": {
                     "left": {
@@ -488,23 +508,37 @@
                                                 "left": {
                                                   "left": {
                                                     "left": {
-                                                      "center": [
-                                                        0,
-                                                        0,
-                                                        1
-                                                      ],
-                                                      "material": "pip_mat",
-                                                      "radius": 0.2,
-                                                      "type": "sphere"
+                                                      "left": {
+                                                        "center": [
+                                                          0,
+                                                          0,
+                                                          1
+                                                        ],
+                                                        "material": "ivory_pip_mat",
+                                                        "radius": 0.2,
+                                                        "type": "sphere"
+                                                      },
+                                                      "op": "union",
+                                                      "right": {
+                                                        "center": [
+                                                          -0.5,
+                                                          -0.6,
+                                                          -1
+                                                        ],
+                                                        "material": "ivory_pip_mat",
+                                                        "radius": 0.2,
+                                                        "type": "sphere"
+                                                      },
+                                                      "type": "csg"
                                                     },
                                                     "op": "union",
                                                     "right": {
                                                       "center": [
                                                         -0.5,
-                                                        -0.6,
+                                                        0,
                                                         -1
                                                       ],
-                                                      "material": "pip_mat",
+                                                      "material": "ivory_pip_mat",
                                                       "radius": 0.2,
                                                       "type": "sphere"
                                                     },
@@ -514,10 +548,10 @@
                                                   "right": {
                                                     "center": [
                                                       -0.5,
-                                                      0,
+                                                      0.6,
                                                       -1
                                                     ],
-                                                    "material": "pip_mat",
+                                                    "material": "ivory_pip_mat",
                                                     "radius": 0.2,
                                                     "type": "sphere"
                                                   },
@@ -526,11 +560,11 @@
                                                 "op": "union",
                                                 "right": {
                                                   "center": [
-                                                    -0.5,
-                                                    0.6,
+                                                    0.5,
+                                                    -0.6,
                                                     -1
                                                   ],
-                                                  "material": "pip_mat",
+                                                  "material": "ivory_pip_mat",
                                                   "radius": 0.2,
                                                   "type": "sphere"
                                                 },
@@ -540,10 +574,10 @@
                                               "right": {
                                                 "center": [
                                                   0.5,
-                                                  -0.6,
+                                                  0,
                                                   -1
                                                 ],
-                                                "material": "pip_mat",
+                                                "material": "ivory_pip_mat",
                                                 "radius": 0.2,
                                                 "type": "sphere"
                                               },
@@ -553,10 +587,10 @@
                                             "right": {
                                               "center": [
                                                 0.5,
-                                                0,
+                                                0.6,
                                                 -1
                                               ],
-                                              "material": "pip_mat",
+                                              "material": "ivory_pip_mat",
                                               "radius": 0.2,
                                               "type": "sphere"
                                             },
@@ -565,11 +599,11 @@
                                           "op": "union",
                                           "right": {
                                             "center": [
-                                              0.5,
-                                              0.6,
-                                              -1
+                                              1,
+                                              -0.6,
+                                              -0.6
                                             ],
-                                            "material": "pip_mat",
+                                            "material": "ivory_pip_mat",
                                             "radius": 0.2,
                                             "type": "sphere"
                                           },
@@ -579,10 +613,10 @@
                                         "right": {
                                           "center": [
                                             1,
-                                            -0.6,
-                                            -0.6
+                                            0,
+                                            0
                                           ],
-                                          "material": "pip_mat",
+                                          "material": "ivory_pip_mat",
                                           "radius": 0.2,
                                           "type": "sphere"
                                         },
@@ -592,10 +626,10 @@
                                       "right": {
                                         "center": [
                                           1,
-                                          0,
-                                          0
+                                          0.6,
+                                          0.6
                                         ],
-                                        "material": "pip_mat",
+                                        "material": "ivory_pip_mat",
                                         "radius": 0.2,
                                         "type": "sphere"
                                       },
@@ -604,11 +638,11 @@
                                     "op": "union",
                                     "right": {
                                       "center": [
-                                        1,
-                                        0.6,
-                                        0.6
+                                        -1,
+                                        -0.5,
+                                        -0.5
                                       ],
-                                      "material": "pip_mat",
+                                      "material": "ivory_pip_mat",
                                       "radius": 0.2,
                                       "type": "sphere"
                                     },
@@ -618,10 +652,10 @@
                                   "right": {
                                     "center": [
                                       -1,
-                                      -0.5,
+                                      0.5,
                                       -0.5
                                     ],
-                                    "material": "pip_mat",
+                                    "material": "ivory_pip_mat",
                                     "radius": 0.2,
                                     "type": "sphere"
                                   },
@@ -631,10 +665,10 @@
                                 "right": {
                                   "center": [
                                     -1,
-                                    0.5,
-                                    -0.5
+                                    -0.5,
+                                    0.5
                                   ],
-                                  "material": "pip_mat",
+                                  "material": "ivory_pip_mat",
                                   "radius": 0.2,
                                   "type": "sphere"
                                 },
@@ -644,10 +678,10 @@
                               "right": {
                                 "center": [
                                   -1,
-                                  -0.5,
+                                  0.5,
                                   0.5
                                 ],
-                                "material": "pip_mat",
+                                "material": "ivory_pip_mat",
                                 "radius": 0.2,
                                 "type": "sphere"
                               },
@@ -656,11 +690,11 @@
                             "op": "union",
                             "right": {
                               "center": [
-                                -1,
-                                0.5,
-                                0.5
+                                -0.5,
+                                1,
+                                -0.5
                               ],
-                              "material": "pip_mat",
+                              "material": "ivory_pip_mat",
                               "radius": 0.2,
                               "type": "sphere"
                             },
@@ -669,11 +703,11 @@
                           "op": "union",
                           "right": {
                             "center": [
-                              -0.5,
+                              0.5,
                               1,
                               -0.5
                             ],
-                            "material": "pip_mat",
+                            "material": "ivory_pip_mat",
                             "radius": 0.2,
                             "type": "sphere"
                           },
@@ -682,11 +716,11 @@
                         "op": "union",
                         "right": {
                           "center": [
-                            0.5,
+                            -0.5,
                             1,
-                            -0.5
+                            0.5
                           ],
-                          "material": "pip_mat",
+                          "material": "ivory_pip_mat",
                           "radius": 0.2,
                           "type": "sphere"
                         },
@@ -695,11 +729,11 @@
                       "op": "union",
                       "right": {
                         "center": [
-                          -0.5,
+                          0.5,
                           1,
                           0.5
                         ],
-                        "material": "pip_mat",
+                        "material": "ivory_pip_mat",
                         "radius": 0.2,
                         "type": "sphere"
                       },
@@ -708,11 +742,11 @@
                     "op": "union",
                     "right": {
                       "center": [
-                        0.5,
+                        0,
                         1,
-                        0.5
+                        0
                       ],
-                      "material": "pip_mat",
+                      "material": "ivory_pip_mat",
                       "radius": 0.2,
                       "type": "sphere"
                     },
@@ -721,11 +755,11 @@
                   "op": "union",
                   "right": {
                     "center": [
-                      0,
-                      1,
-                      0
+                      -0.5,
+                      -1,
+                      -0.5
                     ],
-                    "material": "pip_mat",
+                    "material": "ivory_pip_mat",
                     "radius": 0.2,
                     "type": "sphere"
                   },
@@ -734,48 +768,42 @@
                 "op": "union",
                 "right": {
                   "center": [
-                    -0.5,
+                    0.5,
                     -1,
-                    -0.5
+                    0.5
                   ],
-                  "material": "pip_mat",
+                  "material": "ivory_pip_mat",
                   "radius": 0.2,
                   "type": "sphere"
                 },
                 "type": "csg"
               },
-              "op": "union",
-              "right": {
-                "center": [
-                  0.5,
-                  -1,
-                  0.5
-                ],
-                "material": "pip_mat",
-                "radius": 0.2,
-                "type": "sphere"
-              },
               "type": "csg"
             },
-            "type": "csg"
+            "rotate": [
+              0.0,
+              65.0,
+              0.0
+            ],
+            "type": "transform"
           },
           "rotate": [
+            -25.0,
             0.0,
-            0.0,
-            90.0
+            0.0
           ],
           "type": "transform"
         },
         "rotate": [
           0.0,
-          -15.0,
-          0.0
+          0.0,
+          15.0
         ],
         "type": "transform"
       },
       "translate": [
-        1.4,
-        1.0,
+        1.75,
+        1.54,
         -0.5
       ],
       "type": "transform"
