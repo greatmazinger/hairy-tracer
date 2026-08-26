@@ -86,7 +86,7 @@ let hit = match best_hit {
         };
 
         // Normalize base color to [0, 1] range for PBR energy calculations
-        let albedo = base_color / 255.0;
+        let albedo = base_color;
         let mut L_out = DVec3::ZERO;
 
         // Path Tracing Logic:
