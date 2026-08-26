@@ -18,6 +18,7 @@ pub mod camera;
 pub mod cube;
 pub mod cylinder;
 pub mod csg;
+pub mod transform;
 
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;

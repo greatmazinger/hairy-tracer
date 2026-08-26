@@ -112,6 +112,10 @@ pub struct ObjectJson {
     pub left: Option<Box<ObjectJson>>,
     pub right: Option<Box<ObjectJson>>,
 
+    pub translate: Option<[f64; 3]>,
+    pub rotate: Option<[f64; 3]>,
+    pub child: Option<Box<ObjectJson>>,
+
     pub file: Option<String>,
     pub smooth_shading: Option<bool>,
 
@@ -529,6 +533,13 @@ fn parse_object(obj: &ObjectJson, scene: &mut Scene, mat_map: &HashMap<String, M
             let left = parse_object(left_json, scene, mat_map)?;
             let right = parse_object(right_json, scene, mat_map)?;
             Ok(Box::new(crate::csg::CsgNode { left, right, op }))
+        }
+        "transform" => {
+            let child_json = obj.child.as_ref().unwrap();
+            let child = parse_object(child_json, scene, mat_map)?;
+            let translate = obj.translate.map(glam::DVec3::from_array).unwrap_or(glam::DVec3::ZERO);
+            let rotate = obj.rotate.map(glam::DVec3::from_array).unwrap_or(glam::DVec3::ZERO);
+            Ok(Box::new(crate::transform::TransformNode::new(child, translate, rotate)))
         }
         _ => Err(format!("Unknown object type '{}'", t)),
     }
