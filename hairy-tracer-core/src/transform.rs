@@ -20,7 +20,12 @@ impl TransformNode {
         let translation_mat = DMat4::from_translation(translate);
         let rotation_mat = DMat4::from_euler(glam::EulerRot::XYZ, rx, ry, rz);
         
-        let fwd_transform = translation_mat * rotation_mat;
+        // Composition order: translate first, then rotate.
+        // In matrix math (column-major), `A * B * v` means apply B first, then A.
+        // So `rotation_mat * translation_mat` applies the translation to the local vertex,
+        // and THEN rotates that already-offset position around the origin.
+        // This allows placing objects (like gear teeth) at a radius and sweeping them around the center.
+        let fwd_transform = rotation_mat * translation_mat;
         let inv_transform = fwd_transform.inverse();
         
         let fwd_rotation = DMat3::from_euler(glam::EulerRot::XYZ, rx, ry, rz);
@@ -78,28 +83,25 @@ mod tests {
         // Un-rotated box from [-1, -1, -1] to [1, 1, 1]
         let cube = Box::new(Cube::new(DVec3::new(-1.0, -1.0, -1.0), DVec3::new(1.0, 1.0, 1.0), MaterialId(0)));
         
-        // Transform: rotate 90 degrees around Y, then translate by [5, 0, 0]
-        let transform_node = TransformNode::new(cube, DVec3::new(5.0, 0.0, 0.0), DVec3::new(0.0, 90.0, 0.0));
+        // Transform: translate by [0, 0, 2], then rotate 90 degrees around Y
+        let transform_node = TransformNode::new(cube, DVec3::new(0.0, 0.0, 2.0), DVec3::new(0.0, 90.0, 0.0));
         
-        // Let's test a ray that targets the front face (+Z face normally, but rotated 90 deg around Y means it's now facing +X).
-        // Wait, original +Z face has normal (0, 0, 1).
-        // Rotate +90 degrees around Y (using right-hand rule, +Z rotates towards +X).
-        // New normal should be (1, 0, 0).
-        // New position of the center of that face was (0, 0, 1).
-        // Rotated 90 deg around Y: (1, 0, 0).
-        // Translated by 5 along X: (6, 0, 0).
+        // The original +Z face center was at (0, 0, 1).
+        // Translated by 2 along Z: (0, 0, 3).
+        // Rotated 90 deg around Y: (3, 0, 0).
+        // Original normal was (0, 0, 1). Rotated 90 deg around Y: (1, 0, 0).
         
         // Ray origin at (10, 0, 0), pointing in -X direction (-1, 0, 0).
-        // It should hit the transformed face at (6, 0, 0) with normal (1, 0, 0).
+        // It should hit the transformed face at (3, 0, 0) with normal (1, 0, 0).
         let ray = Ray::new(DVec3::new(10.0, 0.0, 0.0), DVec3::new(-1.0, 0.0, 0.0));
         
         let hit = transform_node.intersect(&ray, 0).expect("Ray should hit the transformed cube");
         
-        // The distance from (10, 0, 0) to (6, 0, 0) is 4.0
-        assert!((hit.t - 4.0).abs() < 1e-5, "t should be 4.0, got {}", hit.t);
+        // The distance from (10, 0, 0) to (3, 0, 0) is 7.0
+        assert!((hit.t - 7.0).abs() < 1e-5, "t should be 7.0, got {}", hit.t);
         
-        // The hit point should be exactly (6, 0, 0)
-        assert!((hit.point.x - 6.0).abs() < 1e-5);
+        // The hit point should be exactly (3, 0, 0)
+        assert!((hit.point.x - 3.0).abs() < 1e-5);
         assert!((hit.point.y - 0.0).abs() < 1e-5);
         assert!((hit.point.z - 0.0).abs() < 1e-5);
         
