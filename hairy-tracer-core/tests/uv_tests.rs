@@ -33,7 +33,8 @@ fn test_sphere_uv_pole() {
 
 #[test]
 fn test_plane_uv() {
-    let p = Plane::new(DVec3::new(0.0, 1.0, 0.0), 0.0, MAT);
+    let p = Plane::new(DVec3::new(0.0, 1.0, 0.0),
+        1.0, 0.0, MAT);
     let r = Ray::new(DVec3::new(1.25, 2.0, -0.75), DVec3::new(0.0, -1.0, 0.0));
     let hit = p.intersect(&r, 0).unwrap();
     // point is (1.25, 0.0, -0.75)
@@ -49,6 +50,7 @@ fn test_triangle_uv() {
         DVec3::new(-1.0, -1.0, 0.0),
         DVec3::new(1.0, -1.0, 0.0),
         DVec3::new(0.0, 1.0, 0.0),
+        1.0,
         MAT, 0,
     );
     // Hit center
