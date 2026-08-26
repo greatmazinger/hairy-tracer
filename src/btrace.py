@@ -299,7 +299,7 @@ if __name__ == "__main__":
         
         image = Image.new("RGB", size)
         image.frombytes(pixels_bytes)
-        image = image.transpose(Image.FLIP_TOP_BOTTOM)
+        
         image.save(outfile)
         sys.exit(0)
     
