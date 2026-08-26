@@ -15,11 +15,13 @@ Bear in mind the following:
 
 Here are some sample renders:
 
-![Sample 1](example/sample01.jpg)
-![Sample 2](example/sample02.jpg)
-![Sample 3](example/sample03.jpg)
-![Sample 4](example/sample04.jpg)
-![Sample 5](example/sample05.jpg)
+![Death Star (Whitted)](example/death_star.png)
+![Death Star (Path Traced)](example/death_star_fixed.png)
+![CSG Gear (Whitted)](example/gear_colored_fixed.png)
+![CSG Gear (Path Traced)](example/gear_pt_fixed.png)
+![Sponza Beautiful Final](example/sponza_beautiful_final.png)
+![Sponza High Quality](example/sponza_hq.png)
+![Stanford Bunny](example/stanford_bunny.png)
 
 I put this online as a starting point to start working on it again. And just maybe, someone out there 
 might be interested in working on it too.
