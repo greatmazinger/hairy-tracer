@@ -323,7 +323,7 @@ pub fn render_image_serial(integrator: &dyn Integrator,
                     }
 
                     let offset = u * (pt.x * aperture) + v * (pt.y * aperture);
-                    let focal_point = cam_origin + ray_dir * (focal_distance / w_norm);
+                    let focal_point = cam_origin + ray_dir * (focal_distance / distance);
                     let new_origin = cam_origin + offset;
                     (new_origin, focal_point - new_origin)
                 } else {
@@ -411,7 +411,7 @@ pub fn render_image_parallel(integrator: &dyn Integrator,
                         }
 
                         let offset = u * (pt.x * aperture) + v * (pt.y * aperture);
-                        let focal_point = cam_origin + ray_dir * (focal_distance / w_norm);
+                        let focal_point = cam_origin + ray_dir * (focal_distance / distance);
                         let new_origin = cam_origin + offset;
                         (new_origin, focal_point - new_origin)
                     } else {
