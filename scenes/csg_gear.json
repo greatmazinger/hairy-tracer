@@ -17,9 +17,9 @@
     ],
     "distance": 8.0,
     "fov_degrees": 45.0,
-    "samples_per_pixel": 4
+    "samples_per_pixel": 16
   },
-  "integrator": "whitted",
+  "integrator": "pathtracer",
   "lights": [
     {
       "origin": [
