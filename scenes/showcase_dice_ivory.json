@@ -1,0 +1,448 @@
+{
+  "camera": {
+    "aperture": 0.1,
+    "distance": 1,
+    "focal_distance": 5.85,
+    "fov_degrees": 35.0,
+    "look_at": [
+      0,
+      1,
+      0
+    ],
+    "origin": [
+      0,
+      3.5,
+      5.5
+    ],
+    "samples_per_pixel": 256,
+    "up": [
+      0,
+      1,
+      0
+    ]
+  },
+  "integrator": "pathtracer",
+  "lights": [
+    {
+      "color": [
+        1.2,
+        1.2,
+        1.2
+      ],
+      "origin": [
+        4,
+        6,
+        4
+      ],
+      "radius": 1
+    },
+    {
+      "color": [
+        0.3,
+        0.4,
+        0.5
+      ],
+      "origin": [
+        -5,
+        3,
+        2
+      ],
+      "radius": 2
+    },
+    {
+      "color": [
+        0.6,
+        0.5,
+        0.4
+      ],
+      "origin": [
+        0,
+        5,
+        -5
+      ],
+      "radius": 2
+    }
+  ],
+  "materials": {
+    "body_mat": {
+      "kAmbient": 0.1,
+      "kDiffuse": [
+        0.92,
+        0.89,
+        0.82
+      ],
+      "kSpecular": 0.5,
+      "metallic": 0.05,
+      "nS": 35,
+      "roughness": 0.25,
+      "use_fresnel": true
+    },
+    "floor_mat": {
+      "kAmbient": 0.05,
+      "kDiffuse": [
+        0.2,
+        0.2,
+        0.25
+      ],
+      "kSpecular": 0.1,
+      "nS": 10,
+      "roughness": 0.9
+    },
+    "pip_mat": {
+      "kAmbient": 0.05,
+      "kDiffuse": [
+        0.02,
+        0.02,
+        0.02
+      ],
+      "kSpecular": 0.9,
+      "metallic": 0,
+      "nS": 80,
+      "roughness": 0.05
+    }
+  },
+  "objects": [
+    {
+      "child": {
+        "child": {
+          "child": {
+            "left": {
+              "left": {
+                "left": {
+                  "left": {
+                    "left": {
+                      "left": {
+                        "left": {
+                          "left": {
+                            "left": {
+                              "left": {
+                                "left": {
+                                  "left": {
+                                    "left": {
+                                      "left": {
+                                        "left": {
+                                          "left": {
+                                            "left": {
+                                              "left": {
+                                                "left": {
+                                                  "left": {
+                                                    "left": {
+                                                      "material": "body_mat",
+                                                      "max": [
+                                                        1,
+                                                        1,
+                                                        1
+                                                      ],
+                                                      "min": [
+                                                        -1,
+                                                        -1,
+                                                        -1
+                                                      ],
+                                                      "type": "cube"
+                                                    },
+                                                    "op": "difference",
+                                                    "right": {
+                                                      "center": [
+                                                        0,
+                                                        0,
+                                                        1
+                                                      ],
+                                                      "material": "pip_mat",
+                                                      "radius": 0.2,
+                                                      "type": "sphere"
+                                                    },
+                                                    "type": "csg"
+                                                  },
+                                                  "op": "difference",
+                                                  "right": {
+                                                    "center": [
+                                                      -0.5,
+                                                      -0.6,
+                                                      -1
+                                                    ],
+                                                    "material": "pip_mat",
+                                                    "radius": 0.2,
+                                                    "type": "sphere"
+                                                  },
+                                                  "type": "csg"
+                                                },
+                                                "op": "difference",
+                                                "right": {
+                                                  "center": [
+                                                    -0.5,
+                                                    0,
+                                                    -1
+                                                  ],
+                                                  "material": "pip_mat",
+                                                  "radius": 0.2,
+                                                  "type": "sphere"
+                                                },
+                                                "type": "csg"
+                                              },
+                                              "op": "difference",
+                                              "right": {
+                                                "center": [
+                                                  -0.5,
+                                                  0.6,
+                                                  -1
+                                                ],
+                                                "material": "pip_mat",
+                                                "radius": 0.2,
+                                                "type": "sphere"
+                                              },
+                                              "type": "csg"
+                                            },
+                                            "op": "difference",
+                                            "right": {
+                                              "center": [
+                                                0.5,
+                                                -0.6,
+                                                -1
+                                              ],
+                                              "material": "pip_mat",
+                                              "radius": 0.2,
+                                              "type": "sphere"
+                                            },
+                                            "type": "csg"
+                                          },
+                                          "op": "difference",
+                                          "right": {
+                                            "center": [
+                                              0.5,
+                                              0,
+                                              -1
+                                            ],
+                                            "material": "pip_mat",
+                                            "radius": 0.2,
+                                            "type": "sphere"
+                                          },
+                                          "type": "csg"
+                                        },
+                                        "op": "difference",
+                                        "right": {
+                                          "center": [
+                                            0.5,
+                                            0.6,
+                                            -1
+                                          ],
+                                          "material": "pip_mat",
+                                          "radius": 0.2,
+                                          "type": "sphere"
+                                        },
+                                        "type": "csg"
+                                      },
+                                      "op": "difference",
+                                      "right": {
+                                        "center": [
+                                          1,
+                                          -0.6,
+                                          -0.6
+                                        ],
+                                        "material": "pip_mat",
+                                        "radius": 0.2,
+                                        "type": "sphere"
+                                      },
+                                      "type": "csg"
+                                    },
+                                    "op": "difference",
+                                    "right": {
+                                      "center": [
+                                        1,
+                                        0,
+                                        0
+                                      ],
+                                      "material": "pip_mat",
+                                      "radius": 0.2,
+                                      "type": "sphere"
+                                    },
+                                    "type": "csg"
+                                  },
+                                  "op": "difference",
+                                  "right": {
+                                    "center": [
+                                      1,
+                                      0.6,
+                                      0.6
+                                    ],
+                                    "material": "pip_mat",
+                                    "radius": 0.2,
+                                    "type": "sphere"
+                                  },
+                                  "type": "csg"
+                                },
+                                "op": "difference",
+                                "right": {
+                                  "center": [
+                                    -1,
+                                    -0.5,
+                                    -0.5
+                                  ],
+                                  "material": "pip_mat",
+                                  "radius": 0.2,
+                                  "type": "sphere"
+                                },
+                                "type": "csg"
+                              },
+                              "op": "difference",
+                              "right": {
+                                "center": [
+                                  -1,
+                                  0.5,
+                                  -0.5
+                                ],
+                                "material": "pip_mat",
+                                "radius": 0.2,
+                                "type": "sphere"
+                              },
+                              "type": "csg"
+                            },
+                            "op": "difference",
+                            "right": {
+                              "center": [
+                                -1,
+                                -0.5,
+                                0.5
+                              ],
+                              "material": "pip_mat",
+                              "radius": 0.2,
+                              "type": "sphere"
+                            },
+                            "type": "csg"
+                          },
+                          "op": "difference",
+                          "right": {
+                            "center": [
+                              -1,
+                              0.5,
+                              0.5
+                            ],
+                            "material": "pip_mat",
+                            "radius": 0.2,
+                            "type": "sphere"
+                          },
+                          "type": "csg"
+                        },
+                        "op": "difference",
+                        "right": {
+                          "center": [
+                            -0.5,
+                            1,
+                            -0.5
+                          ],
+                          "material": "pip_mat",
+                          "radius": 0.2,
+                          "type": "sphere"
+                        },
+                        "type": "csg"
+                      },
+                      "op": "difference",
+                      "right": {
+                        "center": [
+                          0.5,
+                          1,
+                          -0.5
+                        ],
+                        "material": "pip_mat",
+                        "radius": 0.2,
+                        "type": "sphere"
+                      },
+                      "type": "csg"
+                    },
+                    "op": "difference",
+                    "right": {
+                      "center": [
+                        -0.5,
+                        1,
+                        0.5
+                      ],
+                      "material": "pip_mat",
+                      "radius": 0.2,
+                      "type": "sphere"
+                    },
+                    "type": "csg"
+                  },
+                  "op": "difference",
+                  "right": {
+                    "center": [
+                      0.5,
+                      1,
+                      0.5
+                    ],
+                    "material": "pip_mat",
+                    "radius": 0.2,
+                    "type": "sphere"
+                  },
+                  "type": "csg"
+                },
+                "op": "difference",
+                "right": {
+                  "center": [
+                    0,
+                    1,
+                    0
+                  ],
+                  "material": "pip_mat",
+                  "radius": 0.2,
+                  "type": "sphere"
+                },
+                "type": "csg"
+              },
+              "op": "difference",
+              "right": {
+                "center": [
+                  -0.5,
+                  -1,
+                  -0.5
+                ],
+                "material": "pip_mat",
+                "radius": 0.2,
+                "type": "sphere"
+              },
+              "type": "csg"
+            },
+            "op": "difference",
+            "right": {
+              "center": [
+                0.5,
+                -1,
+                0.5
+              ],
+              "material": "pip_mat",
+              "radius": 0.2,
+              "type": "sphere"
+            },
+            "type": "csg"
+          },
+          "rotate": [
+            0.0,
+            -45.0,
+            0.0
+          ],
+          "type": "transform"
+        },
+        "rotate": [
+          30.0,
+          0.0,
+          0.0
+        ],
+        "type": "transform"
+      },
+      "translate": [
+        0.0,
+        1.5,
+        0.0
+      ],
+      "type": "transform"
+    },
+    {
+      "distance": 0,
+      "material": "floor_mat",
+      "normal": [
+        0,
+        1,
+        0
+      ],
+      "type": "plane"
+    }
+  ]
+}
