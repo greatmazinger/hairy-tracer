@@ -1,0 +1,226 @@
+{
+  "camera": {
+    "distance": 8,
+    "fov_degrees": 45.0,
+    "look_at": [
+      0,
+      1,
+      0
+    ],
+    "origin": [
+      0,
+      4,
+      6
+    ],
+    "samples_per_pixel": 16,
+    "up": [
+      0,
+      1,
+      0
+    ]
+  },
+  "integrator": "pathtracer",
+  "lights": [
+    {
+      "color": [
+        1,
+        1,
+        1
+      ],
+      "origin": [
+        0,
+        8,
+        5
+      ],
+      "radius": 0
+    }
+  ],
+  "materials": {
+    "floor": {
+      "kAmbient": 0.1,
+      "kDiffuse": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "kSpecular": 0.1,
+      "nS": 10
+    },
+    "grey": {
+      "kAmbient": 0.1,
+      "kDiffuse": [
+        0.7,
+        0.7,
+        0.7
+      ],
+      "kSpecular": 0.2,
+      "nS": 20
+    },
+    "red": {
+      "kAmbient": 0.1,
+      "kDiffuse": [
+        0.8,
+        0.1,
+        0.1
+      ],
+      "kSpecular": 0.2,
+      "nS": 20
+    }
+  },
+  "objects": [
+    {
+      "distance": 0,
+      "material": "floor",
+      "normal": [
+        0,
+        1,
+        0
+      ],
+      "type": "plane"
+    },
+    {
+      "left": {
+        "left": {
+          "child": {
+            "max": [
+              1,
+              2,
+              1
+            ],
+            "min": [
+              -1,
+              0,
+              -1
+            ],
+            "type": "cube"
+          },
+          "translate": [
+            -2.0,
+            0.0,
+            0.0
+          ],
+          "type": "transform"
+        },
+        "op": "difference",
+        "right": {
+          "child": {
+            "max": [
+              2,
+              2,
+              1
+            ],
+            "min": [
+              0,
+              0,
+              -1
+            ],
+            "type": "cube"
+          },
+          "translate": [
+            -2.0,
+            0.0,
+            0.0
+          ],
+          "type": "transform"
+        },
+        "type": "csg"
+      },
+      "material": "grey",
+      "op": "difference",
+      "right": {
+        "child": {
+          "max": [
+            2.5,
+            2,
+            1
+          ],
+          "min": [
+            0.5,
+            0,
+            -1
+          ],
+          "type": "cube"
+        },
+        "translate": [
+          -2.0,
+          0.0,
+          0.0
+        ],
+        "type": "transform"
+      },
+      "type": "csg"
+    },
+    {
+      "left": {
+        "child": {
+          "max": [
+            1,
+            2,
+            1
+          ],
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "type": "cube"
+        },
+        "translate": [
+          2.0,
+          0.0,
+          0.0
+        ],
+        "type": "transform"
+      },
+      "material": "red",
+      "op": "difference",
+      "right": {
+        "left": {
+          "child": {
+            "max": [
+              2,
+              2,
+              1
+            ],
+            "min": [
+              0,
+              0,
+              -1
+            ],
+            "type": "cube"
+          },
+          "translate": [
+            2.0,
+            0.0,
+            0.0
+          ],
+          "type": "transform"
+        },
+        "op": "difference",
+        "right": {
+          "child": {
+            "max": [
+              2.5,
+              2,
+              1
+            ],
+            "min": [
+              0.5,
+              0,
+              -1
+            ],
+            "type": "cube"
+          },
+          "translate": [
+            2.0,
+            0.0,
+            0.0
+          ],
+          "type": "transform"
+        },
+        "type": "csg"
+      },
+      "type": "csg"
+    }
+  ]
+}

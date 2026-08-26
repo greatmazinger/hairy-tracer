@@ -1,5 +1,5 @@
 material body_mat {
-  kDiffuse: [0.98, 0.90, 0.78]
+  kDiffuse: [0.94, 0.89, 0.80]
   kAmbient: 0.1
   kSpecular: 0.5
   nS: 35.0
@@ -61,14 +61,14 @@ let posed_die = translate(rotate(rotate(die, y: -45deg), x: 30deg), y: 1.5)
 scene {
   environment_map: "scenes/studio_env.png"
   camera { 
-    origin: [0.0, 4.2, 7.0], 
+    origin: [0.0, 6.0, 10.0], 
     look_at: [0.0, 1.0, 0.0], 
     up: [0.0, 1.0, 0.0], 
     distance: 1.0, 
-    fov_degrees: 35deg, 
+    fov_degrees: 45deg, 
     samples_per_pixel: 256,
-    aperture: 0.15,
-    focal_distance: 7.7
+    aperture: 0.5,
+    focal_distance: 11.66
   }
   
   light { origin: [4.0, 6.0, 4.0], color: [1.2, 1.2, 1.2], radius: 1.0 }

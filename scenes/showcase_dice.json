@@ -1,9 +1,9 @@
 {
   "camera": {
-    "aperture": 0.15,
+    "aperture": 0.5,
     "distance": 1,
-    "focal_distance": 7.7,
-    "fov_degrees": 35.0,
+    "focal_distance": 11.66,
+    "fov_degrees": 45.0,
     "look_at": [
       0,
       1,
@@ -11,8 +11,8 @@
     ],
     "origin": [
       0,
-      4.2,
-      7
+      6,
+      10
     ],
     "samples_per_pixel": 256,
     "up": [
@@ -92,9 +92,9 @@
     "pip_mat": {
       "kAmbient": 0.1,
       "kDiffuse": [
-        0.7,
-        0.7,
-        0.7
+        0.55,
+        0.55,
+        0.55
       ],
       "kSpecular": 0.1,
       "metallic": 0,

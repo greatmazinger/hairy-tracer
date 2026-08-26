@@ -1,0 +1,100 @@
+{
+  "integrator": "pathtracer",
+  "materials": {},
+  "objects": [
+    {
+      "left": {
+        "left": {
+          "max": [
+            1,
+            1,
+            1
+          ],
+          "min": [
+            -1,
+            -1,
+            -1
+          ],
+          "type": "cube"
+        },
+        "op": "difference",
+        "right": {
+          "max": [
+            2,
+            1,
+            1
+          ],
+          "min": [
+            0,
+            -1,
+            -1
+          ],
+          "type": "cube"
+        },
+        "type": "csg"
+      },
+      "op": "difference",
+      "right": {
+        "max": [
+          2.5,
+          1,
+          1
+        ],
+        "min": [
+          0.5,
+          -1,
+          -1
+        ],
+        "type": "cube"
+      },
+      "type": "csg"
+    },
+    {
+      "left": {
+        "max": [
+          1,
+          1,
+          1
+        ],
+        "min": [
+          -1,
+          -1,
+          -1
+        ],
+        "type": "cube"
+      },
+      "op": "difference",
+      "right": {
+        "left": {
+          "max": [
+            2,
+            1,
+            1
+          ],
+          "min": [
+            0,
+            -1,
+            -1
+          ],
+          "type": "cube"
+        },
+        "op": "difference",
+        "right": {
+          "max": [
+            2.5,
+            1,
+            1
+          ],
+          "min": [
+            0.5,
+            -1,
+            -1
+          ],
+          "type": "cube"
+        },
+        "type": "csg"
+      },
+      "type": "csg"
+    }
+  ]
+}
