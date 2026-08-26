@@ -1,8 +1,8 @@
 {
   "camera": {
-    "aperture": 0.1,
+    "aperture": 0.15,
     "distance": 1,
-    "focal_distance": 5.85,
+    "focal_distance": 7.7,
     "fov_degrees": 35.0,
     "look_at": [
       0,
@@ -11,8 +11,8 @@
     ],
     "origin": [
       0,
-      3.5,
-      5.5
+      4.2,
+      7
     ],
     "samples_per_pixel": 256,
     "up": [
@@ -21,6 +21,7 @@
       0
     ]
   },
+  "environment_map": "scenes/studio_env.png",
   "integrator": "pathtracer",
   "lights": [
     {
@@ -91,14 +92,14 @@
     "pip_mat": {
       "kAmbient": 0.1,
       "kDiffuse": [
-        0.95,
-        0.95,
-        0.95
+        0.7,
+        0.7,
+        0.7
       ],
-      "kSpecular": 0.2,
+      "kSpecular": 0.1,
       "metallic": 0,
       "nS": 20,
-      "roughness": 0.8
+      "roughness": 0.5
     }
   },
   "objects": [

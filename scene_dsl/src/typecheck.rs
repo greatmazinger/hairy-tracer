@@ -48,6 +48,7 @@ pub fn typecheck(stmts: &[Stmt]) -> Result<(), String> {
                                 typecheck_expr(val, &mut env)?;
                             }
                         }
+                        SceneItem::EnvMap(_) => {},
                         SceneItem::Light { properties } => {
                             for (_, val) in properties {
                                 typecheck_expr(val, &mut env)?;

@@ -9,11 +9,11 @@ material body_mat {
 }
 
 material pip_mat {
-  kDiffuse: [0.95, 0.95, 0.95]
+  kDiffuse: [0.7, 0.7, 0.7]
   kAmbient: 0.1
-  kSpecular: 0.2
+  kSpecular: 0.1
   nS: 20.0
-  roughness: 0.8
+  roughness: 0.5
   metallic: 0.0
 }
 
@@ -59,15 +59,16 @@ let die = body - p1_1 - p6_1 - p6_2 - p6_3 - p6_4 - p6_5 - p6_6 - p3_1 - p3_2 - 
 let posed_die = translate(rotate(rotate(die, y: -45deg), x: 30deg), y: 1.5)
 
 scene {
+  environment_map: "scenes/studio_env.png"
   camera { 
-    origin: [0.0, 3.5, 5.5], 
+    origin: [0.0, 4.2, 7.0], 
     look_at: [0.0, 1.0, 0.0], 
     up: [0.0, 1.0, 0.0], 
     distance: 1.0, 
     fov_degrees: 35deg, 
     samples_per_pixel: 256,
-    aperture: 0.1,
-    focal_distance: 5.85
+    aperture: 0.15,
+    focal_distance: 7.7
   }
   
   light { origin: [4.0, 6.0, 4.0], color: [1.2, 1.2, 1.2], radius: 1.0 }

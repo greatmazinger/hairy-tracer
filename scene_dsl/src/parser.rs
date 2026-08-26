@@ -120,7 +120,8 @@ fn parse_stmt(iter: &mut Peekable<Iter<Token>>) -> Result<Stmt, String> {
                         expect_token(iter, &Token::RParen)?;
                         SceneItem::Object { expr, properties }
                     }
-                    _ => return Err("Expected camera, light, or object in scene".into()),
+                    Some(Token::Ident(k)) if k == "environment_map" => { expect_token(iter, &Token::Colon)?; let path = match iter.next() { Some(Token::String(s)) => s.clone(), _ => return Err("Expected string for env map".into()) }; SceneItem::EnvMap(path) },
+                    _ => return Err("Expected camera, light, object, or environment_map in scene".into()),
                 };
                 items.push(item);
             }
@@ -163,7 +164,7 @@ fn parse_expr(iter: &mut Peekable<Iter<Token>>, min_bp: u8) -> Result<Expr, Stri
                 let mut named = Vec::new();
                 
                 while iter.peek() != Some(&&Token::RParen) {
-                    if let Some(Token::Ident(k)) = iter.peek().cloned() {
+                    let mut key = None; if let Some(Token::Ident(k)) = iter.peek() { key = Some(k.clone()); } else if let Some(Token::Keyword(k)) = iter.peek() { key = Some(k.clone()); } if let Some(k) = key {
                         let mut cloned_iter = iter.clone();
                         cloned_iter.next(); // skip ident
                         if cloned_iter.peek() == Some(&&Token::Colon) {

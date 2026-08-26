@@ -48,4 +48,5 @@ pub enum SceneItem {
     Camera { properties: Vec<(String, Expr)> },
     Light { properties: Vec<(String, Expr)> },
     Object { expr: Expr, properties: Vec<(String, Expr)> },
+    EnvMap(String),
 }

@@ -44,6 +44,7 @@ pub fn elaborate(stmts: &[Stmt]) -> Result<Value, String> {
                             }
                             scene_out.insert("camera".to_string(), Value::Object(cam));
                         }
+                        SceneItem::EnvMap(path) => { scene_out.insert("environment_map".to_string(), serde_json::Value::String(path.clone())); }
                         SceneItem::Light { properties } => {
                             let mut lights = match scene_out.get_mut("lights") {
                                 Some(Value::Array(arr)) => arr,
@@ -115,7 +116,7 @@ fn eval_expr(expr: &Expr, env: &HashMap<String, Value>) -> Result<Value, String>
                 Ok(json!("x"))
             } else if id == "y" {
                 Ok(json!("y"))
-            } else if id == "z" {
+            } else if id == "true" { Ok(serde_json::Value::Bool(true)) } else if id == "false" { Ok(serde_json::Value::Bool(false)) } else if id == "z" {
                 Ok(json!("z"))
             } else {
                 Err(format!("Undefined variable in eval: {}", id))
