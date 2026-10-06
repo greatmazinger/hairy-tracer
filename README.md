@@ -13,6 +13,25 @@ Bear in mind the following:
 2. It's incredibly fast now thanks to Rust.
 3. It's actively being improved again.
 
+
+## Performance Benchmarks
+
+The transition from pure Python to Rust provided massive speedups (250x to 450x faster) for the base Whitted raytracer, entirely transforming what the engine is capable of rendering. 
+
+For an 800x800 resolution image:
+
+**Benchmark 1: Simple Spheres (`scenes/whitted/legacy/spheres3.json`)**
+* **Python Engine:** 9.40 seconds
+* **Rust Engine:** 0.02 seconds
+* *Result: ~447x faster*
+
+**Benchmark 2: 3D Mesh & AABB (`scenes/whitted/legacy/mesh_test.json`)**
+* **Python Engine:** 22.83 seconds
+* **Rust Engine:** 0.08 seconds
+* *Result: ~260x faster*
+
+Because of this performance leap, the engine can now comfortably evaluate complex multi-million ray scenes involving Path Tracing, Constructive Solid Geometry, and Global Illumination in a matter of minutes.
+
 Here are some sample renders:
 
 ![Death Star (Whitted)](example/death_star.png)
