@@ -101,5 +101,5 @@ python src/btrace.py --scene scenes/path_trace/pbr/bunny_cornell.json --size 800
 
 You can render entire categories of scenes using the provided helper scripts:
 
-* **Classic / Whitted Scenes**: `bash render_all.sh [resolution]` (e.g. `bash render_all.sh 400x400`)
-* **Path Traced Scenes**: `bash run_pt_scenes.sh` (renders at 400x400)
+* **Classic / Whitted Scenes**: `bash scripts/render_all.sh [resolution]` (e.g. `bash scripts/render_all.sh 400x400`)
+* **Path Traced Scenes**: `bash scripts/run_pt_scenes.sh` (renders at 400x400)
