@@ -37,6 +37,7 @@ htmlcov/
 .tox/
 .coverage
 .cache
+.pytest_cache/
 nosetests.xml
 coverage.xml
 
@@ -60,6 +61,7 @@ target/
 *.bak
 
 # Debug scripts and temporary Python patches
+agy-resume.sh
 check_*.py
 fix_*.py
 patch_*.py
@@ -78,6 +80,8 @@ verify.py
 *.bmp
 *.png
 output_pt/
+RENDERS/
+rust_out.json
 test_nan_clamp
 test_nan_clamp.rs
 
