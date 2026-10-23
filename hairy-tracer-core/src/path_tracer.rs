@@ -344,7 +344,7 @@ let hit = match best_hit {
                 DVec3::ZERO
             };
 
-            L_out += direct_light * 255.0 + indirect_light;
+            L_out += direct_light + indirect_light;
         }
 
         // Apply Russian Roulette weighting
