@@ -2,10 +2,10 @@
   "camera": {
     "origin": [0.0, 0.18, 0.4],
     "look_at": [-0.015, 0.11, 0.0],
-    "distance": 1.0,
+    "distance": 0.406356,
     "vpwidth": 0.35,
     "vpheight": 0.35,
-    "samples_per_pixel": 2000
+    "samples_per_pixel": 250
   },
   "integrator": "pathtracer",
   "materials": {

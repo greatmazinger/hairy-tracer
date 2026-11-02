@@ -97,9 +97,51 @@ To render a specific scene from any capability tier, use the `btrace.py` CLI scr
 python src/btrace.py --scene scenes/path_trace/pbr/bunny_cornell.json --size 800x800 --outfile output.bmp
 ```
 
+### Showcase Scene Recipes
+
+* **Stanford Bunny (PBR Path Tracing & GGX Specular):**
+  ```bash
+  python src/btrace.py --scene scenes/path_trace/pbr/bunny_cornell.json --size 800x800 --outfile bunny.bmp
+  ```
+* **Crytek Sponza Atrium (262k-Triangle Mesh, Textures & Global Illumination):**
+  ```bash
+  python src/btrace.py --scene scenes/path_trace/pbr/sponza.json --size 800x800 --outfile sponza.bmp
+  ```
+* **Constructive Solid Geometry (Death Star & Mechanical Gear):**
+  ```bash
+  python src/btrace.py --scene scenes/csg_death_star.json --size 800x800 --outfile death_star.bmp
+  python src/btrace.py --scene scenes/csg_gear.json --size 800x800 --outfile gear.bmp
+  ```
+* **Flagship Craps & Showcase Dice (CSG + Depth of Field + HDR Environment Map):**
+  ```bash
+  python src/btrace.py --scene scenes/showcase_dice_craps.json --size 800x800 --outfile craps.bmp
+  python src/btrace.py --scene scenes/showcase_dice.json --size 800x800 --outfile dice_red.bmp
+  python src/btrace.py --scene scenes/showcase_dice_ivory.json --size 800x800 --outfile dice_ivory.bmp
+  ```
+
+### Compiling Scene DSL (`.dsl`) Files
+
+Complex CSG and hierarchical scenes are authored in the custom Scene DSL (`scenes/*.dsl`) and compiled to JSON using the `scene_dsl` compiler crate:
+
+```bash
+cargo run --manifest-path scene_dsl/Cargo.toml -- compile scenes/showcase_dice_craps.dsl -o scenes/showcase_dice_craps.json
+```
+
+### Reproducing the Python vs. Rust Benchmarks
+
+To compare the Rust engine against the legacy 2010 pure-Python engine on classic Whitted scenes, pass `--pure-python`:
+
+```bash
+# Rust engine (~0.02s)
+python src/btrace.py --scene scenes/whitted/legacy/spheres3.json --size 800x800 --outfile rust_spheres.bmp
+
+# Legacy pure-Python engine (~9.40s)
+python src/btrace.py --pure-python --scene scenes/whitted/legacy/spheres3.json --size 800x800 --outfile py_spheres.bmp
+```
+
 ### Batch Rendering Scripts
 
 You can render entire categories of scenes using the provided helper scripts:
 
-* **Classic / Whitted Scenes**: `bash render_all.sh [resolution]` (e.g. `bash render_all.sh 400x400`)
-* **Path Traced Scenes**: `bash run_pt_scenes.sh` (renders at 400x400)
+* **Classic / Whitted Scenes**: `bash scripts/render_all.sh [resolution]` (e.g. `bash scripts/render_all.sh 400x400`)
+* **Path Traced Scenes**: `bash scripts/run_pt_scenes.sh` (renders at 400x400)
