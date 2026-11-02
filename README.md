@@ -60,63 +60,69 @@ The repository's scenes are organized by the specific set of capabilities they t
 
 ## Installation & Setup
 
-To run the engine (which is now powered by the fast Rust core), you will need both **Python 3.10+** and **Rust** installed on your system.
+You can build and run `hairy-tracer` as a **100% standalone Rust CLI (`htrace`)** with zero Python dependencies, or install the Python bindings via `maturin`.
 
-**1. Install Rust** (MacOS/Linux):
+### Option A: Pure-Rust CLI (`htrace`) — Recommended
+
+All you need is a standard **Rust** toolchain (`cargo`):
+
 ```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+cargo build --release --manifest-path hairy-tracer-core/Cargo.toml --bin htrace
 ```
 
-**2. Setup Python Environment**:
-It is recommended to use a virtual environment:
+The compiled binary will be located at `./hairy-tracer-core/target/release/htrace`. It accepts both `.json` and `.dsl` scene files directly and outputs `.bmp` or `.png` images.
+
+### Option B: Python Bindings (`btrace.py`)
+
+If you want to use the Python CLI wrapper (`src/btrace.py`) or run `--pure-python` benchmarks, you will need **Python 3.10+** and **Rust**:
+
+**1. Setup Python Environment & Dependencies**:
 ```bash
 python3 -m venv env
 source env/bin/activate
-```
-
-**3. Install Dependencies**:
-You need `maturin` to build the Rust bindings, plus standard image libraries:
-```bash
 pip install maturin pillow numpy
 ```
 
-**4. Build the Rust Core**:
-Before rendering, you must compile the Rust engine. From the root of the repository:
+**2. Build the Rust Python Extension**:
+From the root of the repository:
 ```bash
-cd hairy-tracer-core
 maturin develop --release
-cd ..
 ```
-*(You only need to do this once, or after modifying the Rust source code).*
 
 ## How to Render
 
-To render a specific scene from any capability tier, use the `btrace.py` CLI script. It defaults to the fast Rust core engine:
+You can render any scene using the pure-Rust `htrace` binary (or `python src/btrace.py` with the same flags):
 
 ```bash
-python src/btrace.py --scene scenes/path_trace/pbr/bunny_cornell.json --size 800x800 --outfile output.bmp
+./hairy-tracer-core/target/release/htrace --scene scenes/path_trace/pbr/bunny_cornell.json --size 800x800 --outfile output.png
+```
+
+`htrace` also compiles and renders `.dsl` (Scene DSL) files directly on the fly without needing a separate compilation step:
+
+```bash
+./hairy-tracer-core/target/release/htrace --scene scenes/showcase_dice_craps.dsl --size 800x800 --outfile craps.png
 ```
 
 ### Showcase Scene Recipes
 
 * **Stanford Bunny (PBR Path Tracing & GGX Specular):**
   ```bash
-  python src/btrace.py --scene scenes/path_trace/pbr/bunny_cornell.json --size 800x800 --outfile bunny.bmp
+  ./hairy-tracer-core/target/release/htrace --scene scenes/path_trace/pbr/bunny_cornell.json --size 800x800 --outfile bunny.png
   ```
 * **Crytek Sponza Atrium (262k-Triangle Mesh, Textures & Global Illumination):**
   ```bash
-  python src/btrace.py --scene scenes/path_trace/pbr/sponza.json --size 800x800 --outfile sponza.bmp
+  ./hairy-tracer-core/target/release/htrace --scene scenes/path_trace/pbr/sponza.json --size 800x800 --outfile sponza.png
   ```
 * **Constructive Solid Geometry (Death Star & Mechanical Gear):**
   ```bash
-  python src/btrace.py --scene scenes/csg_death_star.json --size 800x800 --outfile death_star.bmp
-  python src/btrace.py --scene scenes/csg_gear.json --size 800x800 --outfile gear.bmp
+  ./hairy-tracer-core/target/release/htrace --scene scenes/csg_death_star.json --size 800x800 --outfile death_star.png
+  ./hairy-tracer-core/target/release/htrace --scene scenes/gear.dsl --size 800x800 --outfile gear.png
   ```
 * **Flagship Craps & Showcase Dice (CSG + Depth of Field + HDR Environment Map):**
   ```bash
-  python src/btrace.py --scene scenes/showcase_dice_craps.json --size 800x800 --outfile craps.bmp
-  python src/btrace.py --scene scenes/showcase_dice.json --size 800x800 --outfile dice_red.bmp
-  python src/btrace.py --scene scenes/showcase_dice_ivory.json --size 800x800 --outfile dice_ivory.bmp
+  ./hairy-tracer-core/target/release/htrace --scene scenes/showcase_dice_craps.dsl --size 800x800 --outfile craps.png
+  ./hairy-tracer-core/target/release/htrace --scene scenes/showcase_dice.dsl --size 800x800 --outfile dice_red.png
+  ./hairy-tracer-core/target/release/htrace --scene scenes/showcase_dice_ivory.dsl --size 800x800 --outfile dice_ivory.png
   ```
 
 ### Compiling Scene DSL (`.dsl`) Files

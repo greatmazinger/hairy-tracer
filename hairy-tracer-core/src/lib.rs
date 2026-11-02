@@ -20,19 +20,14 @@ pub mod cylinder;
 pub mod csg;
 pub mod transform;
 
-use pyo3::prelude::*;
-use pyo3::types::PyBytes;
-
-#[pyfunction]
-fn render_image(
-    py: Python<'_>,
+/// Renders a JSON scene configuration into a raw RGB byte buffer (`width * height * 3` bytes).
+pub fn render_scene_json(
     scene_json: &str,
     width: usize,
     height: usize,
     max_depth: u32,
-) -> PyResult<Py<PyBytes>> {
-    let (scene, cam) = scene_parser::parse_scene_json(scene_json)
-        .map_err(|e| pyo3::exceptions::PyValueError::new_err(e))?;
+) -> Result<Vec<u8>, String> {
+    let (scene, cam) = scene_parser::parse_scene_json(scene_json)?;
 
     let cam_origin = glam::DVec3::from_array(cam.origin);
 
@@ -50,7 +45,7 @@ fn render_image(
         let fov_rad = fov.to_radians();
         vpwidth = 2.0 * distance * (fov_rad / 2.0).tan();
     }
-    
+
     // Dynamic viewport scaling matching Python
     let aspect_ratio = width as f64 / height as f64;
     let vpheight = vpwidth / aspect_ratio;
@@ -63,8 +58,7 @@ fn render_image(
 
     let samples_per_pixel = cam.samples_per_pixel.unwrap_or(1);
     let aperture = cam.aperture.unwrap_or(0.0);
-    let focal_distance = cam.focal_distance.unwrap_or(distance); // focal_distance defaults to camera distance (w_norm)
-
+    let focal_distance = cam.focal_distance.unwrap_or(distance);
 
     println!("Integrator from scene: {}", scene.integrator);
     let integrator: Box<dyn crate::integrator::Integrator> = match scene.integrator.as_str() {
@@ -74,28 +68,49 @@ fn render_image(
         _ => Box::new(render::WhittedIntegrator),
     };
 
+    let pixels = render::render_image_parallel(
+        integrator.as_ref(),
+        &scene,
+        cam_origin,
+        look_at,
+        up,
+        distance,
+        vpwidth,
+        vpheight,
+        width,
+        height,
+        max_depth,
+        samples_per_pixel,
+        aperture,
+        focal_distance,
+    );
+
+    Ok(pixels)
+}
+
+#[cfg(feature = "python")]
+use pyo3::prelude::*;
+#[cfg(feature = "python")]
+use pyo3::types::PyBytes;
+
+#[cfg(feature = "python")]
+#[pyfunction]
+fn render_image(
+    py: Python<'_>,
+    scene_json: &str,
+    width: usize,
+    height: usize,
+    max_depth: u32,
+) -> PyResult<Py<PyBytes>> {
     // Release GIL while rendering in parallel!
-    let pixels = py.allow_threads(|| {
-        render::render_image_parallel(integrator.as_ref(),
-            &scene,
-            cam_origin,
-            look_at,
-            up,
-            distance,
-            vpwidth,
-            vpheight,
-            width,
-            height,
-            max_depth,
-            samples_per_pixel,
-            aperture,
-            focal_distance,
-        )
-    });
+    let pixels = py
+        .allow_threads(|| render_scene_json(scene_json, width, height, max_depth))
+        .map_err(pyo3::exceptions::PyValueError::new_err)?;
 
     Ok(PyBytes::new_bound(py, &pixels).into())
 }
 
+#[cfg(feature = "python")]
 #[pymodule]
 fn hairy_tracer_core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(render_image, m)?)?;
